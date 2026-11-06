@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WPP Mask</title>
+  <link rel="stylesheet" href="popup.css">
+  <script src="popup.js" defer></script>
+</head>
+<body>
+  <header>
+    <div class="brand-icon" aria-hidden="true">W</div>
+    <div><h1>WPP Mask</h1><p>Your WhatsApp, your way.</p></div>
+    <span class="badge">LOCAL</span>
+  </header>
+  <main>
+    <fieldset id="controls" disabled>
+      <legend class="sr-only">Extension settings</legend>
+      <section aria-labelledby="protection-title">
+        <h2 id="protection-title">Keep your conversations protected</h2>
+        <label class="switch-row" for="blur-previews">
+          <span><strong>Blur chat previews</strong><small>Conceal messages in the sidebar.</small></span>
+          <input id="blur-previews" type="checkbox" role="switch">
+        </label>
+        <label class="switch-row" for="blur-chat">
+          <span><strong>Protect the open conversation</strong><small>Blur history and keep recent messages readable.</small></span>
+          <input id="blur-chat" type="checkbox" role="switch" aria-controls="recent-settings">
+        </label>
+        <div id="recent-settings" class="range-panel">
+          <label for="visible-count">Recent messages to show <output id="visible-label" for="visible-count">4</output></label>
+          <input id="visible-count" type="range" min="0" max="12" value="4" step="1">
+          <div class="range-ends"><span>None</span><span>12 messages</span></div>
+          <p class="hint">Scrolling into history blurs every message.</p>
+        </div>
+        <div class="strength">
+          <label for="blur-strength">Blur strength <output id="strength-label" for="blur-strength">8 px</output></label>
+          <input id="blur-strength" type="range" min="4" max="16" value="8" step="1">
+        </div>
+      </section>
+      <section aria-labelledby="aliases-title">
+        <div class="section-heading"><h2 id="aliases-title">Group aliases</h2><span id="alias-count" class="count">0</span></div>
+        <p class="hint">Only you see the alias. The group name stays the same for everyone else.</p>
+        <form id="alias-form">
+          <label for="original-name">Original group name</label>
+          <input id="original-name" type="text" maxlength="200" placeholder="E.g. Family group" required autocomplete="off">
+          <label for="alias-name">Your preferred name</label>
+          <input id="alias-name" type="text" maxlength="100" placeholder="E.g. My people ❤️" required autocomplete="off">
+          <button class="primary" type="submit">Save alias</button>
+        </form>
+        <p class="hint">Use the exact name. Chats with identical names share an alias. Search uses the original name.</p>
+        <ul id="alias-list" aria-label="Saved aliases"></ul>
+        <p id="empty-state" class="empty">Your groups, with names that make sense to you.</p>
+      </section>
+    </fieldset>
+    <p id="status" role="status" aria-live="polite">Loading settings…</p>
+  </main>
+  <footer>Settings stay in this browser. No messages are sent.<br>Blur is visual; it does not prevent access to content.</footer>
+</body>
+</html>

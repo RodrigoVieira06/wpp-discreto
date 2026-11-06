@@ -1,0 +1,10 @@
+pre-commit:
+  commands:
+    quality:
+      run: pnpm check
+    tests:
+      run: pnpm test
+commit-msg:
+  commands:
+    conventional-commit:
+      run: pnpm exec commitlint --edit "{1}"

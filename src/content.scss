@@ -1,0 +1,25 @@
+/* New messages are masked by default. Only explicitly selected recent messages are revealed. */
+html:not([data-wppm-ready]) #main :is(.message-in, .message-out),
+html:not([data-wppm-ready]) #main [data-testid="msg-container"]:not(:has(.message-in, .message-out)),
+html[data-wppm-chat="true"] #main :is(.message-in, .message-out):not([data-wppm-reveal]):not([data-wppm-reveal] *),
+html[data-wppm-chat="true"] #main [data-testid="msg-container"]:not(:has(.message-in, .message-out)):not(.message-in, .message-out):not([data-wppm-reveal]):not([data-wppm-reveal] *) {
+  filter: blur(var(--wppm-blur, 8px)) !important;
+}
+
+/* The second grid cell is the message preview in the standard chat-list layout. */
+html:not([data-wppm-ready]) #pane-side [role="gridcell"]:nth-child(2),
+html[data-wppm-previews="true"] #pane-side [role="gridcell"]:nth-child(2),
+html:not([data-wppm-ready]) #pane-side :is([data-testid="last-msg-status"], [data-testid="chat-subtitle"]),
+html[data-wppm-previews="true"] #pane-side :is([data-testid="last-msg-status"], [data-testid="chat-subtitle"]) {
+  filter: blur(var(--wppm-blur, 8px)) !important;
+}
+
+/* Preserve the original React-owned text node, replacing only its visual presentation. */
+[data-wppm-alias] {
+  font-size: 0 !important;
+}
+[data-wppm-alias]::after {
+  content: attr(data-wppm-alias);
+  font-size: var(--wppm-name-size, 16px);
+  line-height: normal;
+}

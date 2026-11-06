@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>WPP Mask — simulação</title>
+  <link rel="stylesheet" href="../dist/extension/src/content.css">
+  <style>
+    body { background: #111b21; color: #e9edef; font: 16px system-ui; display: flex; gap: 24px; padding: 24px; }
+    #pane-side { width: 260px; }
+    [role="row"] { border-bottom: 1px solid #405048; padding: 15px; }
+    [role="gridcell"] + [role="gridcell"] { font-size: 13px; color: #aebcb5; margin-top: 6px; }
+    #main { width: 520px; }
+    #main header { padding: 16px; background: #24342c; }
+    #history { height: 240px; overflow-y: auto; }
+    .message-in, .message-out { margin: 12px; padding: 14px; border-radius: 8px; background: #244738; }
+    .message-out { margin-left: 80px; }
+    #result { white-space: pre-wrap; position: fixed; bottom: 0; background: #111; max-height: 180px; overflow: auto; }
+  </style>
+  <script>
+    const listeners = new Set();
+    const stored = { settings: { blurPreviews: true, blurChat: true, visibleCount: 4, blurStrength: 8 }, aliases: [{ original: 'Família Silva', alias: 'Meu pessoal' }] };
+    window.chrome = { storage: {
+      local: { get: async () => structuredClone(stored), set: async (data) => {
+        const changes = {};
+        for (const [key, value] of Object.entries(data)) { changes[key] = { oldValue: stored[key], newValue: value }; stored[key] = value; }
+        for (const listener of listeners) listener(changes, 'local');
+      } },
+      onChanged: { addListener: (listener) => listeners.add(listener) }
+    } };
+  </script>
+  <script src="../dist/extension/src/content.js"></script>
+</head>
+<body>
+  <aside id="pane-side"><div role="row">
+    <div role="gridcell"><span title="Família Silva">Família Silva</span></div>
+    <div role="gridcell"><span data-testid="chat-subtitle">Mensagem privada da lista</span></div>
+  </div></aside>
+  <main id="main">
+    <header><span title="Família Silva">Família Silva</span></header>
+    <div id="history"><div class="message-in">Mensagem 1</div><div class="message-out">Mensagem 2</div><div class="message-in">Mensagem 3</div><div class="message-out">Mensagem 4</div><div class="message-in">Mensagem 5</div><div class="message-out">Mensagem 6</div></div>
+  </main>
+</body>
+</html>

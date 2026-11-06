@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "WPP Mask \u2014 Aliases and message protection",
+  "version": "0.1.0",
+  "description": "Local group aliases and adjustable message blurring for WhatsApp Web.",
+  "permissions": ["storage"],
+  "icons": {
+    "16": "assets/icon-16.png",
+    "48": "assets/icon-48.png",
+    "128": "assets/icon-128.png"
+  },
+  "action": {
+    "default_title": "WPP Mask",
+    "default_popup": "popup/popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://web.whatsapp.com/*"],
+      "js": ["src/content.js"],
+      "css": ["src/content.css"],
+      "run_at": "document_start"
+    }
+  ]
+}

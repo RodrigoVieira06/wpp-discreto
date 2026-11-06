@@ -1,0 +1,54 @@
+$surface: #111a19;
+$accent: #a8efc5;
+
+:root { color-scheme: dark; font: 13px/1.5 system-ui, sans-serif; color: #e8eeec; background: $surface; }
+* { box-sizing: border-box; }
+body { width: 380px; margin: 0; }
+header { display: flex; gap: 12px; align-items: center; padding: 23px 22px; border-bottom: 1px solid #2a3834; }
+.brand-icon { display: grid; place-items: center; width: 39px; height: 43px; border-radius: 13px; background: $accent; color: #153b2a; font-size: 24px; font-weight: 800; }
+h1 { margin: 0; font-size: 19px; letter-spacing: -.5px; }
+header p { margin: 1px 0 0; font-size: 11px; color: #9cafa7; }
+.badge { margin-left: auto; font-size: 9px; letter-spacing: 1px; color: $accent; border: 1px solid #355746; border-radius: 5px; padding: 3px 6px; }
+main { padding: 0 22px; }
+fieldset { padding: 0; border: 0; min-width: 0; margin: 0; }
+section { padding: 21px 0; }
+section + section { border-top: 1px solid #2a3834; }
+h2 { font-size: 13px; margin: 0 0 13px; font-weight: 650; }
+.switch-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; margin: 15px 0; }
+strong { display: block; font-size: 12px; font-weight: 550; }
+small { display: block; color: #9cafa7; font-size: 11px; margin-top: 3px; }
+input[role="switch"] { appearance: none; flex-shrink: 0; width: 34px; height: 20px; border-radius: 20px; background: #42504a; margin: 0; cursor: pointer; position: relative; }
+input[role="switch"]::before { content: ''; position: absolute; width: 14px; height: 14px; background: #eef6f1; top: 3px; left: 3px; border-radius: 50%; transition: transform .15s; }
+input[role="switch"]:checked { background: #43b87a; }
+input[role="switch"]:checked::before { transform: translateX(14px); }
+:focus-visible { outline: 2px solid $accent; outline-offset: 3px; }
+.range-panel { background: #1a2822; border: 1px solid #304537; border-radius: 10px; padding: 13px; margin-top: 18px; }
+.range-panel label, .strength label { display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+output { font-weight: 700; font-size: 12px; color: $accent; }
+input[type="range"] { width: 100%; accent-color: $accent; margin: 14px 0 5px; cursor: pointer; }
+input:disabled { cursor: default; opacity: .4; }
+.range-ends { display: flex; justify-content: space-between; font-size: 10px; color: #9cafa7; }
+.hint { font-size: 11px; color: #9cafa7; margin: 8px 0 0; }
+.strength { margin-top: 16px; }
+.section-heading { display: flex; align-items: center; justify-content: space-between; }
+.section-heading h2 { margin-bottom: 0; }
+.count { background: #283b31; color: $accent; border-radius: 6px; min-width: 23px; text-align: center; font-size: 11px; }
+form { margin-top: 17px; }
+form label { display: block; margin: 10px 0 5px; color: #c0ccc6; font-size: 11px; }
+input[type="text"] { width: 100%; border: 1px solid #3a4a42; border-radius: 7px; background: #17221d; padding: 10px 11px; color: #e8eeec; font: inherit; font-size: 12px; }
+input::placeholder { color: #8a9b92; }
+button { font: inherit; cursor: pointer; }
+button:disabled { opacity: .5; cursor: wait; }
+.primary { background: $accent; color: #153b2a; font-weight: 650; border: 0; width: 100%; padding: 10px; border-radius: 7px; margin-top: 12px; font-size: 12px; }
+.primary:hover { background: #c2f7d7; }
+ul { margin: 14px 0 0; padding: 0; list-style: none; }
+li { display: flex; gap: 10px; align-items: center; border-top: 1px solid #2a3834; padding: 10px 0; }
+li div { min-width: 0; flex: 1; }
+li strong, li small { overflow-wrap: anywhere; }
+.remove { background: none; border: 1px solid #4e5146; border-radius: 6px; color: #d6c4bb; font-size: 11px; padding: 5px 8px; }
+.empty { text-align: center; color: #9cafa7; font-size: 11px; padding: 8px 12px 0; }
+#status { font-size: 11px; color: $accent; margin: 0 0 12px; min-height: 17px; }
+#status[data-error="true"] { color: #ffb5a6; }
+footer { border-top: 1px solid #2a3834; padding: 14px 22px; font-size: 10px; text-align: center; color: #9cafa7; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
