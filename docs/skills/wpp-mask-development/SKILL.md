@@ -21,6 +21,8 @@ Use pnpm for direct package operations. Update Make targets, package scripts, do
 
 Read `docs/local-deployment.md` for local browser requirements. Profiles at `.local/chrome-profile` contain test-session data; keep them ignored and excluded from packages. Local deployment must never modify the user's regular browser profile. Store API publishing is a separate future configuration step, not a side effect of `make deploy-local` or `make deploy`.
 
+Confirm whether a terminal is local or connected over SSH before promising a visible browser. The browser appears on the execution host. For Windows, use the documented local PowerShell commands and a Windows Chrome executable path; do not treat the Linux smoke test as Windows validation.
+
 ## Implementation boundaries
 
 - TypeScript and SCSS are source; generated JS/CSS belong in `dist`.

@@ -20,6 +20,25 @@ A graphical desktop and a recent Chrome supporting the experimental `Extensions.
 make deploy-local CHROME_BIN=/path/to/chrome
 ```
 
+## SSH and a Windows desktop
+
+The browser runs on the computer executing the launcher. Running `make deploy-local` over SSH starts Chrome on the remote host, not on the SSH client's desktop. A successful extension-load message does not mean a browser window appeared on the client PC.
+
+To test in Windows Chrome, run the source checkout and launcher from a **local PowerShell window**, with Node.js 22.18 or later, pnpm 11.23.0, Git, and Chrome installed:
+
+```powershell
+git clone https://github.com/RodrigoVieira06/wpp-mask.git
+cd wpp-mask
+pnpm install --frozen-lockfile
+pnpm build
+$env:CHROME_BIN = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
+pnpm deploy:local
+```
+
+Adjust `CHROME_BIN` if Chrome is installed elsewhere, such as under `Program Files (x86)` or the user's local application directory. These commands use the same build and launcher as the Make target without requiring GNU Make on Windows. They must run in Windows, not in the SSH terminal or a remote Linux shell. The launcher has been tested on Linux; this Windows invocation remains unverified.
+
+If a local launcher is unavailable, generate the ZIP with `make package` on the server, transfer and extract it on Windows, then use **Load unpacked** in `chrome://extensions` and select the extracted folder containing `manifest.json`.
+
 The launcher uses `--remote-debugging-pipe` and `--enable-unsafe-extension-debugging` in its dedicated profile. It does not open a network debugging port. The graphical session retains Chrome's sandbox. Only automated headless smoke tests add `--no-sandbox` for their temporary test profiles.
 
 Chrome branded builds removed ordinary `--load-extension` support starting in version 137. The launcher follows the pipe-based method demonstrated by the [official Chrome launcher test](https://github.com/GoogleChrome/chrome-launcher/blob/main/test/load-extension-test.ts). Older or unsupported browsers may reject the protocol command; use a recent Chrome or install `dist/extension` manually through `chrome://extensions`.

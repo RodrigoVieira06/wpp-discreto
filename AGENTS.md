@@ -54,6 +54,8 @@ make package
 
 `make deploy-local` builds and opens Chrome with the actual extension loaded through a DevTools pipe. Its persistent test profile is `.local/chrome-profile`, ignored by Git and preserved by `make clean`. Never use the ordinary personal Chrome profile. Close the test session before deploying locally again. See `docs/local-deployment.md`.
 
+The launcher opens a browser on its execution host. SSH does not display that browser on the client PC. Confirm the target machine and OS before giving interactive launch instructions. PowerShell instructions for Windows are documented, but execution is verified only on Linux.
+
 Tests use Jest with SWC and simulated markup in Chrome headless. Set `CHROME_BIN` if needed. Report execution restrictions and obtain host-required execution permissions instead of skipping tests.
 
 ## Regression history and validation

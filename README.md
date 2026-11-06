@@ -64,6 +64,8 @@ This builds the extension, opens Chrome with a separate persistent profile, load
 
 The test profile lives in `.local/chrome-profile/`, is ignored by Git, and survives `make clean`. The command does not change your regular Chrome profile. Keep only one local deployment session open at a time. A graphical desktop and a recent Chrome with `Extensions.loadUnpacked` support are required; Chrome 157 was verified here. See the [local deployment guide](docs/local-deployment.md).
 
+Run the launcher on the computer where you want the browser window. SSH execution opens Chrome on the remote computer. For a Windows desktop, see the [local PowerShell instructions](docs/local-deployment.md#ssh-and-a-windows-desktop); Windows execution has not yet been verified.
+
 Chrome defaults to `/usr/bin/google-chrome`. Override it when needed:
 
 ```sh
