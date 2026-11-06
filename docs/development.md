@@ -23,6 +23,7 @@ For automatic local installation, use `make deploy-local`. It builds and opens a
 | `hooks` | `pnpm hooks:install` |
 | `doctor` | Print Node, pnpm, Git, and Chrome versions |
 | `dev`, `run` | `pnpm dev` |
+| `icons` | `pnpm icons` regenerates committed icons from the approved artwork |
 | `deploy-local` | Build, then `pnpm deploy:local` to launch Chrome and load the extension |
 | `build` | `pnpm build` |
 | `lint`, `lint-fix` | Biome checks or safe fixes |

@@ -4,7 +4,7 @@
 CHROME_BIN ?= /usr/bin/google-chrome
 export CHROME_BIN
 
-.PHONY: help install hooks doctor dev run build lint lint-fix format typecheck check test test-watch package release deploy deploy-local clean status
+.PHONY: help install hooks doctor dev run icons build lint lint-fix format typecheck check test test-watch package release deploy deploy-local clean status
 
 help: ## Show available terminal commands
 	@awk 'BEGIN {FS = ":.*## "; printf "\nWPP Mask development commands\n\n"} /^[a-zA-Z_-]+:.*## / {printf "  make %-13s %s\n", $$1, $$2} END {print ""}' $(MAKEFILE_LIST)
@@ -25,6 +25,9 @@ dev: ## Watch extension sources and rebuild after changes
 	pnpm dev
 
 run: dev ## Start the local development workflow
+
+icons: ## Regenerate Chrome icon sizes from the approved logo
+	pnpm icons
 
 build: ## Compile the unpacked extension into dist/extension
 	pnpm build

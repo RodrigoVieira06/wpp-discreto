@@ -1,5 +1,7 @@
 # WPP Mask
 
+<img src="assets/logo.png" width="128" height="128" alt="WPP Mask">
+
 A Chrome extension for local group aliases and visual message protection on WhatsApp Web.
 
 **Status:** early development, version 0.1.0. Automated tests use a simulated interface; compatibility with an authenticated WhatsApp Web session still requires manual validation.

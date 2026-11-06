@@ -5,6 +5,7 @@
   "packageManager": "pnpm@11.23.0",
   "description": "Local group aliases and message blurring for WhatsApp Web",
   "scripts": {
+    "icons": "node scripts/generate-icons.ts",
     "build": "node scripts/build.ts",
     "dev": "node scripts/dev.ts",
     "deploy:local": "node scripts/deploy-local.ts",
@@ -36,6 +37,7 @@
     "jest": "^30.5.2",
     "lefthook": "^2.2.2",
     "sass": "^1.107.1",
+    "sharp": "^0.35.5",
     "typescript": "^7.0.2"
   },
   "type": "module",

@@ -19,6 +19,11 @@ export {};
   };
   try {
     await wait();
+    const logo = document.querySelector('header img.brand-icon');
+    check(
+      'approved brand logo loads in the popup',
+      logo instanceof HTMLImageElement && logo.complete && logo.naturalWidth > 0,
+    );
     check(
       'document language follows browser with Portuguese fallback',
       document.documentElement.lang === window.expectedLanguage,

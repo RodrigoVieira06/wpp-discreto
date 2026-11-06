@@ -26,6 +26,7 @@ Build a public Chrome extension for WhatsApp Web with local group aliases, blurr
 - `src/content.ts` observes the DOM, decorates titles, handles preferences, and selects recent messages.
 - `src/content.scss` masks new messages before explicit reveal exceptions.
 - `popup/` contains TypeScript, SCSS, and HTML for controls and aliases.
+- `assets/logo.png` is the approved artwork: smaller WhatsApp symbol behind the larger foreground shield. Preserve it when generating sizes. `make icons` uses Sharp to regenerate the committed 16/32/48/128 px PNGs; the popup and Chrome toolbar use those icons. See `docs/branding.md`.
 - esbuild and Sass compile into `dist/extension`. Load that directory in Chrome, not the repository root.
 - Store only preferences and alias mappings in `chrome.storage.local`. No message persistence, backend, synchronization, analytics, or extension-owned network calls.
 - Do not modify React-owned text or structures. Use `data-wppm-` attributes and visual aliases. Treat aliases as plain text.

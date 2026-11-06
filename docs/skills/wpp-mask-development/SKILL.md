@@ -30,6 +30,7 @@ Confirm whether a terminal is local or connected over SSH before promising a vis
 - Keep DOM selectors isolated; do not use private WhatsApp application state or modify React-owned text.
 - Preserve immediate masking of new/recycled messages and history scrolling.
 - Keep aliases plain text and settings local. Do not add permissions, networking, or message persistence incidentally.
+- Keep the approved logo in `assets/logo.png`. Use `make icons` to resize it into the committed Chrome icons; do not redesign the artwork during routine builds. Follow `docs/branding.md` for asset paths and packaging.
 - Keep user-facing copy in Chrome locale catalogs, with Brazilian Portuguese as default and English for English browser UI locales. Unsupported languages use Portuguese. Use the typed message helper for dynamic text and translate accessible labels and placeholders. Follow `docs/internationalization.md`; source identifiers and documentation stay in English.
 
 Use Conventional Commits and let Lefthook validate them. Do not bypass hooks. GitHub publication does not authorize store publication. Finish with delivered behavior, executed checks, artifacts, and remaining live-application validation.
