@@ -89,6 +89,17 @@ test('master switch can recover from an initial settings read failure', () => {
   runBrowser(fixture, 2);
 });
 
+test('albums and mixed media remain protected through grouped messages and loading', () => {
+  const base = pathToFileURL(path.join(root, 'fixtures/')).href;
+  const fixture = readFileSync(path.join(root, 'fixtures/whatsapp.html'), 'utf8')
+    .replace('<head>', `<head><base href="${base}">`)
+    .replace(
+      '</body>',
+      `<script src="${pathToFileURL(path.join(root, 'dist/test-runtime/browser-media.js')).href}"></script></body>`,
+    );
+  runBrowser(fixture, 20);
+});
+
 test.each([
   ['pt-BR', 'pt_BR', 'pt-BR', 'Salvar apelido'],
   ['pt-PT', 'pt_BR', 'pt-BR', 'Salvar apelido'],

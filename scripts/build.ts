@@ -32,7 +32,7 @@ console.log('Extension built in dist/extension');
 
 await build({
   absWorkingDir: root,
-  entryPoints: ['tests/browser-content.ts', 'tests/browser-popup.ts'],
+  entryPoints: ['tests/browser-content.ts', 'tests/browser-popup.ts', 'tests/browser-media.ts'],
   outdir: path.join(root, 'dist/test-runtime'),
   bundle: true,
   format: 'iife',

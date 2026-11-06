@@ -32,6 +32,7 @@ Confirm whether a terminal is local or connected over SSH before promising a vis
 - Keep aliases plain text and settings local. Do not add permissions, networking, or message persistence incidentally.
 - Preserve aliases and preferences when the master/alias switches are off. Restore defaults resets settings, not mappings. Keep lookup limited to loaded conversation names, cap suggestions at ten, and distinguish missing loaded names from unavailable WhatsApp tabs. Follow `docs/popup-controls.md`.
 - Keep UI copy short and explanatory. Do not add slogans, promotional empty states, or persistent ready messages. The language setting can override automatic browser detection.
+- Preserve the visible plain-language footer about local-only effects and unchanged original data. Confirm before restoring settings. Use `src/messages.ts` for grouped message/media handling; keep selectors aligned with SCSS and retain album, unread-counter, and nested-title regression tests.
 - Keep the approved logo in `assets/logo.png`. Use `make icons` to resize it into the committed Chrome icons; do not redesign the artwork during routine builds. Follow `docs/branding.md` for asset paths and packaging.
 - Keep user-facing copy in Chrome locale catalogs, with Brazilian Portuguese as default and English for English browser UI locales. Unsupported languages use Portuguese. Use the typed message helper for dynamic text and translate accessible labels and placeholders. Follow `docs/internationalization.md`; source identifiers and documentation stay in English.
 

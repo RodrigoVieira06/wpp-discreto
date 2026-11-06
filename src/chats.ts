@@ -13,13 +13,22 @@ export function sidebarTitles(document: Document): HTMLElement[] {
   for (const row of document.querySelectorAll(
     '#pane-side [role="row"], #pane-side [role="listitem"]',
   )) {
-    const title = [
-      ...row.querySelectorAll<HTMLElement>('span[title], [data-testid="cell-frame-title"]'),
-    ].find(
-      (node) =>
-        !node.closest('[role="gridcell"]:nth-child(2)') &&
-        normalizeName(node.getAttribute('title') || node.textContent),
-    );
+    const valid = (node: HTMLElement) =>
+      !node.closest('[role="gridcell"]:nth-child(2)') &&
+      !node.closest('[data-testid*="unread"], .sr-only, [aria-live]') &&
+      Boolean(normalizeName(node.getAttribute('title') || node.textContent));
+    // A title container can contain an accessibility-only unread count before the name.
+    const title =
+      [...row.querySelectorAll<HTMLElement>('[data-testid="cell-frame-title"] [dir="auto"]')].find(
+        (node) => !node.querySelector('[dir="auto"]') && valid(node),
+      ) ??
+      [...row.querySelectorAll<HTMLElement>('span[title]')].find(valid) ??
+      [
+        ...row.querySelectorAll<HTMLElement>(
+          '[data-testid="cell-frame-title"] [dir="auto"], [data-testid="cell-frame-title"] span',
+        ),
+      ].find((node) => node.childElementCount === 0 && valid(node)) ??
+      [...row.querySelectorAll<HTMLElement>('[data-testid="cell-frame-title"]')].find(valid);
     if (title) titles.push(title);
   }
   return [...new Set(titles)];

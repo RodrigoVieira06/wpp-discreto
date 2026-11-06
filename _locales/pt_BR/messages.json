@@ -127,5 +127,44 @@
         "example": "Family group"
       }
     }
+  },
+  "localOnlyNotice": {
+    "message": "Os apelidos e ajustes só aparecem para você, neste navegador. As mensagens e os nomes originais continuam iguais no WhatsApp."
+  },
+  "conversationDataNotice": {
+    "message": "O WPP Mask não envia nem salva o conteúdo das suas conversas."
+  },
+  "resetConfirmTitle": {
+    "message": "Restaurar configurações padrão?"
+  },
+  "resetConfirmDescription": {
+    "message": "Os ajustes voltarão ao padrão. Seus apelidos salvos serão mantidos."
+  },
+  "cancel": {
+    "message": "Cancelar"
+  },
+  "confirmReset": {
+    "message": "Restaurar"
+  },
+  "mediaTypes": {
+    "message": "Mídias para embaçar"
+  },
+  "mediaImages": {
+    "message": "Fotos"
+  },
+  "mediaVideos": {
+    "message": "Vídeos"
+  },
+  "mediaStickers": {
+    "message": "Figurinhas"
+  },
+  "alwaysBlurMedia": {
+    "message": "Embaçar também nas mensagens recentes"
+  },
+  "mediaOptionsHint": {
+    "message": "Vale quando a proteção da conversa está ligada. Desligue a última opção para seguir a quantidade de mensagens visíveis."
+  },
+  "mediaFallbackHint": {
+    "message": "Se o tipo não for identificado, a mídia continua protegida."
   }
 }

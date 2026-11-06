@@ -27,6 +27,7 @@ Build a public Chrome extension for WhatsApp Web with local group aliases, blurr
 - Master and aliases switches default to enabled and retain preferences/mappings when disabled. Restoring defaults resets settings only, never deletes aliases. Existing settings migrate with enabled switches and automatic language.
 - `src/chats.ts` reads up to ten unique loaded sidebar names for suggestions and validates requested original names against loaded titles. Use active-tab message passing without extra permissions. Never persist discovered names automatically; only user-saved mappings are stored.
 - `src/content.ts` observes the DOM, decorates titles, handles preferences, and selects recent messages.
+- `src/messages.ts` isolates logical message units and media/text annotation. Never reveal an aggregate wrapper containing multiple messages. Mask media assets independently so one type exemption cannot expose another type or its older caption.
 - `src/content.scss` masks new messages before explicit reveal exceptions.
 - `popup/` contains TypeScript, SCSS, and HTML for controls and aliases.
 - `assets/logo.png` is the approved artwork: smaller WhatsApp symbol behind the larger foreground shield. Preserve it when generating sizes. `make icons` uses Sharp to regenerate the committed 16/32/48/128 px PNGs; the popup and Chrome toolbar use those icons. See `docs/branding.md`.
@@ -34,6 +35,9 @@ Build a public Chrome extension for WhatsApp Web with local group aliases, blurr
 - Store only preferences and alias mappings in `chrome.storage.local`. No message persistence, backend, synchronization, analytics, or extension-owned network calls.
 - Do not modify React-owned text or structures. Use `data-wppm-` attributes and visual aliases. Treat aliases as plain text.
 - Blur options default to off; visible count defaults to 4, ranging from 0–12; strength ranges from 4–16 px.
+- Media choices `blurImages`, `blurVideos`, `blurStickers`, and `alwaysBlurMedia` default to true when missing. They apply with chat protection enabled. Selected types remain hidden in recent messages when always mode is on; otherwise they follow the recent-message rule. Unidentified types must not inherit a type exemption. See `docs/message-protection.md`.
+- Default restoration requires explicit confirmation; cancel performs no write. Always retain the plain-language footer explaining local-only changes, unchanged original WhatsApp data, and no transmission/persistence of conversation contents. This is necessary information, not promotional copy.
+- Sidebar title extraction must exclude unread counters. Alias CSS must visually hide nested original title children while retaining their DOM text; never concatenate original and alias.
 - History scrolling hides all messages; returning to the end reveals the last N loaded blocks. Hover must not reveal them.
 - Blur is visual protection, not encryption or access control.
 

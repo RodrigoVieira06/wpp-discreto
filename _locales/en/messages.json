@@ -127,5 +127,44 @@
         "example": "Family group"
       }
     }
+  },
+  "localOnlyNotice": {
+    "message": "Aliases and settings are only visible to you, in this browser. Your messages and original names stay unchanged on WhatsApp."
+  },
+  "conversationDataNotice": {
+    "message": "WPP Mask does not send or save the contents of your conversations."
+  },
+  "resetConfirmTitle": {
+    "message": "Restore default settings?"
+  },
+  "resetConfirmDescription": {
+    "message": "Settings will return to their defaults. Your saved aliases will be kept."
+  },
+  "cancel": {
+    "message": "Cancel"
+  },
+  "confirmReset": {
+    "message": "Restore"
+  },
+  "mediaTypes": {
+    "message": "Media to blur"
+  },
+  "mediaImages": {
+    "message": "Photos"
+  },
+  "mediaVideos": {
+    "message": "Videos"
+  },
+  "mediaStickers": {
+    "message": "Stickers"
+  },
+  "alwaysBlurMedia": {
+    "message": "Also blur in recent messages"
+  },
+  "mediaOptionsHint": {
+    "message": "Applies while conversation protection is on. Turn off the last option to follow the visible-message count."
+  },
+  "mediaFallbackHint": {
+    "message": "If the type cannot be identified, the media remains protected."
   }
 }

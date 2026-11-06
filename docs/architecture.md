@@ -16,7 +16,9 @@ Master and aliases switches gate effects without deleting saved data. `src/chats
 
 ## Presentation and data
 
-SCSS compiles to static CSS. Message elements are masked before explicit reveal exceptions. Scroll handling revokes exceptions immediately; mutation callbacks revoke exceptions for recycled content before deferred rendering. Aliases use pseudo-elements without replacing React-owned text.
+SCSS compiles to static CSS. `src/messages.ts` discovers individual message units rather than aggregate group wrappers and annotates media/text separately. CSS masks new assets before classification; the observer classifies them before painting and revokes stale reveal exceptions when content changes. Media types and always-blur behavior are configurable. See [message protection](message-protection.md).
+
+Aliases use pseudo-elements without replacing React-owned text. Nested original spans are visually clipped so their own font sizes cannot make the original appear beside the alias. Title extraction excludes unread indicators.
 
 `chrome.storage.local` holds a `settings` object and an `aliases` array. `Settings` and `Alias` interfaces and all sanitization live in `src/settings.ts`. Stored values are untrusted input. Message contents are never persisted.
 
@@ -30,4 +32,4 @@ SCSS compiles to static CSS. Message elements are masked before explicit reveal 
 
 ## Integration boundary
 
-DOM selectors live in `src/content.ts`, `src/chats.ts`, and `src/content.scss`. WhatsApp updates can invalidate them. The fixture contains simulated markup and mock storage, not an authenticated session. Exact-name aliases do not provide stable group identification. Missing loaded names and unavailable tabs are separate validation states.
+DOM selectors live in `src/content.ts`, `src/messages.ts`, `src/chats.ts`, and `src/content.scss`. WhatsApp updates can invalidate them. The fixture contains simulated markup and mock storage, not an authenticated session. Exact-name aliases do not provide stable group identification. Missing loaded names and unavailable tabs are separate validation states.

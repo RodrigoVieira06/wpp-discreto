@@ -80,6 +80,62 @@ export {};
       chatContext?.found.includes('Contato 12') && !chatContext.found.includes('Missing'),
     );
 
+    const unreadRow = document.createElement('div');
+    unreadRow.setAttribute('role', 'row');
+    unreadRow.innerHTML =
+      '<div role="gridcell"><span data-testid="cell-frame-title"><span data-testid="unread-count" class="sr-only">6 mensagens não lidas</span><span dir="auto">Nome do Grupo</span></span></div>';
+    pane?.prepend(unreadRow);
+    for (const listener of messageListeners)
+      listener(
+        { type: 'wpp-mask:chat-context', names: ['Nome do Grupo'] },
+        { id: 'test-extension' },
+        (response) => {
+          chatContext = response as typeof chatContext;
+        },
+      );
+    check(
+      'unread badge is excluded from discovered names and validation',
+      chatContext?.chats[0] === 'Nome do Grupo' && chatContext.found.includes('Nome do Grupo'),
+    );
+    await chrome.storage.local.set({ aliases: [{ original: 'Nome do Grupo', alias: 'Equipe' }] });
+    check(
+      'alias decorates only the title and preserves unread badge',
+      unreadRow.querySelector('[dir="auto"]')?.getAttribute('data-wppm-alias') === 'Equipe' &&
+        unreadRow.querySelector('[data-testid="unread-count"]')?.textContent ===
+          '6 mensagens não lidas',
+    );
+    await chrome.storage.local.set({
+      aliases: [{ original: 'Família Silva', alias: 'Meu pessoal' }],
+    });
+
+    const nestedTitleRow = document.createElement('div');
+    nestedTitleRow.setAttribute('role', 'row');
+    nestedTitleRow.innerHTML =
+      '<div role="gridcell"><span title="Example Contact"><span style="font-size:17px">Example Contact</span></span></div>';
+    pane?.prepend(nestedTitleRow);
+    await chrome.storage.local.set({
+      aliases: [{ original: 'Example Contact', alias: 'Example alias' }],
+    });
+    const originalChild = nestedTitleRow.querySelector<HTMLElement>('span[style]');
+    const originalStyle = originalChild ? getComputedStyle(originalChild) : null;
+    check(
+      'nested original title is visually hidden instead of appended to alias',
+      !!originalStyle &&
+        (originalStyle.fontSize === '0px' ||
+          originalStyle.clipPath !== 'none' ||
+          originalStyle.visibility === 'hidden' ||
+          originalStyle.display === 'none'),
+    );
+    check(
+      'alias replacement retains original text for WhatsApp',
+      nestedTitleRow.querySelector('[title]')?.textContent === 'Example Contact' &&
+        nestedTitleRow.querySelector('[data-wppm-alias]')?.getAttribute('data-wppm-alias') ===
+          'Example alias',
+    );
+    await chrome.storage.local.set({
+      aliases: [{ original: 'Família Silva', alias: 'Meu pessoal' }],
+    });
+
     const newMessage = document.createElement('div');
     newMessage.className = 'message-in';
     newMessage.textContent = 'Nova mensagem';

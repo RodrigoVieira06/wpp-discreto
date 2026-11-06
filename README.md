@@ -17,6 +17,7 @@ A Chrome extension for local conversation aliases and visual message protection 
 - **Adjustable blur:** choose an intensity between 4 and 16 px.
 - **Local preferences:** save settings and aliases without sending them to a backend.
 - **Settings panel:** choose automatic language, Portuguese, or English; adjust protection levels; restore settings without deleting aliases.
+- **Media choices:** select photos, videos, and stickers, and choose whether they stay blurred even in recent messages. These choices apply while open-conversation protection is on.
 
 Scrolling into older history masks all messages. Returning to the end reveals the configured recent messages. Hovering does not remove the blur. Both protection options start disabled.
 
@@ -41,7 +42,7 @@ make build
 4. Use the master switch to enable the extension and select the desired effects. Open the gear button for language, blur intensity, recent-message count, and default restoration.
 5. Open WhatsApp Web in the active tab. Use **Buscar grupos e contatos** to pick a loaded name, or enter an exact original name manually. Save an alias, edit it, or remove it from the list.
 
-Restoring defaults resets settings only; saved aliases are retained. See [popup controls](docs/popup-controls.md).
+Restoring defaults asks for confirmation and resets settings only; saved aliases are retained. The popup footer explains what stays local and unchanged. See [popup controls](docs/popup-controls.md) and [media protection](docs/message-protection.md).
 
 ## Terminal workflow
 
@@ -105,6 +106,7 @@ Product copy lives in Chrome locale catalogs; see [internationalization](docs/in
 - Groups are not identified automatically. Search, accessibility text, and group-information panels continue using original names.
 - Suggestions use up to ten unique names already loaded in the active tab, not the entire address book. Validation can check other loaded conversation names and the open header, but cannot establish whether an absent name exists elsewhere in your account. An unavailable WhatsApp tab is reported separately.
 - Counts refer to blocks currently loaded in the DOM; an album may be one block.
+- Media types that cannot be identified remain protected according to the selected media rules. Separate media/search panels remain outside this change's scope; chat albums are covered.
 - Protection does not cover system notifications, search results, media panels, or conversation titles. Blur is not encryption or access control.
 - WhatsApp changes can break DOM selectors. Simulated tests do not establish live-application compatibility.
 

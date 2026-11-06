@@ -6,6 +6,10 @@ import * as model from '../src/settings';
 
 test('invalid persisted settings cannot inject CSS or enable options accidentally', () => {
   assert.deepEqual(model.settings(null), {
+    blurImages: true,
+    blurVideos: true,
+    blurStickers: true,
+    alwaysBlurMedia: true,
     enabled: true,
     aliasesEnabled: true,
     language: 'auto',
@@ -22,6 +26,10 @@ test('invalid persisted settings cannot inject CSS or enable options accidentall
       blurStrength: 'url(evil)',
     }),
     {
+      blurImages: true,
+      blurVideos: true,
+      blurStickers: true,
+      alwaysBlurMedia: true,
       enabled: true,
       aliasesEnabled: true,
       language: 'auto',
@@ -37,6 +45,10 @@ test('invalid persisted settings cannot inject CSS or enable options accidentall
 
 test('new preferences migrate existing settings and reject unsupported language values', () => {
   assert.deepEqual(model.settings({ enabled: false, aliasesEnabled: false, language: 'en' }), {
+    blurImages: true,
+    blurVideos: true,
+    blurStickers: true,
+    alwaysBlurMedia: true,
     enabled: false,
     aliasesEnabled: false,
     language: 'en',

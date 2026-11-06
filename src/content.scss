@@ -1,8 +1,36 @@
-/* New messages are masked by default. Only explicitly selected recent messages are revealed. */
-html:not([data-wppm-ready]) #main :is(.message-in, .message-out),
-html:not([data-wppm-ready]) #main [data-testid="msg-container"]:not(:has(.message-in, .message-out)),
-html[data-wppm-chat="true"] #main :is(.message-in, .message-out):not([data-wppm-reveal]):not([data-wppm-reveal] *),
-html[data-wppm-chat="true"] #main [data-testid="msg-container"]:not(:has(.message-in, .message-out)):not(.message-in, .message-out):not([data-wppm-reveal]):not([data-wppm-reveal] *) {
+// Keep these selectors aligned with src/messages.ts.
+$messages: ':is(.message-in, .message-out, [data-testid="msg-container"], [data-id^="true_"], [data-id^="false_"])';
+$media: ':is(img:not(.emoji):not([data-testid="emoji"] *), video, canvas, [data-testid="sticker"], [data-testid="album"], [data-testid="media-grid"], [data-testid="album-image"], [data-testid="album-video"], [data-testid="media-cell"], [data-testid="image-thumb"], [data-testid="video-thumb"], [role="grid"] [style*="background-image"])';
+$active: 'html:is(:not([data-wppm-ready]), [data-wppm-chat="true"])';
+
+// Never blur/reveal an aggregate container around multiple messages as one unit.
+#{$active} #main #{$messages}:not(:has(#{$messages})):not(#{$media}):not(:has(#{$media})):not([data-wppm-reveal]):not([data-wppm-reveal] *),
+#{$active} #main :is(.selectable-text, [data-wppm-text]):not([data-wppm-mixed-text]):not([data-wppm-media]):not([data-wppm-media] *):not(header *):not(footer *):not([contenteditable="true"]):not([contenteditable="true"] *):not([data-wppm-reveal]):not([data-wppm-reveal] *) {
+  filter: blur(var(--wppm-blur, 8px)) !important;
+}
+
+// Direct caption text shares a parent with media in some layouts. Hide that text
+// without applying an ancestor filter that would also blur an exempt media type.
+#{$active} #main [data-wppm-mixed-text]:not([data-wppm-reveal]):not([data-wppm-reveal] *) {
+  color: transparent !important;
+  text-shadow: 0 0 var(--wppm-blur, 8px) var(--primary, #e9edef) !important;
+}
+
+@each $kind in images, videos, stickers {
+  #{$active}[data-wppm-#{$kind}="true"] #main [data-wppm-media="#{$kind}"]:not([data-wppm-reveal]):not([data-wppm-reveal] *),
+  #{$active}[data-wppm-#{$kind}="true"][data-wppm-media-always="true"] #main [data-wppm-media="#{$kind}"] {
+    filter: blur(var(--wppm-blur, 8px)) !important;
+  }
+}
+
+#{$active}[data-wppm-media-any="true"] #main [data-wppm-media="unknown"]:not([data-wppm-reveal]):not([data-wppm-reveal] *),
+#{$active}[data-wppm-media-any="true"][data-wppm-media-always="true"] #main [data-wppm-media="unknown"] {
+  filter: blur(var(--wppm-blur, 8px)) !important;
+}
+
+// New or recycled assets are masked before the observer can classify them.
+html:not([data-wppm-ready]) #main #{$media}:not([data-wppm-media-ignore]):not(header *):not(footer *),
+html[data-wppm-chat="true"][data-wppm-media-any="true"] #main #{$media}:not([data-wppm-media]):not([data-wppm-media-ignore]):not([data-wppm-media] *):not(header *):not(footer *) {
   filter: blur(var(--wppm-blur, 8px)) !important;
 }
 
@@ -17,6 +45,16 @@ html[data-wppm-previews="true"] #pane-side :is([data-testid="last-msg-status"], 
 /* Preserve the original React-owned text node, replacing only its visual presentation. */
 [data-wppm-alias] {
   font-size: 0 !important;
+  position: relative;
+}
+/* Nested WhatsApp spans may set their own font size; keep them in the DOM but out of sight. */
+[data-wppm-alias] > * {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
 }
 [data-wppm-alias]::after {
   content: attr(data-wppm-alias);

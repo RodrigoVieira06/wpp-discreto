@@ -1,4 +1,5 @@
 import { headerTitles, readChatContext, sidebarTitles, unavailableContext } from './chats';
+import { annotateMessages, messageUnits } from './messages';
 import * as model from './settings';
 
 (() => {
@@ -29,14 +30,18 @@ import * as model from './settings';
       if (
         records.some(
           (record) =>
-            node.contains(record.target) ||
-            (record.type === 'attributes' && record.target.contains(node)),
+            (record.type !== 'attributes' ||
+              ['data-id', 'src', 'srcset', 'poster'].includes(record.attributeName ?? '')) &&
+            (node.contains(record.target) ||
+              (record.type === 'attributes' && record.target.contains(node))),
         )
       ) {
         node.removeAttribute('data-wppm-reveal');
         revealed.delete(node);
       }
     }
+    // Classify new/recycled media in the observer microtask, before its first paint.
+    if (config.enabled && config.blurChat) annotateMessages(document);
     schedule();
   });
   function observe() {
@@ -45,36 +50,35 @@ import * as model from './settings';
       childList: true,
       characterData: true,
       attributes: true,
-      attributeFilter: ['title', 'data-id', 'aria-selected'],
+      attributeFilter: [
+        'title',
+        'data-id',
+        'aria-selected',
+        'src',
+        'srcset',
+        'poster',
+        'class',
+        'style',
+        'data-testid',
+        'data-icon',
+      ],
     });
-  }
-
-  function messageNodes() {
-    const main = document.querySelector('#main');
-    if (!main) return [];
-    return [
-      ...main.querySelectorAll<HTMLElement>(
-        '.message-in, .message-out, [data-testid="msg-container"]',
-      ),
-    ].filter(
-      (node) =>
-        !node.parentElement?.closest('.message-in, .message-out, [data-testid="msg-container"]'),
-    );
   }
 
   function atConversationEnd(last: HTMLElement | undefined) {
     // When history is scrolled back, none of the older loaded messages are exposed.
-    for (let node = last?.parentElement; node && node.id !== 'main'; node = node.parentElement) {
+    for (let node = last?.parentElement; node; node = node.parentElement) {
       const style = getComputedStyle(node);
       if (/auto|scroll/.test(style.overflowY) && node.scrollHeight > node.clientHeight + 2) {
         return node.scrollHeight - node.clientHeight - node.scrollTop <= 24;
       }
+      if (node.id === 'main') break;
     }
     return true;
   }
 
   function updateMessages() {
-    const nodes = config.enabled ? messageNodes() : [];
+    const nodes = config.enabled ? messageUnits(document) : [];
     const next = new Set(
       config.blurChat && atConversationEnd(nodes.at(-1)) && config.visibleCount > 0
         ? nodes.slice(-config.visibleCount)
@@ -86,6 +90,12 @@ import * as model from './settings';
   }
 
   function updateAliases() {
+    // Restore the original presentation before measuring nested title fonts.
+    for (const node of decorated) {
+      node.removeAttribute('data-wppm-alias');
+      node.style.removeProperty('--wppm-name-size');
+    }
+    decorated.clear();
     const byName = new Map(aliases.map(({ original, alias }) => [original, alias]));
     const candidates =
       config.enabled && config.aliasesEnabled
@@ -106,13 +116,6 @@ import * as model from './settings';
       node.setAttribute('data-wppm-alias', alias);
       active.add(node);
     }
-    for (const node of decorated) {
-      if (!active.has(node)) {
-        node.removeAttribute('data-wppm-alias');
-        node.style.removeProperty('--wppm-name-size');
-      }
-    }
-    decorated.clear();
     for (const node of active) decorated.add(node);
   }
 
@@ -130,6 +133,18 @@ import * as model from './settings';
         String(storageFailed || (config.enabled && config.blurPreviews)),
       );
       root().style.setProperty('--wppm-blur', `${config.blurStrength}px`);
+      for (const [kind, selected] of [
+        ['images', config.blurImages],
+        ['videos', config.blurVideos],
+        ['stickers', config.blurStickers],
+      ] as const)
+        root().setAttribute(`data-wppm-${kind}`, String(selected));
+      root().setAttribute('data-wppm-media-always', String(config.alwaysBlurMedia));
+      root().setAttribute(
+        'data-wppm-media-any',
+        String(config.blurImages || config.blurVideos || config.blurStickers),
+      );
+      annotateMessages(document);
       updateMessages();
       updateAliases();
       if (loaded) root().setAttribute('data-wppm-ready', '');
@@ -176,7 +191,12 @@ import * as model from './settings';
 
   document.addEventListener(
     'scroll',
-    () => {
+    (event) => {
+      if (
+        !(event.target instanceof Element) ||
+        !document.querySelector('#main')?.contains(event.target)
+      )
+        return;
       // Revoke exceptions synchronously so scrolling cannot expose history for a frame.
       for (const node of revealed) node.removeAttribute('data-wppm-reveal');
       revealed.clear();
@@ -184,6 +204,9 @@ import * as model from './settings';
     },
     { capture: true, passive: true },
   );
+
+  for (const event of ['load', 'loadedmetadata']) document.addEventListener(event, schedule, true);
+  window.addEventListener('resize', schedule);
 
   window.addEventListener('pagehide', () => {
     stopped = true;

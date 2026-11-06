@@ -8,6 +8,10 @@ export interface Settings {
   blurChat: boolean;
   visibleCount: number;
   blurStrength: number;
+  blurImages: boolean;
+  blurVideos: boolean;
+  blurStickers: boolean;
+  alwaysBlurMedia: boolean;
 }
 
 export interface Alias {
@@ -23,6 +27,10 @@ export const defaults: Readonly<Settings> = Object.freeze({
   blurChat: false,
   visibleCount: 4,
   blurStrength: 8,
+  blurImages: true,
+  blurVideos: true,
+  blurStickers: true,
+  alwaysBlurMedia: true,
 });
 
 export const normalizeName = (value: unknown): string =>
@@ -43,6 +51,10 @@ export function settings(value: unknown = {}): Settings {
     blurChat: input.blurChat === true,
     visibleCount: bounded(input.visibleCount, defaults.visibleCount, 0, 12),
     blurStrength: bounded(input.blurStrength, defaults.blurStrength, 4, 16),
+    blurImages: input.blurImages !== false,
+    blurVideos: input.blurVideos !== false,
+    blurStickers: input.blurStickers !== false,
+    alwaysBlurMedia: input.alwaysBlurMedia !== false,
   };
 }
 

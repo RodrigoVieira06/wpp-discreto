@@ -36,6 +36,14 @@ export {};
       !document.querySelector('[data-i18n="brandTagline"]') && byId('status').textContent === '',
     );
     check('settings hidden initially', byId('settings-panel').hidden);
+    check(
+      'local-only notice is translated and visible',
+      document.querySelector('footer [data-i18n="localOnlyNotice"]')?.textContent ===
+        window.expectedMessages.localOnlyNotice &&
+        (document.querySelector('footer')?.getBoundingClientRect().height ?? 0) > 0 &&
+        (document.querySelector('footer')?.getBoundingClientRect().bottom ?? Infinity) <=
+          window.innerHeight,
+    );
     byId('settings-toggle').click();
     check(
       'settings button opens the panel accessibly',
@@ -79,6 +87,17 @@ export {};
       stored.settings.visibleCount === 3 &&
         stored.settings.blurStrength === 14 &&
         byId('strength-label').value === '14 px',
+    );
+    change('blur-images', false);
+    await wait();
+    change('always-blur-media', false);
+    await wait();
+    check(
+      'media choices and always mode persist',
+      !stored.settings.blurImages &&
+        !stored.settings.alwaysBlurMedia &&
+        stored.settings.blurVideos &&
+        stored.settings.blurStickers,
     );
     change('extension-enabled', false);
     await wait();
@@ -174,7 +193,24 @@ export {};
     );
     window.rejectChats = false;
     const aliasCount = stored.aliases.length;
+    const beforeReset = JSON.stringify(stored.settings);
     byId('restore-defaults').click();
+    await wait();
+    check(
+      'restore requires confirmation before writing settings',
+      byId<HTMLDialogElement>('reset-dialog').open &&
+        JSON.stringify(stored.settings) === beforeReset,
+    );
+    byId('reset-cancel').click();
+    await wait();
+    check(
+      'cancel leaves settings and aliases intact',
+      JSON.stringify(stored.settings) === beforeReset &&
+        stored.aliases.length === aliasCount &&
+        !byId<HTMLDialogElement>('reset-dialog').open,
+    );
+    byId('restore-defaults').click();
+    byId('reset-confirm').click();
     await wait();
     check(
       'restore defaults resets settings and preserves aliases',
@@ -185,6 +221,10 @@ export {};
         stored.settings.language === 'auto' &&
         stored.settings.visibleCount === 4 &&
         stored.settings.blurStrength === 8 &&
+        stored.settings.blurImages &&
+        stored.settings.blurVideos &&
+        stored.settings.blurStickers &&
+        stored.settings.alwaysBlurMedia &&
         stored.aliases.length === aliasCount,
     );
     window.failNextSave = true;

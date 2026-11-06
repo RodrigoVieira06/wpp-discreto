@@ -93,6 +93,10 @@ import * as model from '../src/settings';
     byId<HTMLInputElement>('aliases-enabled').checked = config.aliasesEnabled;
     byId<HTMLInputElement>('blur-previews').checked = config.blurPreviews;
     byId<HTMLInputElement>('blur-chat').checked = config.blurChat;
+    byId<HTMLInputElement>('blur-images').checked = config.blurImages;
+    byId<HTMLInputElement>('blur-videos').checked = config.blurVideos;
+    byId<HTMLInputElement>('blur-stickers').checked = config.blurStickers;
+    byId<HTMLInputElement>('always-blur-media').checked = config.alwaysBlurMedia;
     byId<HTMLInputElement>('visible-count').value = String(config.visibleCount);
     byId<HTMLInputElement>('blur-strength').value = String(config.blurStrength);
     byId<HTMLSelectElement>('language').value = config.language;
@@ -186,6 +190,10 @@ import * as model from '../src/settings';
     'aliases-enabled': 'aliasesEnabled',
     'blur-previews': 'blurPreviews',
     'blur-chat': 'blurChat',
+    'blur-images': 'blurImages',
+    'blur-videos': 'blurVideos',
+    'blur-stickers': 'blurStickers',
+    'always-blur-media': 'alwaysBlurMedia',
   } as const;
   for (const [id, key] of Object.entries(settingFields)) {
     byId(id).addEventListener('change', async () => {
@@ -220,13 +228,21 @@ import * as model from '../src/settings';
     draw();
   });
   document.addEventListener('keydown', (event) => {
+    if (byId<HTMLDialogElement>('reset-dialog').open) return;
     if (event.key === 'Escape' && settingsOpen) {
       settingsOpen = false;
       draw();
       byId('settings-toggle').focus();
     }
   });
-  byId('restore-defaults').addEventListener('click', async () => {
+  byId('restore-defaults').addEventListener('click', () => {
+    byId<HTMLDialogElement>('reset-dialog').showModal();
+  });
+  byId('reset-cancel').addEventListener('click', () => {
+    byId<HTMLDialogElement>('reset-dialog').close();
+  });
+  byId('reset-confirm').addEventListener('click', async () => {
+    byId<HTMLDialogElement>('reset-dialog').close();
     if (await save({ settings: { ...model.defaults } })) await refreshContext();
   });
   byId('fetch-chats').addEventListener('click', () => {
