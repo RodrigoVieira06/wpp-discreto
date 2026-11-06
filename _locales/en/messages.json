@@ -5,35 +5,20 @@
   "extensionDescription": {
     "message": "Local group aliases and adjustable message blurring for WhatsApp Web."
   },
-  "brandTagline": {
-    "message": "Your WhatsApp, your way."
-  },
   "extensionSettings": {
-    "message": "Extension settings"
+    "message": "Settings"
   },
   "protectionTitle": {
-    "message": "Keep your conversations protected"
+    "message": "Message protection"
   },
   "blurPreviews": {
-    "message": "Blur chat previews"
-  },
-  "blurPreviewsHint": {
-    "message": "Conceal messages in the sidebar."
+    "message": "Blur sidebar previews"
   },
   "protectChat": {
-    "message": "Protect the open conversation"
-  },
-  "protectChatHint": {
-    "message": "Blur history and keep recent messages readable."
+    "message": "Blur open conversation"
   },
   "recentMessages": {
     "message": "Recent messages to show"
-  },
-  "noMessages": {
-    "message": "None"
-  },
-  "maxMessages": {
-    "message": "12 messages"
   },
   "historyHint": {
     "message": "Scrolling into history blurs every message."
@@ -42,34 +27,31 @@
     "message": "Blur strength"
   },
   "groupAliases": {
-    "message": "Group aliases"
-  },
-  "groupAliasesHint": {
-    "message": "Only you see the alias. The group name stays the same for everyone else."
+    "message": "Aliases"
   },
   "originalName": {
-    "message": "Original group name"
+    "message": "Original group or contact name"
   },
   "originalPlaceholder": {
-    "message": "E.g. Family group"
+    "message": "Exact name on WhatsApp"
   },
   "preferredName": {
-    "message": "Your preferred name"
+    "message": "Alias"
   },
   "aliasPlaceholder": {
-    "message": "E.g. My people ❤️"
+    "message": "Name to show in this browser"
   },
   "saveAlias": {
     "message": "Save alias"
   },
   "aliasMatchingHint": {
-    "message": "Use the exact name. Chats with identical names share an alias. Search uses the original name."
+    "message": "Chats with identical names share an alias. Search uses the original name."
   },
   "savedAliases": {
     "message": "Saved aliases"
   },
   "aliasesEmpty": {
-    "message": "Your groups, with names that make sense to you."
+    "message": "No saved aliases."
   },
   "statusLoading": {
     "message": "Loading settings…"
@@ -78,16 +60,13 @@
     "message": "Saving…"
   },
   "statusSaved": {
-    "message": "Saved in this browser."
+    "message": "Saved."
   },
   "statusSaveFailed": {
     "message": "Could not save. Please try again."
   },
   "statusMissingAlias": {
-    "message": "Enter the group name and alias."
-  },
-  "statusReady": {
-    "message": "Ready to use on WhatsApp Web."
+    "message": "Enter the original name and alias."
   },
   "statusLoadFailed": {
     "message": "Could not load settings. Reopen the extension."
@@ -104,10 +83,49 @@
       }
     }
   },
-  "localDataHint": {
-    "message": "Settings stay in this browser. No messages are sent."
+  "enableExtension": {
+    "message": "Enable extension"
   },
-  "visualProtectionHint": {
-    "message": "Blur is visual; it does not prevent access to content."
+  "language": {
+    "message": "Language"
+  },
+  "languageAuto": {
+    "message": "Automatic (browser)"
+  },
+  "restoreDefaults": {
+    "message": "Restore defaults"
+  },
+  "restoreDefaultsHint": {
+    "message": "Reset settings without deleting aliases."
+  },
+  "fetchChats": {
+    "message": "Find groups and contacts"
+  },
+  "chatLookupHint": {
+    "message": "Show up to 10 conversations loaded in the current tab."
+  },
+  "chatSuggestions": {
+    "message": "Matching conversations"
+  },
+  "chatsLoading": {
+    "message": "Loading conversations…"
+  },
+  "chatsUnavailable": {
+    "message": "Open or reload WhatsApp Web in this tab to check names."
+  },
+  "aliasNotFound": {
+    "message": "Not found in the loaded conversations. Check the name or open the chat and try again."
+  },
+  "editAlias": {
+    "message": "Edit"
+  },
+  "editAliasLabel": {
+    "message": "Edit alias $ALIAS$",
+    "placeholders": {
+      "alias": {
+        "content": "$1",
+        "example": "Family group"
+      }
+    }
   }
 }

@@ -32,6 +32,54 @@ export {};
       document.querySelector<HTMLElement>('#main header span')?.textContent === 'Família Silva',
     );
 
+    const activeSettings = { ...stored.settings };
+    await chrome.storage.local.set({ settings: { ...activeSettings, enabled: false } });
+    check(
+      'master switch removes every visual effect',
+      visible() === 0 &&
+        document.querySelectorAll('[data-wppm-alias]').length === 0 &&
+        filter(history.firstElementChild as HTMLElement) === 'none' &&
+        filter(document.querySelector('[data-testid="chat-subtitle"]') as HTMLElement) === 'none',
+    );
+    await chrome.storage.local.set({ settings: { ...activeSettings, aliasesEnabled: false } });
+    check(
+      'aliases disabled independently from message protection',
+      document.querySelectorAll('[data-wppm-alias]').length === 0 &&
+        filter(history.firstElementChild as HTMLElement) === 'blur(8px)',
+    );
+    await chrome.storage.local.set({ settings: activeSettings });
+    check(
+      'reenabling restores saved aliases',
+      document.querySelectorAll('[data-wppm-alias="Meu pessoal"]').length === 2,
+    );
+
+    const pane = document.getElementById('pane-side');
+    for (let index = 1; index <= 12; index++) {
+      const row = document.createElement('div');
+      row.setAttribute('role', 'row');
+      row.innerHTML = `<div role="gridcell"><span title="Contato ${index}">Contato ${index}</span></div><div role="gridcell"><span title="Preview">Preview</span></div>`;
+      pane?.append(row);
+    }
+    let chatContext: { available: boolean; chats: string[]; found: string[] } | undefined;
+    for (const listener of messageListeners)
+      listener(
+        { type: 'wpp-mask:chat-context', names: ['Família Silva', 'Contato 12', 'Missing'] },
+        { id: 'test-extension' },
+        (response) => {
+          chatContext = response as typeof chatContext;
+        },
+      );
+    check(
+      'chat lookup exposes only ten original conversation names',
+      chatContext?.chats.length === 10 &&
+        chatContext.chats[0] === 'Família Silva' &&
+        !chatContext.chats.includes('Preview'),
+    );
+    check(
+      'alias validation checks loaded names beyond suggestions',
+      chatContext?.found.includes('Contato 12') && !chatContext.found.includes('Missing'),
+    );
+
     const newMessage = document.createElement('div');
     newMessage.className = 'message-in';
     newMessage.textContent = 'Nova mensagem';

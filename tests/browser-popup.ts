@@ -3,14 +3,17 @@ export {};
 (async () => {
   const results: { name: string; pass: boolean }[] = [];
   const check = (name: string, condition: unknown) => results.push({ name, pass: !!condition });
-  const wait = () => new Promise((resolve) => setTimeout(resolve, 40));
-  const byId = <T extends HTMLElement = HTMLInputElement>(id: string) =>
-    document.getElementById(id) as T;
+  const wait = () => new Promise((resolve) => setTimeout(resolve, 70));
+  const byId = <T extends HTMLElement = HTMLInputElement>(id: string): T => {
+    const element = document.getElementById(id);
+    if (!element) throw new Error(`Missing test element: ${id}`);
+    return element as T;
+  };
   const change = (id: string, value: string | boolean) => {
-    const input = byId(id);
-    if (input.type === 'checkbox') input.checked = Boolean(value);
-    else input.value = String(value);
-    input.dispatchEvent(new Event('change', { bubbles: true }));
+    const element = byId(id);
+    if (element.type === 'checkbox') element.checked = Boolean(value);
+    else element.value = String(value);
+    element.dispatchEvent(new Event('change', { bubbles: true }));
   };
   const submit = (original: string, alias: string) => {
     byId('original-name').value = original;
@@ -21,116 +24,196 @@ export {};
     await wait();
     const logo = document.querySelector('header img.brand-icon');
     check(
-      'approved brand logo loads in the popup',
+      'approved logo loads',
       logo instanceof HTMLImageElement && logo.complete && logo.naturalWidth > 0,
     );
     check(
-      'document language follows browser with Portuguese fallback',
+      'browser locale selection works',
       document.documentElement.lang === window.expectedLanguage,
     );
     check(
-      'save button localized',
-      byId('alias-form').querySelector('button')?.textContent === window.expectedSaveLabel,
+      'no slogan or persistent ready message',
+      !document.querySelector('[data-i18n="brandTagline"]') && byId('status').textContent === '',
     );
+    check('settings hidden initially', byId('settings-panel').hidden);
+    byId('settings-toggle').click();
     check(
-      'ready status localized',
-      byId('status').textContent === window.expectedMessages.statusReady,
+      'settings button opens the panel accessibly',
+      !byId('settings-panel').hidden &&
+        byId('settings-toggle').getAttribute('aria-expanded') === 'true',
     );
-    check(
-      'group name placeholder localized',
-      byId('original-name').placeholder === window.expectedMessages.originalPlaceholder,
-    );
-    check(
-      'alias list accessible name localized',
-      byId('alias-list').getAttribute('aria-label') === window.expectedMessages.savedAliases,
-    );
-    check(
-      'popup loads persisted settings',
-      byId('blur-chat').checked && byId('visible-count').value === '4',
-    );
-    check('popup loads saved aliases', byId('alias-list').children.length === 1);
-    change('blur-previews', false);
+    change('language', 'pt_BR');
     await wait();
-    check('preview toggle persisted', stored.settings.blurPreviews === false);
     check(
-      'saved status localized',
-      byId('status').textContent === window.expectedMessages.statusSaved,
+      'Portuguese override updates static text and document language',
+      document.documentElement.lang === 'pt-BR' &&
+        byId('alias-form').querySelector('button')?.textContent === 'Salvar apelido',
     );
+    change('language', 'en');
+    await wait();
+    check(
+      'English override persists and updates dynamic controls',
+      stored.settings.language === 'en' &&
+        document.documentElement.lang === 'en' &&
+        byId('alias-list').querySelector('.remove')?.textContent === 'Remove',
+    );
+    change('language', 'auto');
+    await wait();
+    check(
+      'automatic language restores browser preference',
+      document.documentElement.lang === window.expectedLanguage &&
+        byId('alias-form').querySelector('button')?.textContent === window.expectedSaveLabel,
+    );
+    check(
+      'placeholder and list accessibility translated',
+      byId('original-name').placeholder === window.expectedMessages.originalPlaceholder &&
+        byId('alias-list').getAttribute('aria-label') === window.expectedMessages.savedAliases,
+    );
+
     change('visible-count', '3');
     await wait();
-    check(
-      'recent count persisted and labelled',
-      stored.settings.visibleCount === 3 && byId('visible-label').value === '3',
-    );
     change('blur-strength', '14');
     await wait();
     check(
-      'blur strength persisted and labelled',
-      stored.settings.blurStrength === 14 && byId('strength-label').value === '14 px',
+      'settings sliders persist',
+      stored.settings.visibleCount === 3 &&
+        stored.settings.blurStrength === 14 &&
+        byId('strength-label').value === '14 px',
     );
+    change('extension-enabled', false);
+    await wait();
+    check(
+      'master off retains preferences and saved aliases',
+      !stored.settings.enabled &&
+        stored.settings.blurChat &&
+        stored.settings.visibleCount === 3 &&
+        stored.aliases.length === 1,
+    );
+    check(
+      'master off disables feature controls',
+      byId<HTMLFieldSetElement>('feature-controls').disabled &&
+        byId<HTMLFieldSetElement>('alias-controls').disabled,
+    );
+    change('extension-enabled', true);
+    await wait();
+    change('aliases-enabled', false);
+    await wait();
+    check(
+      'alias feature disabled without deleting entries',
+      !stored.settings.aliasesEnabled &&
+        stored.aliases.length === 1 &&
+        byId<HTMLFieldSetElement>('alias-controls').disabled,
+    );
+    change('aliases-enabled', true);
+    await wait();
 
+    byId('fetch-chats').click();
+    await wait();
+    const suggestions = byId('chat-suggestions').querySelectorAll('button');
+    check('fetch shows only ten names', suggestions.length === 10);
+    suggestions[1]?.click();
+    check(
+      'choosing a suggestion fills the original name',
+      byId('original-name').value === 'Grupo Novo',
+    );
     submit('Grupo Novo', '<script>alert(1)</script>');
     await wait();
-    check('new alias persisted', stored.aliases.length === 2);
     check(
-      'remove button localized',
-      byId('alias-list').lastElementChild?.querySelector('button')?.textContent ===
-        window.expectedMessages.removeAlias,
-    );
-    check(
-      'remove accessible label interpolates alias as text',
-      byId('alias-list').lastElementChild?.querySelector('button')?.getAttribute('aria-label') ===
-        window.expectedMessages.removeAliasLabel.replace('$ALIAS$', '<script>alert(1)</script>'),
-    );
-    check(
-      'popup does not interpret alias HTML',
-      !byId('alias-list').querySelector('script') &&
+      'alias is saved as safe text',
+      stored.aliases.length === 2 &&
+        !byId('alias-list').querySelector('script') &&
         byId('alias-list').textContent.includes('<script>alert(1)</script>'),
     );
-    submit(' Grupo Novo ', 'Novo apelido');
-    await wait();
     check(
-      'saving existing name updates without duplicate',
-      stored.aliases.length === 2 &&
-        stored.aliases.find((entry) => entry.original === 'Grupo Novo')?.alias === 'Novo apelido',
+      'known name is not marked missing',
+      !byId('alias-list').lastElementChild?.classList.contains('alias-invalid'),
     );
-    byId('alias-list').lastElementChild?.querySelector('button')?.click();
-    await wait();
+    const remove = byId('alias-list').lastElementChild?.querySelector('.remove');
     check(
-      'remove alias persisted',
-      stored.aliases.length === 1 && byId('alias-list').children.length === 1,
+      'dynamic accessible label translated and interpolated',
+      remove?.getAttribute('aria-label') ===
+        window.expectedMessages.removeAliasLabel.replace('$ALIAS$', '<script>alert(1)</script>'),
     );
 
+    submit('Missing name', 'Apelido');
+    await wait();
+    const missing = byId('alias-list').lastElementChild;
+    const warning = missing?.querySelector<HTMLElement>('.alias-warning');
+    check(
+      'missing name shows warning color class and tooltip',
+      missing?.classList.contains('alias-invalid') &&
+        warning?.title === window.expectedMessages.aliasNotFound &&
+        warning.tabIndex === 0,
+    );
+    window.availableChats.push('Missing name');
+    byId('fetch-chats').click();
+    await wait();
+    check(
+      'refresh clears warning when original name is loaded',
+      !byId('alias-list').lastElementChild?.classList.contains('alias-invalid'),
+    );
+    byId('alias-list').lastElementChild?.querySelector<HTMLButtonElement>('.edit')?.click();
+    submit('Contato 1', 'Outro nome');
+    await wait();
+    check(
+      'editing the original replaces the previous mapping',
+      !stored.aliases.some((entry) => entry.original === 'Missing name') &&
+        stored.aliases.some((entry) => entry.original === 'Contato 1'),
+    );
+    byId('alias-list').lastElementChild?.querySelector<HTMLButtonElement>('.remove')?.click();
+    await wait();
+    check('remove persists', stored.aliases.length === 2);
+
+    window.rejectChats = true;
+    byId('fetch-chats').click();
+    await wait();
+    check(
+      'unavailable WhatsApp is not treated as invalid aliases',
+      !byId('alias-list').querySelector('.alias-invalid') &&
+        byId('chat-status').textContent === window.expectedMessages.chatsUnavailable,
+    );
+    window.rejectChats = false;
+    const aliasCount = stored.aliases.length;
+    byId('restore-defaults').click();
+    await wait();
+    check(
+      'restore defaults resets settings and preserves aliases',
+      stored.settings.enabled &&
+        stored.settings.aliasesEnabled &&
+        !stored.settings.blurChat &&
+        !stored.settings.blurPreviews &&
+        stored.settings.language === 'auto' &&
+        stored.settings.visibleCount === 4 &&
+        stored.settings.blurStrength === 8 &&
+        stored.aliases.length === aliasCount,
+    );
     window.failNextSave = true;
-    change('blur-chat', false);
-    await wait();
-    check('failed save keeps original persisted settings', stored.settings.blurChat === true);
-    check(
-      'failed save message localized',
-      byId('status').textContent === window.expectedMessages.statusSaveFailed,
-    );
-    check(
-      'failed save restores controls and shows error',
-      byId('blur-chat').checked &&
-        byId('status').dataset.error === 'true' &&
-        !byId<HTMLFieldSetElement>('controls').disabled,
-    );
-
-    change('blur-chat', false);
+    change('blur-chat', true);
     await wait();
     check(
-      'chat disabled independently of previews',
-      stored.settings.blurChat === false && stored.settings.blurPreviews === false,
+      'failed write restores previous state with a localized error',
+      !stored.settings.blurChat &&
+        !byId('blur-chat').checked &&
+        byId('status').textContent === window.expectedMessages.statusSaveFailed &&
+        byId('status').dataset.error === 'true',
     );
-    check('count control disabled when chat protection off', byId('visible-count').disabled);
-
     await chrome.storage.local.set({
-      settings: { blurPreviews: true, blurChat: true, visibleCount: 7, blurStrength: 10 },
+      settings: {
+        enabled: true,
+        aliasesEnabled: true,
+        language: 'auto',
+        blurChat: true,
+        blurPreviews: true,
+        visibleCount: 7,
+        blurStrength: 10,
+      },
     });
     check(
-      'external storage update refreshes popup',
+      'external settings updates refresh controls',
       byId('visible-count').value === '7' && byId('blur-previews').checked,
     );
+    byId('settings-toggle').click();
+    check('settings panel closes', byId('settings-panel').hidden);
   } catch (error) {
     results.push({
       name: error instanceof Error ? (error.stack ?? error.message) : String(error),

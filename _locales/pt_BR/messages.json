@@ -5,35 +5,20 @@
   "extensionDescription": {
     "message": "Apelidos locais para grupos e desfoque ajustável de mensagens no WhatsApp Web."
   },
-  "brandTagline": {
-    "message": "Seu WhatsApp, do seu jeito."
-  },
   "extensionSettings": {
-    "message": "Configurações da extensão"
+    "message": "Configurações"
   },
   "protectionTitle": {
-    "message": "Um pouco mais de privacidade"
+    "message": "Proteção de mensagens"
   },
   "blurPreviews": {
-    "message": "Embaçar prévias"
-  },
-  "blurPreviewsHint": {
-    "message": "Esconde as mensagens na lista lateral."
+    "message": "Embaçar prévias na lista"
   },
   "protectChat": {
-    "message": "Proteger conversa aberta"
-  },
-  "protectChatHint": {
-    "message": "Embaça o histórico e mantém as recentes visíveis."
+    "message": "Embaçar conversa aberta"
   },
   "recentMessages": {
     "message": "Mensagens recentes visíveis"
-  },
-  "noMessages": {
-    "message": "Nenhuma"
-  },
-  "maxMessages": {
-    "message": "12 mensagens"
   },
   "historyHint": {
     "message": "Ao subir no histórico, todas ficam embaçadas."
@@ -42,34 +27,31 @@
     "message": "Intensidade do desfoque"
   },
   "groupAliases": {
-    "message": "Apelidos de grupos"
-  },
-  "groupAliasesHint": {
-    "message": "Só você vê o apelido. O nome do grupo continua igual para os outros participantes."
+    "message": "Apelidos"
   },
   "originalName": {
-    "message": "Nome original do grupo"
+    "message": "Nome original do grupo ou contato"
   },
   "originalPlaceholder": {
-    "message": "Ex.: Família Silva"
+    "message": "Nome exato no WhatsApp"
   },
   "preferredName": {
-    "message": "Como você quer chamar?"
+    "message": "Apelido"
   },
   "aliasPlaceholder": {
-    "message": "Ex.: Minha família ❤️"
+    "message": "Nome para exibir neste navegador"
   },
   "saveAlias": {
     "message": "Salvar apelido"
   },
   "aliasMatchingHint": {
-    "message": "Use o nome exato. Conversas com nomes iguais recebem o mesmo apelido. A busca usa o nome original."
+    "message": "Conversas com nomes iguais compartilham o apelido. A busca usa o nome original."
   },
   "savedAliases": {
     "message": "Apelidos salvos"
   },
   "aliasesEmpty": {
-    "message": "Seus grupos, com nomes que fazem sentido para você."
+    "message": "Nenhum apelido salvo."
   },
   "statusLoading": {
     "message": "Carregando configurações…"
@@ -78,16 +60,13 @@
     "message": "Salvando…"
   },
   "statusSaved": {
-    "message": "Salvo neste navegador."
+    "message": "Salvo."
   },
   "statusSaveFailed": {
     "message": "Não foi possível salvar. Tente novamente."
   },
   "statusMissingAlias": {
-    "message": "Preencha o nome do grupo e o apelido."
-  },
-  "statusReady": {
-    "message": "Pronto para usar no WhatsApp Web."
+    "message": "Preencha o nome original e o apelido."
   },
   "statusLoadFailed": {
     "message": "Não foi possível carregar. Feche e abra a extensão."
@@ -104,10 +83,49 @@
       }
     }
   },
-  "localDataHint": {
-    "message": "Dados salvos neste navegador. Sem envio de mensagens."
+  "enableExtension": {
+    "message": "Ativar extensão"
   },
-  "visualProtectionHint": {
-    "message": "O desfoque é visual; não impede acesso ao conteúdo."
+  "language": {
+    "message": "Idioma"
+  },
+  "languageAuto": {
+    "message": "Automático (navegador)"
+  },
+  "restoreDefaults": {
+    "message": "Restaurar padrão"
+  },
+  "restoreDefaultsHint": {
+    "message": "Restaura as configurações sem apagar os apelidos."
+  },
+  "fetchChats": {
+    "message": "Buscar grupos e contatos"
+  },
+  "chatLookupHint": {
+    "message": "Mostra até 10 conversas carregadas na aba atual."
+  },
+  "chatSuggestions": {
+    "message": "Conversas encontradas"
+  },
+  "chatsLoading": {
+    "message": "Buscando conversas…"
+  },
+  "chatsUnavailable": {
+    "message": "Abra ou recarregue o WhatsApp Web nesta aba para conferir os nomes."
+  },
+  "aliasNotFound": {
+    "message": "Não encontrado nas conversas carregadas. Confira o nome ou abra a conversa e tente novamente."
+  },
+  "editAlias": {
+    "message": "Editar"
+  },
+  "editAliasLabel": {
+    "message": "Editar apelido $ALIAS$",
+    "placeholders": {
+      "alias": {
+        "content": "$1",
+        "example": "Family group"
+      }
+    }
   }
 }

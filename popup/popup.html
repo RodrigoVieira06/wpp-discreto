@@ -9,51 +9,56 @@
 </head>
 <body>
   <header>
-    <img class="brand-icon" src="../assets/icon-128.png" width="44" height="44" alt="">
-    <div><h1>WPP Mask</h1><p data-i18n="brandTagline">Seu WhatsApp, do seu jeito.</p></div>
-    <span class="badge">LOCAL</span>
+    <img class="brand-icon" src="../assets/icon-128.png" width="40" height="40" alt="">
+    <h1>WPP Mask</h1>
+    <button id="settings-toggle" type="button" class="icon-button" aria-expanded="false" aria-controls="settings-panel" data-i18n-title="extensionSettings" title="Configurações">
+      <span aria-hidden="true">⚙</span><span class="sr-only" data-i18n="extensionSettings">Configurações</span>
+    </button>
   </header>
   <main>
     <fieldset id="controls" disabled>
-      <legend class="sr-only" data-i18n="extensionSettings">Configurações da extensão</legend>
-      <section aria-labelledby="protection-title">
-        <h2 id="protection-title" data-i18n="protectionTitle">Um pouco mais de privacidade</h2>
-        <label class="switch-row" for="blur-previews">
-          <span><strong data-i18n="blurPreviews">Embaçar prévias</strong><small data-i18n="blurPreviewsHint">Esconde as mensagens na lista lateral.</small></span>
-          <input id="blur-previews" type="checkbox" role="switch">
-        </label>
-        <label class="switch-row" for="blur-chat">
-          <span><strong data-i18n="protectChat">Proteger conversa aberta</strong><small data-i18n="protectChatHint">Embaça o histórico e mantém as recentes visíveis.</small></span>
-          <input id="blur-chat" type="checkbox" role="switch" aria-controls="recent-settings">
-        </label>
-        <div id="recent-settings" class="range-panel">
-          <label for="visible-count"><span data-i18n="recentMessages">Mensagens recentes visíveis</span> <output id="visible-label" for="visible-count">4</output></label>
-          <input id="visible-count" type="range" min="0" max="12" value="4" step="1">
-          <div class="range-ends"><span data-i18n="noMessages">Nenhuma</span><span data-i18n="maxMessages">12 mensagens</span></div>
-          <p class="hint" data-i18n="historyHint">Ao subir no histórico, todas ficam embaçadas.</p>
-        </div>
-        <div class="strength">
-          <label for="blur-strength"><span data-i18n="blurStrength">Intensidade do desfoque</span> <output id="strength-label" for="blur-strength">8 px</output></label>
-          <input id="blur-strength" type="range" min="4" max="16" value="8" step="1">
-        </div>
+      <legend class="sr-only" data-i18n="extensionSettings">Configurações</legend>
+      <label class="switch-row master" for="extension-enabled"><strong data-i18n="enableExtension">Ativar extensão</strong><input id="extension-enabled" type="checkbox" role="switch"></label>
+      <section id="settings-panel" hidden aria-labelledby="settings-title">
+        <h2 id="settings-title" data-i18n="extensionSettings">Configurações</h2>
+        <label class="field-label" for="language" data-i18n="language">Idioma</label>
+        <select id="language"><option value="auto" data-i18n="languageAuto">Automático (navegador)</option><option value="pt_BR" lang="pt-BR">Português (Brasil)</option><option value="en" lang="en">English</option></select>
+        <label class="range-label" for="blur-strength"><span data-i18n="blurStrength">Intensidade do desfoque</span><output id="strength-label" for="blur-strength">8 px</output></label>
+        <input id="blur-strength" type="range" min="4" max="16" value="8" step="1">
+        <label class="range-label" for="visible-count"><span data-i18n="recentMessages">Mensagens recentes visíveis</span><output id="visible-label" for="visible-count">4</output></label>
+        <input id="visible-count" type="range" min="0" max="12" value="4" step="1">
+        <p class="hint" data-i18n="historyHint">Ao subir no histórico, todas ficam embaçadas.</p>
+        <button id="restore-defaults" type="button" class="secondary" data-i18n="restoreDefaults" data-i18n-title="restoreDefaultsHint" title="Restaura as configurações sem apagar apelidos.">Restaurar padrão</button>
       </section>
-      <section aria-labelledby="aliases-title">
-        <div class="section-heading"><h2 id="aliases-title" data-i18n="groupAliases">Apelidos de grupos</h2><span id="alias-count" class="count">0</span></div>
-        <p class="hint" data-i18n="groupAliasesHint">Só você vê o apelido. O nome do grupo continua igual para os outros participantes.</p>
-        <form id="alias-form">
-          <label for="original-name" data-i18n="originalName">Nome original do grupo</label>
-          <input id="original-name" type="text" maxlength="200" data-i18n-placeholder="originalPlaceholder" placeholder="Ex.: Família Silva" required autocomplete="off">
-          <label for="alias-name" data-i18n="preferredName">Como você quer chamar?</label>
-          <input id="alias-name" type="text" maxlength="100" data-i18n-placeholder="aliasPlaceholder" placeholder="Ex.: Minha família ❤️" required autocomplete="off">
-          <button class="primary" type="submit" data-i18n="saveAlias">Salvar apelido</button>
-        </form>
-        <p class="hint" data-i18n="aliasMatchingHint">Use o nome exato. Conversas com nomes iguais recebem o mesmo apelido. A busca usa o nome original.</p>
-        <ul id="alias-list" data-i18n-aria-label="savedAliases" aria-label="Apelidos salvos"></ul>
-        <p id="empty-state" class="empty" data-i18n="aliasesEmpty">Seus grupos, com nomes que fazem sentido para você.</p>
-      </section>
+      <fieldset id="feature-controls">
+        <legend class="sr-only" data-i18n="protectionTitle">Proteção de mensagens</legend>
+        <section aria-labelledby="protection-title">
+          <h2 id="protection-title" data-i18n="protectionTitle">Proteção de mensagens</h2>
+          <label class="switch-row" for="blur-previews"><strong data-i18n="blurPreviews">Embaçar prévias na lista</strong><input id="blur-previews" type="checkbox" role="switch"></label>
+          <label class="switch-row" for="blur-chat"><strong data-i18n="protectChat">Embaçar conversa aberta</strong><input id="blur-chat" type="checkbox" role="switch"></label>
+        </section>
+        <section aria-labelledby="aliases-title">
+          <label class="switch-row" for="aliases-enabled"><span class="section-heading"><strong id="aliases-title" data-i18n="groupAliases">Apelidos</strong><span id="alias-count" class="count">0</span></span><input id="aliases-enabled" type="checkbox" role="switch"></label>
+          <fieldset id="alias-controls">
+            <legend class="sr-only" data-i18n="savedAliases">Apelidos salvos</legend>
+            <button id="fetch-chats" type="button" class="secondary" data-i18n="fetchChats" data-i18n-title="chatLookupHint" title="Lista até 10 conversas carregadas na aba atual.">Buscar grupos e contatos</button>
+            <p id="chat-status" class="hint" role="status" aria-live="polite"></p>
+            <ul id="chat-suggestions" class="suggestions" hidden data-i18n-aria-label="chatSuggestions" aria-label="Conversas encontradas"></ul>
+            <form id="alias-form">
+              <label class="field-label" for="original-name" data-i18n="originalName">Nome original do grupo ou contato</label>
+              <input id="original-name" type="text" maxlength="200" data-i18n-placeholder="originalPlaceholder" placeholder="Nome exato no WhatsApp" required autocomplete="off">
+              <label class="field-label" for="alias-name" data-i18n="preferredName">Apelido</label>
+              <input id="alias-name" type="text" maxlength="100" data-i18n-placeholder="aliasPlaceholder" placeholder="Nome para exibir neste navegador" required autocomplete="off">
+              <button class="primary" type="submit" data-i18n="saveAlias">Salvar apelido</button>
+            </form>
+            <p class="hint" data-i18n="aliasMatchingHint">Conversas com nomes iguais compartilham o apelido. A busca usa o nome original.</p>
+            <ul id="alias-list" data-i18n-aria-label="savedAliases" aria-label="Apelidos salvos"></ul>
+            <p id="empty-state" class="hint" data-i18n="aliasesEmpty">Nenhum apelido salvo.</p>
+          </fieldset>
+        </section>
+      </fieldset>
     </fieldset>
-    <p id="status" role="status" aria-live="polite" data-i18n="statusLoading">Carregando configurações…</p>
+    <p id="status" role="status" aria-live="polite"></p>
   </main>
-  <footer><span data-i18n="localDataHint">Dados salvos neste navegador. Sem envio de mensagens.</span><br><span data-i18n="visualProtectionHint">O desfoque é visual; não impede acesso ao conteúdo.</span></footer>
 </body>
 </html>

@@ -10,7 +10,9 @@ Chrome Manifest V3 restricts execution to WhatsApp Web and declares only the `st
 
 `popup/popup.ts` reads and saves preferences, manages alias entries, restores controls after failed writes, and updates controls when another context changes storage.
 
-The UI uses native Chrome internationalization with `_locales/pt_BR` as its default and `_locales/en` for English browsers. `src/i18n.ts` supplies typed message lookup and DOM translation. Build and package scripts include both catalogs. See [internationalization](internationalization.md).
+The UI uses Chrome-compatible catalogs with `_locales/pt_BR` as default and `_locales/en` for English. `src/i18n.ts` supports automatic browser language or a saved override. Native Chrome localization handles metadata. Build and package scripts include both catalogs. See [internationalization](internationalization.md).
+
+Master and aliases switches gate effects without deleting saved data. `src/chats.ts` isolates conversation-title extraction and loaded-name validation. The popup requests that context through the active tab's content-script message listener without additional permissions. See [popup controls](popup-controls.md).
 
 ## Presentation and data
 
@@ -28,4 +30,4 @@ SCSS compiles to static CSS. Message elements are masked before explicit reveal 
 
 ## Integration boundary
 
-DOM selectors live in `src/content.ts` and `src/content.scss`. WhatsApp updates can invalidate them. The fixture contains simulated markup and mock storage, not an authenticated session. Exact-name aliases do not provide stable group identification.
+DOM selectors live in `src/content.ts`, `src/chats.ts`, and `src/content.scss`. WhatsApp updates can invalidate them. The fixture contains simulated markup and mock storage, not an authenticated session. Exact-name aliases do not provide stable group identification. Missing loaded names and unavailable tabs are separate validation states.

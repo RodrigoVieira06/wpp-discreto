@@ -65,6 +65,30 @@ test('Chrome integration: masking, scrolling, live updates, aliases and DOM recy
   runBrowser(fixture, 20);
 });
 
+test('master switch can recover from an initial settings read failure', () => {
+  const base = pathToFileURL(path.join(root, 'fixtures/')).href;
+  const scenario = `<script>
+    setTimeout(async () => {
+      const first = document.querySelector('.message-in');
+      const masked = getComputedStyle(first).filter !== 'none';
+      await chrome.storage.local.set({ settings: { enabled: false } });
+      const restored = getComputedStyle(first).filter === 'none';
+      const report = document.createElement('pre');
+      report.id = 'test-results';
+      report.textContent = JSON.stringify([{ name: 'initial read failure masks content', pass: masked }, { name: 'explicit disable overrides the failed initial read', pass: restored }]);
+      document.body.append(report);
+    }, 80);
+  </script>`;
+  const fixture = readFileSync(path.join(root, 'fixtures/whatsapp.html'), 'utf8')
+    .replace('<head>', `<head><base href="${base}">`)
+    .replace(
+      'get: async () => structuredClone(stored)',
+      "get: async () => { throw new Error('Initial read failure'); }",
+    )
+    .replace('</body>', `${scenario}</body>`);
+  runBrowser(fixture, 2);
+});
+
 test.each([
   ['pt-BR', 'pt_BR', 'pt-BR', 'Salvar apelido'],
   ['pt-PT', 'pt_BR', 'pt-BR', 'Salvar apelido'],
@@ -95,6 +119,15 @@ test.each([
         return entry?.message.replace(/\\$([a-z_]+)\\$/gi, (_, name) =>
           entry.placeholders[name.toLowerCase()].content.replace(/\\$(\\d+)/g, (_, index) => values[Number(index) - 1] ?? '')
         ) ?? '';
+      }
+    };
+    window.availableChats = ['Família Silva', 'Grupo Novo', ...Array.from({ length: 12 }, (_, index) => 'Contato ' + (index + 1))];
+    window.rejectChats = false;
+    chrome.tabs = {
+      query: async () => [{ id: 23 }],
+      sendMessage: async (tabId, request) => {
+        if (window.rejectChats) throw new Error('No WhatsApp receiver');
+        return { available: true, chats: window.availableChats.slice(0, 10), found: request.names.filter((name) => window.availableChats.includes(name)) };
       }
     };
   `;

@@ -1,3 +1,4 @@
+import { headerTitles, readChatContext, sidebarTitles, unavailableContext } from './chats';
 import * as model from './settings';
 
 (() => {
@@ -73,7 +74,7 @@ import * as model from './settings';
   }
 
   function updateMessages() {
-    const nodes = messageNodes();
+    const nodes = config.enabled ? messageNodes() : [];
     const next = new Set(
       config.blurChat && atConversationEnd(nodes.at(-1)) && config.visibleCount > 0
         ? nodes.slice(-config.visibleCount)
@@ -86,10 +87,10 @@ import * as model from './settings';
 
   function updateAliases() {
     const byName = new Map(aliases.map(({ original, alias }) => [original, alias]));
-    const candidates = document.querySelectorAll<HTMLElement>(
-      '#pane-side [role="row"] [title], #pane-side [role="listitem"] [title], ' +
-        '#main > header [title], #main header [data-testid="conversation-info-header-chat-title"]',
-    );
+    const candidates =
+      config.enabled && config.aliasesEnabled
+        ? [...sidebarTitles(document), ...headerTitles(document)]
+        : [];
     const active = new Set<HTMLElement>();
     for (const node of candidates) {
       if (!(node instanceof HTMLElement) || node.closest('[role="gridcell"]:nth-child(2)'))
@@ -119,9 +120,15 @@ import * as model from './settings';
     if (!root() || stopped) return;
     observer.disconnect();
     try {
-      // Storage failure keeps message masking active until the extension is reloaded.
-      root().setAttribute('data-wppm-chat', String(storageFailed || config.blurChat));
-      root().setAttribute('data-wppm-previews', String(storageFailed || config.blurPreviews));
+      // Keep masking while the initial settings are unavailable.
+      root().setAttribute(
+        'data-wppm-chat',
+        String(storageFailed || (config.enabled && config.blurChat)),
+      );
+      root().setAttribute(
+        'data-wppm-previews',
+        String(storageFailed || (config.enabled && config.blurPreviews)),
+      );
       root().style.setProperty('--wppm-blur', `${config.blurStrength}px`);
       updateMessages();
       updateAliases();
@@ -133,9 +140,24 @@ import * as model from './settings';
 
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== 'local') return;
-    if (changes.settings) config = model.settings(changes.settings.newValue);
+    if (changes.settings) {
+      config = model.settings(changes.settings.newValue);
+      // A new explicit setting supersedes a failed initial storage read.
+      storageFailed = false;
+      loaded = true;
+    }
     if (changes.aliases) aliases = model.aliases(changes.aliases.newValue);
     render();
+  });
+
+  chrome.runtime.onMessage.addListener((request: unknown, sender, respond) => {
+    if (sender.id !== chrome.runtime.id || !request || typeof request !== 'object') return false;
+    const input = request as Record<string, unknown>;
+    if (input.type !== 'wpp-mask:chat-context') return false;
+    respond(
+      loaded && config.enabled ? readChatContext(document, input.names) : unavailableContext(),
+    );
+    return false;
   });
 
   chrome.storage.local

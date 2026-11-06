@@ -6,6 +6,9 @@ import * as model from '../src/settings';
 
 test('invalid persisted settings cannot inject CSS or enable options accidentally', () => {
   assert.deepEqual(model.settings(null), {
+    enabled: true,
+    aliasesEnabled: true,
+    language: 'auto',
     blurPreviews: false,
     blurChat: false,
     visibleCount: 4,
@@ -18,10 +21,32 @@ test('invalid persisted settings cannot inject CSS or enable options accidentall
       visibleCount: 500,
       blurStrength: 'url(evil)',
     }),
-    { blurPreviews: false, blurChat: true, visibleCount: 12, blurStrength: 8 },
+    {
+      enabled: true,
+      aliasesEnabled: true,
+      language: 'auto',
+      blurPreviews: false,
+      blurChat: true,
+      visibleCount: 12,
+      blurStrength: 8,
+    },
   );
   assert.equal(model.settings({ visibleCount: -3, blurStrength: 0 }).visibleCount, 0);
   assert.equal(model.settings({ visibleCount: NaN, blurStrength: Infinity }).blurStrength, 8);
+});
+
+test('new preferences migrate existing settings and reject unsupported language values', () => {
+  assert.deepEqual(model.settings({ enabled: false, aliasesEnabled: false, language: 'en' }), {
+    enabled: false,
+    aliasesEnabled: false,
+    language: 'en',
+    blurPreviews: false,
+    blurChat: false,
+    visibleCount: 4,
+    blurStrength: 8,
+  });
+  assert.equal(model.settings({ language: 'es' }).language, 'auto');
+  assert.equal(model.settings({ blurChat: true }).enabled, true);
 });
 
 test('aliases normalize Unicode, reject empty values and deduplicate exact names', () => {

@@ -15,6 +15,7 @@ Build a public Chrome extension for WhatsApp Web with local group aliases, blurr
 - Use English **Conventional Commits**, enforced by **Lefthook** and **commitlint**. Do not bypass hooks to hide failures.
 - Keep filenames, source identifiers, comments, commit messages, and development documentation in **English**. Name the data-handling document `DATA_POLICY.md`.
 - Product UI must use **Brazilian Portuguese by default**, English for English browser UI locales, and Portuguese for unsupported languages. Keep copy in `_locales/pt_BR/messages.json` and `_locales/en/messages.json`; use Chrome i18n and the typed `src/i18n.ts` helper. Translate statuses, placeholders, accessible labels, and manifest metadata too. Do not translate user-provided aliases. See `docs/internationalization.md`.
+- The settings panel supports a saved `auto`/`pt_BR`/`en` language override. Keep product copy factual and necessary; no slogans, promotional phrasing, or constant ready messages.
 - Preserve unrelated user changes and report the checks actually executed.
 - Do not claim simulated DOM tests validate the authenticated WhatsApp application.
 - Do not publish to the Chrome Web Store or transmit chat data without explicit authorization. The user has authorized creating the public GitHub repository and pushing this project to `main`.
@@ -23,6 +24,8 @@ Build a public Chrome extension for WhatsApp Web with local group aliases, blurr
 
 - Manifest V3, restricted to `https://web.whatsapp.com/*`; only the `storage` API permission.
 - `src/settings.ts` owns settings types, defaults, validation, and alias normalization.
+- Master and aliases switches default to enabled and retain preferences/mappings when disabled. Restoring defaults resets settings only, never deletes aliases. Existing settings migrate with enabled switches and automatic language.
+- `src/chats.ts` reads up to ten unique loaded sidebar names for suggestions and validates requested original names against loaded titles. Use active-tab message passing without extra permissions. Never persist discovered names automatically; only user-saved mappings are stored.
 - `src/content.ts` observes the DOM, decorates titles, handles preferences, and selects recent messages.
 - `src/content.scss` masks new messages before explicit reveal exceptions.
 - `popup/` contains TypeScript, SCSS, and HTML for controls and aliases.
@@ -38,7 +41,7 @@ Build a public Chrome extension for WhatsApp Web with local group aliases, blurr
 
 - Aliases match exact original names, not group IDs. Same-name conversations, including contacts, share aliases; group renames require updating entries.
 - No automatic group detection. Only sidebar titles and the conversation header are decorated. Search, accessibility text, and group information retain original names.
-- WhatsApp DOM selectors are unstable; isolate integration changes and manually validate before store distribution.
+- WhatsApp DOM selectors are unstable; isolate integration changes and manually validate before store distribution. Missing names get amber warnings with a tooltip explicitly scoped to loaded conversations. Unavailable tabs must not be treated as invalid aliases. See `docs/popup-controls.md`.
 - Counts use loaded blocks and may group albums. Notifications, search, and media panels are outside the protection scope.
 
 ## Commands
@@ -63,5 +66,7 @@ Tests use Jest with SWC and simulated markup in Chrome headless. Set `CHROME_BIN
 ## Regression history and validation
 
 Timer scheduling replaced `requestAnimationFrame` after tests exposed deferred updates in headless execution. Timers can also be throttled; they are not a real-time guarantee. A confirmed red/green regression exposed recycled message contents before deferred rendering; the observer now revokes reveal exceptions in a microtask before painting.
+
+A regression test also covers master-switch recovery after an initial settings read failure: a subsequent settings change supersedes the failed read and can disable all effects.
 
 Actual extension loading and popup initialization are covered by the local deployment smoke test in headless Chrome. Authenticated WhatsApp validation remains pending. The data policy still needs publisher identity and support contact before store publication. Automated Web Store submission is not configured; OAuth/API setup is documented in `docs/distribution.md`.

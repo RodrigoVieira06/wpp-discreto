@@ -18,8 +18,9 @@
   </style>
   <script>
     const listeners = new Set();
+    const messageListeners = new Set();
     const stored = { settings: { blurPreviews: true, blurChat: true, visibleCount: 4, blurStrength: 8 }, aliases: [{ original: 'Família Silva', alias: 'Meu pessoal' }] };
-    window.chrome = { storage: {
+    window.chrome = { runtime: { id: 'test-extension', onMessage: { addListener: (listener) => messageListeners.add(listener) } }, storage: {
       local: { get: async () => structuredClone(stored), set: async (data) => {
         const changes = {};
         for (const [key, value] of Object.entries(data)) { changes[key] = { oldValue: stored[key], newValue: value }; stored[key] = value; }

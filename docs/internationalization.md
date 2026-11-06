@@ -1,6 +1,6 @@
 # Internationalization
 
-The user interface supports Brazilian Portuguese and English through Chrome's native `chrome.i18n` API. The extension adds no locale-related permissions or dependencies.
+The user interface supports Brazilian Portuguese and English using Chrome-compatible locale catalogs. Native Chrome localization handles manifest metadata; the popup's typed renderer also supports an explicit saved language preference. No locale-related permissions or dependencies are added.
 
 ## Language selection
 
@@ -8,14 +8,14 @@ The user interface supports Brazilian Portuguese and English through Chrome's na
 - Portuguese locales use Brazilian Portuguese.
 - Unsupported languages fall back to Brazilian Portuguese.
 
-The manifest sets `default_locale` to `pt_BR`. Chrome resolves messages using its UI language and locale fallback rules. `src/i18n.ts` uses `chrome.i18n.getUILanguage()` to set the popup's accessible document language to `en` or `pt-BR`. Language selection does not use WhatsApp's interface language or modify saved settings and aliases.
+The manifest sets `default_locale` to `pt_BR`. With the `auto` setting, `src/i18n.ts` uses `chrome.i18n.getUILanguage()` and the rules above. The settings panel can override the popup language with `pt_BR` or `en`, persisted in `settings.language`. The popup document language becomes `pt-BR` or `en` accordingly. Manifest metadata continues to follow Chrome's native locale selection. Language selection does not use WhatsApp's interface language or translate saved names and aliases.
 
 ## Catalogs and rendering
 
 - `_locales/pt_BR/messages.json`: default Brazilian Portuguese messages.
 - `_locales/en/messages.json`: English messages with the same keys.
-- `src/i18n.ts`: typed message keys, Chrome message lookup, and static DOM translation.
-- `popup/popup.html`: Portuguese initial text with `data-i18n`, `data-i18n-placeholder`, and `data-i18n-aria-label` hooks.
+- `src/i18n.ts`: typed catalog lookup, saved preference selection, placeholder interpolation, and static DOM translation.
+- `popup/popup.html`: Portuguese initial text with `data-i18n`, `data-i18n-placeholder`, `data-i18n-title`, and `data-i18n-aria-label` hooks.
 - `popup/popup.ts`: translated status/error messages and dynamically created removal buttons.
 
 Manifest name and description use `__MSG_...__` references. Both catalogs are copied to the unpacked build and included in the ZIP. English source identifiers, filenames, and development documentation remain separate from translated product copy.

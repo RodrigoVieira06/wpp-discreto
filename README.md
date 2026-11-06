@@ -2,18 +2,21 @@
 
 <img src="assets/logo.png" width="128" height="128" alt="WPP Mask">
 
-A Chrome extension for local group aliases and visual message protection on WhatsApp Web.
+A Chrome extension for local conversation aliases and visual message protection on WhatsApp Web.
 
 **Status:** early development, version 0.1.0. Automated tests use a simulated interface; compatibility with an authenticated WhatsApp Web session still requires manual validation.
 
 ## Features
 
-- **Local group aliases:** customize sidebar and conversation-header titles in your browser.
+- **Master switch:** pause all visual effects without deleting preferences or aliases.
+- **Local aliases:** customize group/contact titles and enable or disable aliases independently.
+- **Conversation picker:** select one of the first ten names loaded in the active WhatsApp tab.
+- **Name validation:** highlight aliases whose original name is absent from the loaded conversations, with a warning icon and explanatory tooltip.
 - **Blur chat previews:** conceal message previews in the sidebar.
 - **Protect conversations:** blur history while keeping 0–12 recent message blocks readable (default: 4).
 - **Adjustable blur:** choose an intensity between 4 and 16 px.
 - **Local preferences:** save settings and aliases without sending them to a backend.
-- **Automatic language:** Brazilian Portuguese by default, English for English browser UI locales, and Portuguese for unsupported languages.
+- **Settings panel:** choose automatic language, Portuguese, or English; adjust protection levels; restore settings without deleting aliases.
 
 Scrolling into older history masks all messages. Returning to the end reveals the configured recent messages. Hovering does not remove the blur. Both protection options start disabled.
 
@@ -35,8 +38,10 @@ make build
 1. Open `chrome://extensions` and enable **Developer mode**.
 2. Select **Load unpacked** and choose **`dist/extension`**.
 3. Open or refresh WhatsApp Web, pin WPP Mask, and open its popup.
-4. Enable protection settings and adjust the recent-message level.
-5. Enter a group's exact original name and your preferred alias. Save the same name again to update it; remove the entry to restore its original presentation.
+4. Use the master switch to enable the extension and select the desired effects. Open the gear button for language, blur intensity, recent-message count, and default restoration.
+5. Open WhatsApp Web in the active tab. Use **Buscar grupos e contatos** to pick a loaded name, or enter an exact original name manually. Save an alias, edit it, or remove it from the list.
+
+Restoring defaults resets settings only; saved aliases are retained. See [popup controls](docs/popup-controls.md).
 
 ## Terminal workflow
 
@@ -98,6 +103,7 @@ Product copy lives in Chrome locale catalogs; see [internationalization](docs/in
 
 - Aliases match exact original names, not stable group IDs. All same-name conversations, including contacts, receive the same alias. Update the entry if the original name changes.
 - Groups are not identified automatically. Search, accessibility text, and group-information panels continue using original names.
+- Suggestions use up to ten unique names already loaded in the active tab, not the entire address book. Validation can check other loaded conversation names and the open header, but cannot establish whether an absent name exists elsewhere in your account. An unavailable WhatsApp tab is reported separately.
 - Counts refer to blocks currently loaded in the DOM; an album may be one block.
 - Protection does not cover system notifications, search results, media panels, or conversation titles. Blur is not encryption or access control.
 - WhatsApp changes can break DOM selectors. Simulated tests do not establish live-application compatibility.

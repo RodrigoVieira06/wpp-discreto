@@ -1,4 +1,9 @@
+export type LanguagePreference = 'auto' | 'pt_BR' | 'en';
+
 export interface Settings {
+  enabled: boolean;
+  aliasesEnabled: boolean;
+  language: LanguagePreference;
   blurPreviews: boolean;
   blurChat: boolean;
   visibleCount: number;
@@ -11,6 +16,9 @@ export interface Alias {
 }
 
 export const defaults: Readonly<Settings> = Object.freeze({
+  enabled: true,
+  aliasesEnabled: true,
+  language: 'auto',
   blurPreviews: false,
   blurChat: false,
   visibleCount: 4,
@@ -28,6 +36,9 @@ const bounded = (value: unknown, fallback: number, min: number, max: number): nu
 export function settings(value: unknown = {}): Settings {
   const input = value && typeof value === 'object' ? (value as Record<string, unknown>) : {};
   return {
+    enabled: input.enabled !== false,
+    aliasesEnabled: input.aliasesEnabled !== false,
+    language: input.language === 'pt_BR' || input.language === 'en' ? input.language : 'auto',
     blurPreviews: input.blurPreviews === true,
     blurChat: input.blurChat === true,
     visibleCount: bounded(input.visibleCount, defaults.visibleCount, 0, 12),
