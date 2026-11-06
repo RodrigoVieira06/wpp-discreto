@@ -116,7 +116,7 @@ export {};
     await chrome.storage.local.set({
       aliases: [{ original: 'Example Contact', alias: 'Example alias' }],
     });
-    const originalChild = nestedTitleRow.querySelector<HTMLElement>('span[style]');
+    const originalChild = nestedTitleRow.querySelector<HTMLElement>('span[title] > span');
     const originalStyle = originalChild ? getComputedStyle(originalChild) : null;
     check(
       'nested original title is visually hidden instead of appended to alias',
