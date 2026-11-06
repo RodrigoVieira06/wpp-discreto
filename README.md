@@ -11,6 +11,7 @@ A Chrome extension for local group aliases and visual message protection on What
 - **Protect conversations:** blur history while keeping 0–12 recent message blocks readable (default: 4).
 - **Adjustable blur:** choose an intensity between 4 and 16 px.
 - **Local preferences:** save settings and aliases without sending them to a backend.
+- **Automatic language:** Brazilian Portuguese by default, English for English browser UI locales, and Portuguese for unsupported languages.
 
 Scrolling into older history masks all messages. Returning to the end reveals the configured recent messages. Hovering does not remove the blur. Both protection options start disabled.
 
@@ -88,6 +89,8 @@ docs: explain the terminal development workflow
 ```
 
 See the [documentation index](docs/README.md), [development guide](docs/development.md), and [project skills](docs/skills/README.md).
+
+Product copy lives in Chrome locale catalogs; see [internationalization](docs/internationalization.md). Source identifiers and development documentation remain in English.
 
 ## Current limitations
 

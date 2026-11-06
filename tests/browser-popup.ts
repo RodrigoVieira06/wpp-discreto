@@ -20,6 +20,26 @@ export {};
   try {
     await wait();
     check(
+      'document language follows browser with Portuguese fallback',
+      document.documentElement.lang === window.expectedLanguage,
+    );
+    check(
+      'save button localized',
+      byId('alias-form').querySelector('button')?.textContent === window.expectedSaveLabel,
+    );
+    check(
+      'ready status localized',
+      byId('status').textContent === window.expectedMessages.statusReady,
+    );
+    check(
+      'group name placeholder localized',
+      byId('original-name').placeholder === window.expectedMessages.originalPlaceholder,
+    );
+    check(
+      'alias list accessible name localized',
+      byId('alias-list').getAttribute('aria-label') === window.expectedMessages.savedAliases,
+    );
+    check(
       'popup loads persisted settings',
       byId('blur-chat').checked && byId('visible-count').value === '4',
     );
@@ -27,6 +47,10 @@ export {};
     change('blur-previews', false);
     await wait();
     check('preview toggle persisted', stored.settings.blurPreviews === false);
+    check(
+      'saved status localized',
+      byId('status').textContent === window.expectedMessages.statusSaved,
+    );
     change('visible-count', '3');
     await wait();
     check(
@@ -43,6 +67,16 @@ export {};
     submit('Grupo Novo', '<script>alert(1)</script>');
     await wait();
     check('new alias persisted', stored.aliases.length === 2);
+    check(
+      'remove button localized',
+      byId('alias-list').lastElementChild?.querySelector('button')?.textContent ===
+        window.expectedMessages.removeAlias,
+    );
+    check(
+      'remove accessible label interpolates alias as text',
+      byId('alias-list').lastElementChild?.querySelector('button')?.getAttribute('aria-label') ===
+        window.expectedMessages.removeAliasLabel.replace('$ALIAS$', '<script>alert(1)</script>'),
+    );
     check(
       'popup does not interpret alias HTML',
       !byId('alias-list').querySelector('script') &&
@@ -66,6 +100,10 @@ export {};
     change('blur-chat', false);
     await wait();
     check('failed save keeps original persisted settings', stored.settings.blurChat === true);
+    check(
+      'failed save message localized',
+      byId('status').textContent === window.expectedMessages.statusSaveFailed,
+    );
     check(
       'failed save restores controls and shows error',
       byId('blur-chat').checked &&

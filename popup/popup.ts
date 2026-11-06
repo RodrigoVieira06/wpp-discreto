@@ -1,6 +1,8 @@
+import { type MessageKey, message, translateDocument } from '../src/i18n';
 import * as model from '../src/settings';
 
 (() => {
+  translateDocument(document);
   const byId = <T extends HTMLElement = HTMLElement>(id: string): T => {
     const element = document.getElementById(id);
     if (!element) throw new Error(`Missing popup element: ${id}`);
@@ -10,8 +12,8 @@ import * as model from '../src/settings';
   let entries: model.Alias[] = [];
   let queue = Promise.resolve();
 
-  function status(message: string, error = false) {
-    byId('status').textContent = message;
+  function status(key: MessageKey, error = false) {
+    byId('status').textContent = message(key);
     byId('status').dataset.error = String(error);
   }
 
@@ -40,8 +42,8 @@ import * as model from '../src/settings';
         const remove = document.createElement('button');
         remove.type = 'button';
         remove.className = 'remove';
-        remove.textContent = 'Remove';
-        remove.setAttribute('aria-label', `Remove alias ${entry.alias}`);
+        remove.textContent = message('removeAlias');
+        remove.setAttribute('aria-label', message('removeAliasLabel', entry.alias));
         remove.addEventListener('click', () =>
           save({ aliases: entries.filter((e) => e.original !== entry.original) }),
         );
@@ -54,15 +56,15 @@ import * as model from '../src/settings';
 
   function save(data: { settings?: model.Settings; aliases?: model.Alias[] }) {
     byId<HTMLFieldSetElement>('controls').disabled = true;
-    status('Saving…');
+    status('statusSaving');
     queue = queue.then(async () => {
       try {
         await chrome.storage.local.set(data);
         if (data.settings) config = model.settings(data.settings);
         if (data.aliases) entries = model.aliases(data.aliases);
-        status('Saved in this browser.');
+        status('statusSaved');
       } catch {
-        status('Could not save. Please try again.', true);
+        status('statusSaveFailed', true);
       } finally {
         draw();
         byId<HTMLFieldSetElement>('controls').disabled = false;
@@ -98,7 +100,7 @@ import * as model from '../src/settings';
     const original = model.normalizeName(byId<HTMLInputElement>('original-name').value);
     const alias = model.normalizeName(byId<HTMLInputElement>('alias-name').value);
     if (!original || !alias) {
-      status('Enter the group name and alias.', true);
+      status('statusMissingAlias', true);
       return;
     }
     await save({
@@ -120,7 +122,7 @@ import * as model from '../src/settings';
       entries = model.aliases(data.aliases);
       draw();
       byId<HTMLFieldSetElement>('controls').disabled = false;
-      status('Ready to use on WhatsApp Web.');
+      status('statusReady');
     })
-    .catch(() => status('Could not load settings. Reopen the extension.', true));
+    .catch(() => status('statusLoadFailed', true));
 })();

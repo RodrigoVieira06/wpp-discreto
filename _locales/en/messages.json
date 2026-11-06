@@ -1,0 +1,113 @@
+{
+  "extensionName": {
+    "message": "WPP Mask — Aliases and message protection"
+  },
+  "extensionDescription": {
+    "message": "Local group aliases and adjustable message blurring for WhatsApp Web."
+  },
+  "brandTagline": {
+    "message": "Your WhatsApp, your way."
+  },
+  "extensionSettings": {
+    "message": "Extension settings"
+  },
+  "protectionTitle": {
+    "message": "Keep your conversations protected"
+  },
+  "blurPreviews": {
+    "message": "Blur chat previews"
+  },
+  "blurPreviewsHint": {
+    "message": "Conceal messages in the sidebar."
+  },
+  "protectChat": {
+    "message": "Protect the open conversation"
+  },
+  "protectChatHint": {
+    "message": "Blur history and keep recent messages readable."
+  },
+  "recentMessages": {
+    "message": "Recent messages to show"
+  },
+  "noMessages": {
+    "message": "None"
+  },
+  "maxMessages": {
+    "message": "12 messages"
+  },
+  "historyHint": {
+    "message": "Scrolling into history blurs every message."
+  },
+  "blurStrength": {
+    "message": "Blur strength"
+  },
+  "groupAliases": {
+    "message": "Group aliases"
+  },
+  "groupAliasesHint": {
+    "message": "Only you see the alias. The group name stays the same for everyone else."
+  },
+  "originalName": {
+    "message": "Original group name"
+  },
+  "originalPlaceholder": {
+    "message": "E.g. Family group"
+  },
+  "preferredName": {
+    "message": "Your preferred name"
+  },
+  "aliasPlaceholder": {
+    "message": "E.g. My people ❤️"
+  },
+  "saveAlias": {
+    "message": "Save alias"
+  },
+  "aliasMatchingHint": {
+    "message": "Use the exact name. Chats with identical names share an alias. Search uses the original name."
+  },
+  "savedAliases": {
+    "message": "Saved aliases"
+  },
+  "aliasesEmpty": {
+    "message": "Your groups, with names that make sense to you."
+  },
+  "statusLoading": {
+    "message": "Loading settings…"
+  },
+  "statusSaving": {
+    "message": "Saving…"
+  },
+  "statusSaved": {
+    "message": "Saved in this browser."
+  },
+  "statusSaveFailed": {
+    "message": "Could not save. Please try again."
+  },
+  "statusMissingAlias": {
+    "message": "Enter the group name and alias."
+  },
+  "statusReady": {
+    "message": "Ready to use on WhatsApp Web."
+  },
+  "statusLoadFailed": {
+    "message": "Could not load settings. Reopen the extension."
+  },
+  "removeAlias": {
+    "message": "Remove"
+  },
+  "removeAliasLabel": {
+    "message": "Remove alias $ALIAS$",
+    "placeholders": {
+      "alias": {
+        "content": "$1",
+        "example": "Family group"
+      }
+    }
+  },
+  "localDataHint": {
+    "message": "Settings stay in this browser. No messages are sent."
+  },
+  "visualProtectionHint": {
+    "message": "Blur is visual; it does not prevent access to content."
+  }
+}

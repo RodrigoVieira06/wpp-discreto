@@ -14,6 +14,7 @@ Build a public Chrome extension for WhatsApp Web with local group aliases, blurr
 - Use the **Makefile** as the documented terminal entry point. Keep Make targets, package scripts, docs, and skills synchronized.
 - Use English **Conventional Commits**, enforced by **Lefthook** and **commitlint**. Do not bypass hooks to hide failures.
 - Keep filenames, source identifiers, comments, commit messages, and development documentation in **English**. Name the data-handling document `DATA_POLICY.md`.
+- Product UI must use **Brazilian Portuguese by default**, English for English browser UI locales, and Portuguese for unsupported languages. Keep copy in `_locales/pt_BR/messages.json` and `_locales/en/messages.json`; use Chrome i18n and the typed `src/i18n.ts` helper. Translate statuses, placeholders, accessible labels, and manifest metadata too. Do not translate user-provided aliases. See `docs/internationalization.md`.
 - Preserve unrelated user changes and report the checks actually executed.
 - Do not claim simulated DOM tests validate the authenticated WhatsApp application.
 - Do not publish to the Chrome Web Store or transmit chat data without explicit authorization. The user has authorized creating the public GitHub repository and pushing this project to `main`.

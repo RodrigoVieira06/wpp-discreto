@@ -10,6 +10,8 @@ Chrome Manifest V3 restricts execution to WhatsApp Web and declares only the `st
 
 `popup/popup.ts` reads and saves preferences, manages alias entries, restores controls after failed writes, and updates controls when another context changes storage.
 
+The UI uses native Chrome internationalization with `_locales/pt_BR` as its default and `_locales/en` for English browsers. `src/i18n.ts` supplies typed message lookup and DOM translation. Build and package scripts include both catalogs. See [internationalization](internationalization.md).
+
 ## Presentation and data
 
 SCSS compiles to static CSS. Message elements are masked before explicit reveal exceptions. Scroll handling revokes exceptions immediately; mutation callbacks revoke exceptions for recycled content before deferred rendering. Aliases use pseudo-elements without replacing React-owned text.

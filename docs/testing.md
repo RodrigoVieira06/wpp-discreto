@@ -19,6 +19,7 @@ Build first with `make build` when invoking browser tests directly. Normal `make
 - `tooling.test.ts`: required source languages and tooling.
 - `terminal.test.ts`: Make help, release prerequisites, and Conventional Commit validation.
 - `local-deploy.test.ts`: local deployment prerequisites and actual extension loading/popup initialization in Chrome through a debugging pipe.
+- `i18n.test.ts`: document locale mapping, Portuguese manifest default, matching catalogs, and localized build assets. Popup browser scenarios also verify Portuguese, English, and fallback messages, dynamic errors, placeholders, and accessible labels.
 
 Jest uses SWC for transformation. Run strict type checking separately. Chrome profiles and fixtures are temporary; tests do not sign in or use a personal browser profile. Use `CHROME_BIN` for a different Chrome executable.
 

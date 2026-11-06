@@ -11,6 +11,8 @@ const files: string[] = [
   manifest.action.default_popup,
   'popup/popup.css',
   'popup/popup.js',
+  '_locales/pt_BR/messages.json',
+  '_locales/en/messages.json',
   ...(Object.values(manifest.icons) as string[]),
   ...manifest.content_scripts.flatMap((entry: { js: string[]; css: string[] }) => [
     ...entry.js,

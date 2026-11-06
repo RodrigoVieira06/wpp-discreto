@@ -65,19 +65,46 @@ test('Chrome integration: masking, scrolling, live updates, aliases and DOM recy
   runBrowser(fixture, 20);
 });
 
-test('Chrome popup: controls, alias CRUD, safe text, persistence and write failure', () => {
-  const mock = readFileSync(path.join(root, 'fixtures/whatsapp.html'), 'utf8')
-    .match(/<script>([\s\S]*?)<\/script>/)?.[1]
-    .replace(
-      'const changes = {};',
-      "if (window.failNextSave) { window.failNextSave = false; throw new Error('Simulated storage error'); } const changes = {};",
+test.each([
+  ['pt-BR', 'pt_BR', 'pt-BR', 'Salvar apelido'],
+  ['pt-PT', 'pt_BR', 'pt-BR', 'Salvar apelido'],
+  ['en-US', 'en', 'en', 'Save alias'],
+  ['es-ES', 'pt_BR', 'pt-BR', 'Salvar apelido'],
+])(
+  'Chrome popup in %s: localization, controls, aliases and storage failures',
+  (browserLanguage, catalogLocale, documentLanguage, saveLabel) => {
+    const mock = readFileSync(path.join(root, 'fixtures/whatsapp.html'), 'utf8')
+      .match(/<script>([\s\S]*?)<\/script>/)?.[1]
+      .replace(
+        'const changes = {};',
+        "if (window.failNextSave) { window.failNextSave = false; throw new Error('Simulated storage error'); } const changes = {};",
+      );
+    const catalog = JSON.parse(
+      readFileSync(path.join(root, '_locales', catalogLocale, 'messages.json'), 'utf8'),
     );
-  const base = pathToFileURL(path.join(root, 'dist/extension/popup/')).href;
-  const fixture = readFileSync(path.join(root, 'dist/extension/popup/popup.html'), 'utf8')
-    .replace('<head>', `<head><base href="${base}"><script>${mock}</script>`)
-    .replace(
-      '</head>',
-      `<script src="${pathToFileURL(path.join(root, 'dist/test-runtime/browser-popup.js')).href}" defer></script></head>`,
-    );
-  runBrowser(fixture, 14);
-});
+    const localizationMock = `
+    const catalog = ${JSON.stringify(catalog)};
+    window.expectedMessages = Object.fromEntries(Object.entries(catalog).map(([key, entry]) => [key, entry.message]));
+    window.expectedLanguage = ${JSON.stringify(documentLanguage)};
+    window.expectedSaveLabel = ${JSON.stringify(saveLabel)};
+    chrome.i18n = {
+      getUILanguage: () => ${JSON.stringify(browserLanguage)},
+      getMessage: (key, substitutions = []) => {
+        const entry = catalog[key];
+        const values = typeof substitutions === 'string' ? [substitutions] : substitutions;
+        return entry?.message.replace(/\\$([a-z_]+)\\$/gi, (_, name) =>
+          entry.placeholders[name.toLowerCase()].content.replace(/\\$(\\d+)/g, (_, index) => values[Number(index) - 1] ?? '')
+        ) ?? '';
+      }
+    };
+  `;
+    const base = pathToFileURL(path.join(root, 'dist/extension/popup/')).href;
+    const fixture = readFileSync(path.join(root, 'dist/extension/popup/popup.html'), 'utf8')
+      .replace('<head>', `<head><base href="${base}"><script>${mock}${localizationMock}</script>`)
+      .replace(
+        '</head>',
+        `<script src="${pathToFileURL(path.join(root, 'dist/test-runtime/browser-popup.js')).href}" defer></script></head>`,
+      );
+    runBrowser(fixture, 14);
+  },
+);

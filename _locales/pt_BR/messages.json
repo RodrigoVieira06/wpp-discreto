@@ -1,0 +1,113 @@
+{
+  "extensionName": {
+    "message": "WPP Mask — Apelidos e proteção de mensagens"
+  },
+  "extensionDescription": {
+    "message": "Apelidos locais para grupos e desfoque ajustável de mensagens no WhatsApp Web."
+  },
+  "brandTagline": {
+    "message": "Seu WhatsApp, do seu jeito."
+  },
+  "extensionSettings": {
+    "message": "Configurações da extensão"
+  },
+  "protectionTitle": {
+    "message": "Um pouco mais de privacidade"
+  },
+  "blurPreviews": {
+    "message": "Embaçar prévias"
+  },
+  "blurPreviewsHint": {
+    "message": "Esconde as mensagens na lista lateral."
+  },
+  "protectChat": {
+    "message": "Proteger conversa aberta"
+  },
+  "protectChatHint": {
+    "message": "Embaça o histórico e mantém as recentes visíveis."
+  },
+  "recentMessages": {
+    "message": "Mensagens recentes visíveis"
+  },
+  "noMessages": {
+    "message": "Nenhuma"
+  },
+  "maxMessages": {
+    "message": "12 mensagens"
+  },
+  "historyHint": {
+    "message": "Ao subir no histórico, todas ficam embaçadas."
+  },
+  "blurStrength": {
+    "message": "Intensidade do desfoque"
+  },
+  "groupAliases": {
+    "message": "Apelidos de grupos"
+  },
+  "groupAliasesHint": {
+    "message": "Só você vê o apelido. O nome do grupo continua igual para os outros participantes."
+  },
+  "originalName": {
+    "message": "Nome original do grupo"
+  },
+  "originalPlaceholder": {
+    "message": "Ex.: Família Silva"
+  },
+  "preferredName": {
+    "message": "Como você quer chamar?"
+  },
+  "aliasPlaceholder": {
+    "message": "Ex.: Minha família ❤️"
+  },
+  "saveAlias": {
+    "message": "Salvar apelido"
+  },
+  "aliasMatchingHint": {
+    "message": "Use o nome exato. Conversas com nomes iguais recebem o mesmo apelido. A busca usa o nome original."
+  },
+  "savedAliases": {
+    "message": "Apelidos salvos"
+  },
+  "aliasesEmpty": {
+    "message": "Seus grupos, com nomes que fazem sentido para você."
+  },
+  "statusLoading": {
+    "message": "Carregando configurações…"
+  },
+  "statusSaving": {
+    "message": "Salvando…"
+  },
+  "statusSaved": {
+    "message": "Salvo neste navegador."
+  },
+  "statusSaveFailed": {
+    "message": "Não foi possível salvar. Tente novamente."
+  },
+  "statusMissingAlias": {
+    "message": "Preencha o nome do grupo e o apelido."
+  },
+  "statusReady": {
+    "message": "Pronto para usar no WhatsApp Web."
+  },
+  "statusLoadFailed": {
+    "message": "Não foi possível carregar. Feche e abra a extensão."
+  },
+  "removeAlias": {
+    "message": "Remover"
+  },
+  "removeAliasLabel": {
+    "message": "Remover apelido $ALIAS$",
+    "placeholders": {
+      "alias": {
+        "content": "$1",
+        "example": "Family group"
+      }
+    }
+  },
+  "localDataHint": {
+    "message": "Dados salvos neste navegador. Sem envio de mensagens."
+  },
+  "visualProtectionHint": {
+    "message": "O desfoque é visual; não impede acesso ao conteúdo."
+  }
+}

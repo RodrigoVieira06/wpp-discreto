@@ -24,6 +24,7 @@ for (const entry of ['src/content', 'popup/popup']) {
   await writeFile(path.join(output, `${entry}.css`), result.css);
 }
 await cp(path.join(root, 'assets'), path.join(output, 'assets'), { recursive: true });
+await cp(path.join(root, '_locales'), path.join(output, '_locales'), { recursive: true });
 await cp(path.join(root, 'popup/popup.html'), path.join(output, 'popup/popup.html'));
 const manifest = JSON.parse(await readFile(path.join(root, 'manifest.json'), 'utf8'));
 await writeFile(path.join(output, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
