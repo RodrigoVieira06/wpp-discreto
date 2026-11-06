@@ -15,3 +15,5 @@ Read `AGENTS.md` and `docs/testing.md`. Identify an observable failure instead o
 For protection changes, cover new messages, recycled bubbles, scrolling, zero visible messages, nested blocks, and disabling protection. For aliases, cover normalization, duplicates, safe text, row reuse, updates, and removal. For popup changes, cover persistence and failed writes.
 
 Use mock Chrome APIs and temporary profiles. Never save user messages or authentication material as fixtures. Set `CHROME_BIN` when needed, report execution restrictions, and distinguish simulated tests from manual WhatsApp validation.
+
+For local launcher changes, keep the actual Chrome installation smoke test in `tests/local-deploy.test.ts`: load the compiled extension, initialize its popup with real extension APIs, then close Chrome and remove the temporary profile. Never connect that smoke test to WhatsApp or a persistent personal profile.

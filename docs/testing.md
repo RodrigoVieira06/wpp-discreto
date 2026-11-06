@@ -18,6 +18,7 @@ Build first with `make build` when invoking browser tests directly. Normal `make
 - `browser-popup.ts`: persisted controls, alias changes, safe text, and write failures.
 - `tooling.test.ts`: required source languages and tooling.
 - `terminal.test.ts`: Make help, release prerequisites, and Conventional Commit validation.
+- `local-deploy.test.ts`: local deployment prerequisites and actual extension loading/popup initialization in Chrome through a debugging pipe.
 
 Jest uses SWC for transformation. Run strict type checking separately. Chrome profiles and fixtures are temporary; tests do not sign in or use a personal browser profile. Use `CHROME_BIN` for a different Chrome executable.
 
@@ -33,4 +34,4 @@ Before store distribution, check a real authenticated session:
 - History scrolling and returning to the bottom without exposing older messages.
 - Disabling options, preference propagation between tabs, and persistence after reload.
 
-Do not commit actual messages, authentication material, or browser profiles as fixtures. Simulated tests are not live WhatsApp validation.
+Do not commit actual messages, authentication material, or browser profiles as fixtures. Actual extension loading confirms installation and popup initialization; simulated tests are not live WhatsApp validation.

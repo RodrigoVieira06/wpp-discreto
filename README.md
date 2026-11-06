@@ -44,6 +44,7 @@ Run `make` or `make help` to discover all commands.
 | `make install` | Install locked dependencies and Git hooks |
 | `make doctor` | Check local tools and Chrome |
 | `make dev` | Watch sources and rebuild the extension |
+| `make deploy-local` | Build and load the extension automatically in a separate Chrome test session |
 | `make check` | Run Biome and strict TypeScript checks |
 | `make test` | Build and run Jest, including Chrome integration tests |
 | `make test-watch` | Run Jest in watch mode |
@@ -53,10 +54,21 @@ Run `make` or `make help` to discover all commands.
 
 After a development rebuild, reload the extension in `chrome://extensions` and refresh WhatsApp Web. Development mode does not automatically reload a live chat.
 
+### Install locally from the terminal
+
+```sh
+make deploy-local
+```
+
+This builds the extension, opens Chrome with a separate persistent profile, loads WPP Mask through the Chrome DevTools Protocol, and opens WhatsApp Web and the extensions page. Sign in to WhatsApp once in that window. Close it or press Ctrl+C in the terminal to stop. After changing the code, close the test window and run the command again.
+
+The test profile lives in `.local/chrome-profile/`, is ignored by Git, and survives `make clean`. The command does not change your regular Chrome profile. Keep only one local deployment session open at a time. A graphical desktop and a recent Chrome with `Extensions.loadUnpacked` support are required; Chrome 157 was verified here. See the [local deployment guide](docs/local-deployment.md).
+
 Chrome defaults to `/usr/bin/google-chrome`. Override it when needed:
 
 ```sh
 make test CHROME_BIN=/path/to/chrome
+make deploy-local CHROME_BIN=/path/to/chrome
 ```
 
 Output: `dist/extension/` for local installation and `dist/wpp-mask-0.1.0.zip` for distribution. Generated files are ignored by Git.

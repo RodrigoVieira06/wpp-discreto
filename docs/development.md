@@ -13,6 +13,8 @@ make dev
 
 `make dev` performs an initial build and watches sources. Load `dist/extension` in Chrome. After rebuilding, reload the extension and refresh WhatsApp Web. It does not launch or automatically reload the browser.
 
+For automatic local installation, use `make deploy-local`. It builds and opens a dedicated Chrome session with WPP Mask already loaded. Close that session and rerun after source changes. Its login persists in `.local/chrome-profile`, outside build output. See [local deployment](local-deployment.md).
+
 ## Commands
 
 | Make target | Operation |
@@ -21,6 +23,7 @@ make dev
 | `hooks` | `pnpm hooks:install` |
 | `doctor` | Print Node, pnpm, Git, and Chrome versions |
 | `dev`, `run` | `pnpm dev` |
+| `deploy-local` | Build, then `pnpm deploy:local` to launch Chrome and load the extension |
 | `build` | `pnpm build` |
 | `lint`, `lint-fix` | Biome checks or safe fixes |
 | `format` | `pnpm format` |

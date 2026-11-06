@@ -11,13 +11,15 @@ Read `AGENTS.md`, `docs/architecture.md`, and `docs/development.md`. Inspect the
 
 1. Discover commands with `make help`; check tools with `make doctor`.
 2. Install dependencies and hooks with `make install`.
-3. Use `make dev` to watch sources and load `dist/extension` in Chrome.
+3. Use `make dev` to watch sources. Use `make deploy-local` to build and automatically load the extension in a separate persistent Chrome profile. Close that test session and rerun after changes.
 4. Follow red/green/refactor before implementing behavior changes.
 5. Run `make check` and `make test` before completion.
 6. Run `make package` when distributed assets change.
 7. Use `make deploy` for validated local release preparation; store submission remains manual.
 
 Use pnpm for direct package operations. Update Make targets, package scripts, documentation, and this skill together when commands change.
+
+Read `docs/local-deployment.md` for local browser requirements. Profiles at `.local/chrome-profile` contain test-session data; keep them ignored and excluded from packages. Local deployment must never modify the user's regular browser profile. Store API publishing is a separate future configuration step, not a side effect of `make deploy-local` or `make deploy`.
 
 ## Implementation boundaries
 

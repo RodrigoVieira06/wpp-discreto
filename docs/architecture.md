@@ -22,6 +22,8 @@ SCSS compiles to static CSS. Message elements are masked before explicit reveal 
 
 `scripts/package.ts` uses an explicit resource list to create a ZIP without tests, docs, source TypeScript, dependencies, or browser profiles. `scripts/dev.ts` watches sources and serializes rebuilds.
 
+`scripts/deploy-local.ts` launches an isolated Chrome profile and loads the actual build over a local DevTools pipe using `scripts/lib/cdp.ts`. The profile stays under the Git-ignored `.local` directory. Smoke tests use temporary profiles and open only the extension popup, not WhatsApp.
+
 ## Integration boundary
 
 DOM selectors live in `src/content.ts` and `src/content.scss`. WhatsApp updates can invalidate them. The fixture contains simulated markup and mock storage, not an authenticated session. Exact-name aliases do not provide stable group identification.

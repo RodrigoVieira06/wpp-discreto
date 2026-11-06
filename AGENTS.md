@@ -44,6 +44,7 @@ Build a public Chrome extension for WhatsApp Web with local group aliases, blurr
 ```sh
 make help
 make install
+make deploy-local
 make check
 make test
 make package
@@ -51,10 +52,12 @@ make package
 
 `make deploy` prepares a validated package for **manual** store submission. It does not upload or publish. GitHub pushes and store publication are separate operations.
 
+`make deploy-local` builds and opens Chrome with the actual extension loaded through a DevTools pipe. Its persistent test profile is `.local/chrome-profile`, ignored by Git and preserved by `make clean`. Never use the ordinary personal Chrome profile. Close the test session before deploying locally again. See `docs/local-deployment.md`.
+
 Tests use Jest with SWC and simulated markup in Chrome headless. Set `CHROME_BIN` if needed. Report execution restrictions and obtain host-required execution permissions instead of skipping tests.
 
 ## Regression history and validation
 
 Timer scheduling replaced `requestAnimationFrame` after tests exposed deferred updates in headless execution. Timers can also be throttled; they are not a real-time guarantee. A confirmed red/green regression exposed recycled message contents before deferred rendering; the observer now revokes reveal exceptions in a microtask before painting.
 
-Authenticated WhatsApp validation remains pending. The data policy still needs publisher identity and support contact before store publication.
+Actual extension loading and popup initialization are covered by the local deployment smoke test in headless Chrome. Authenticated WhatsApp validation remains pending. The data policy still needs publisher identity and support contact before store publication. Automated Web Store submission is not configured; OAuth/API setup is documented in `docs/distribution.md`.

@@ -4,7 +4,7 @@
 CHROME_BIN ?= /usr/bin/google-chrome
 export CHROME_BIN
 
-.PHONY: help install hooks doctor dev run build lint lint-fix format typecheck check test test-watch package release deploy clean status
+.PHONY: help install hooks doctor dev run build lint lint-fix format typecheck check test test-watch package release deploy deploy-local clean status
 
 help: ## Show available terminal commands
 	@awk 'BEGIN {FS = ":.*## "; printf "\nWPP Mask development commands\n\n"} /^[a-zA-Z_-]+:.*## / {printf "  make %-13s %s\n", $$1, $$2} END {print ""}' $(MAKEFILE_LIST)
@@ -57,6 +57,9 @@ release: check test package ## Validate and prepare a release for manual submiss
 	@printf '\nRelease ready in dist/. Submit the ZIP through the Chrome Web Store dashboard after manual validation.\n'
 
 deploy: release ## Prepare a validated release for manual Chrome Web Store submission
+
+deploy-local: build ## Build and load the extension in Chrome with a separate persistent test profile
+	pnpm deploy:local
 
 clean: ## Remove generated build output and coverage only
 	pnpm clean
