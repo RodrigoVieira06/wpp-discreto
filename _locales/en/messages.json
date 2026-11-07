@@ -17,11 +17,8 @@
   "protectChat": {
     "message": "Blur open conversation"
   },
-  "recentMessages": {
-    "message": "Recent messages to show"
-  },
   "historyHint": {
-    "message": "Scrolling into history blurs every message."
+    "message": "The lower area stays readable. Scroll to read older messages in that area. 0% blurs everything; 100% shows all text."
   },
   "blurStrength": {
     "message": "Blur strength"
@@ -159,12 +156,15 @@
     "message": "Stickers"
   },
   "alwaysBlurMedia": {
-    "message": "Also blur in recent messages"
+    "message": "Also blur in the visible area"
   },
   "mediaOptionsHint": {
-    "message": "Applies while conversation protection is on. Turn off the last option to follow the visible-message count."
+    "message": "Applies while conversation protection is on. Turn off the last option to show selected media in the visible area."
   },
   "mediaFallbackHint": {
     "message": "If the type cannot be identified, the media remains protected."
+  },
+  "visibleArea": {
+    "message": "Visible conversation area"
   }
 }

@@ -11,7 +11,20 @@ export {};
     for (let node = element; node && node.id !== 'main'; node = node.parentElement) {
       if (getComputedStyle(node).filter !== 'none') return true;
     }
-    return false;
+    if (!element) return false;
+    const mask = document.querySelector<HTMLElement>('[data-wppm-screen]');
+    const rect = mask?.getBoundingClientRect();
+    const box = element.getBoundingClientRect();
+    const kind = element.getAttribute('data-wppm-media');
+    const selected =
+      kind === 'images'
+        ? stored.settings.blurImages
+        : kind === 'videos'
+          ? stored.settings.blurVideos
+          : kind === 'stickers'
+            ? stored.settings.blurStickers
+            : true;
+    return selected && !!rect && rect.height > 0 && box.top < rect.bottom;
   };
   const settings = {
     enabled: true,
@@ -19,7 +32,7 @@ export {};
     language: 'auto',
     blurChat: true,
     blurPreviews: true,
-    visibleCount: 3,
+    visibleArea: 100,
     blurStrength: 8,
     blurImages: true,
     blurVideos: true,
@@ -46,13 +59,12 @@ export {};
     history.scrollTop = history.scrollHeight;
     await chrome.storage.local.set({ settings });
     check(
-      'grouped container never reveals every message at the bottom',
-      blurred(group.firstElementChild) &&
-        document.querySelectorAll('[data-wppm-reveal]').length === 3,
+      'grouped container does not create message reveal exceptions',
+      !document.querySelector('[data-wppm-reveal]'),
     );
     for (const id of ['photo', 'video-preview', 'video', 'sticker', 'background-photo'])
       check(
-        `recent album ${id} stays protected in always mode`,
+        `visible-area album ${id} stays protected in always mode`,
         blurred(document.getElementById(id)),
       );
 
@@ -64,7 +76,7 @@ export {};
       await wait();
       check(
         `media remains masked through load and bottom-scroll round ${iteration}`,
-        blurred(document.getElementById('photo')) && blurred(group.firstElementChild),
+        blurred(document.getElementById('photo')) && !document.querySelector('[data-wppm-reveal]'),
       );
     }
 
@@ -72,22 +84,22 @@ export {};
     history.scrollTop = history.scrollHeight;
     await wait();
     check(
-      'recent media follows the visible-message rule when always mode is off',
+      'media follows the screen area when always mode is off',
       !blurred(document.getElementById('photo')) &&
         !blurred(document.getElementById('video')) &&
         !blurred(document.getElementById('sticker')),
     );
     await chrome.storage.local.set({
-      settings: { ...settings, alwaysBlurMedia: false, visibleCount: 0 },
+      settings: { ...settings, alwaysBlurMedia: false, visibleArea: 0 },
     });
     check(
-      'zero recent messages protects the full album',
+      'zero visible area protects the full album',
       blurred(document.getElementById('photo')) &&
         blurred(document.getElementById('video')) &&
         blurred(document.getElementById('sticker')),
     );
     await chrome.storage.local.set({
-      settings: { ...settings, visibleCount: 0, blurImages: false },
+      settings: { ...settings, visibleArea: 0, blurImages: false },
     });
     check(
       'photo exemption does not exempt video previews or stickers',
@@ -109,7 +121,7 @@ export {};
       blurred(unknown),
     );
     await chrome.storage.local.set({
-      settings: { ...settings, visibleCount: 0, blurVideos: false },
+      settings: { ...settings, visibleArea: 0, blurVideos: false },
     });
     check(
       'video exemption includes the video thumbnail',
@@ -118,7 +130,7 @@ export {};
         blurred(document.getElementById('photo')),
     );
     await chrome.storage.local.set({
-      settings: { ...settings, visibleCount: 0, blurStickers: false },
+      settings: { ...settings, visibleArea: 0, blurStickers: false },
     });
     check(
       'stickers can be exempted independently',
@@ -131,13 +143,14 @@ export {};
     check('new album tiles are masked before the next render', blurred(inserted));
     await wait();
     check('new album tiles stay masked after classification', blurred(inserted));
+    await chrome.storage.local.set({ settings: { ...settings, visibleArea: 0 } });
     history.scrollTop = 0;
     history.dispatchEvent(new Event('scroll'));
     await wait();
     check(
       'scrolling into history masks text and selected media',
-      blurred(group.lastElementChild?.querySelector('.selectable-text') ?? null) &&
-        blurred(inserted),
+      document.querySelector<HTMLElement>('[data-wppm-screen]')?.getBoundingClientRect().height ===
+        history.clientHeight && blurred(inserted),
     );
     await chrome.storage.local.set({ settings: { ...settings, enabled: false } });
     check(

@@ -7,13 +7,13 @@ $warning: #f5c875;
 :root { color-scheme: dark; font: 13px/1.5 system-ui, sans-serif; color: #e8eeec; background: $surface; }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
-body { width: 380px; margin: 0; max-height: min(600px, 100vh); display: flex; flex-direction: column; overflow: hidden; }
-header { display: flex; flex-shrink: 0; align-items: center; gap: 10px; padding: 14px 20px; border-bottom: 1px solid $border; }
+body { width: 380px; margin: 0; max-height: 600px; overflow-y: auto; }
+header { display: flex; align-items: center; gap: 10px; padding: 14px 20px; border-bottom: 1px solid $border; }
 .brand-icon { display: block; width: 40px; height: 40px; flex-shrink: 0; object-fit: contain; }
 h1 { margin: 0; font-size: 18px; }
 h2 { margin: 0 0 12px; font-size: 12px; font-weight: 650; }
-main { padding: 0 20px 12px; overflow-y: auto; min-height: 0; }
-footer { flex-shrink: 0; padding: 10px 20px; border-top: 1px solid $border; color: $muted; font-size: 11px; }
+main { padding: 0 20px 12px; }
+footer { padding: 10px 20px; border-top: 1px solid $border; color: $muted; font-size: 11px; }
 footer p { margin: 0; }
 footer p + p { margin-top: 5px; }
 dialog { width: calc(100% - 32px); max-width: 340px; padding: 20px; border: 1px solid $border; border-radius: 9px; color: #e8eeec; background: $surface; }

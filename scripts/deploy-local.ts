@@ -95,7 +95,48 @@ async function main() {
         if (!popupReady) await delay(50);
       }
       if (!popupReady) throw new Error('Extension popup failed to initialize.');
-      console.log(JSON.stringify({ extensionId: result.id, popupReady: true }));
+      const popupLayout = [];
+      for (const height of [160, 600]) {
+        await protocol.send(
+          'Emulation.setDeviceMetricsOverride',
+          {
+            width: 380,
+            height,
+            deviceScaleFactor: 1,
+            mobile: false,
+          },
+          sessionId,
+        );
+        const evaluation = await protocol.send<{ result: { value: unknown } }>(
+          'Runtime.evaluate',
+          {
+            expression: `(() => {
+              const main = document.querySelector('main');
+              const reachable = (selector) => {
+                const element = document.querySelector(selector);
+                element.scrollIntoView({ block: 'center' });
+                const rect = element.getBoundingClientRect();
+                return rect.height > 0 && rect.top >= 0 && rect.bottom <= innerHeight;
+              };
+              const controlsExpanded = main.getBoundingClientRect().height > 300;
+              const widthPreserved = document.body.getBoundingClientRect().width === 380;
+              const masterReachable = reachable('#extension-enabled');
+              const saveReachable = reachable('#alias-form button');
+              const footerReachable = reachable('footer');
+              document.getElementById('settings-toggle').click();
+              const settingsReachable = reachable('#visible-area');
+              document.getElementById('settings-toggle').click();
+              window.scrollTo(0, 0);
+              return { height: innerHeight, controlsExpanded, widthPreserved,
+                masterReachable, saveReachable, footerReachable, settingsReachable };
+            })()`,
+            returnByValue: true,
+          },
+          sessionId,
+        );
+        popupLayout.push(evaluation.result.value);
+      }
+      console.log(JSON.stringify({ extensionId: result.id, popupReady: true, popupLayout }));
       await closeBrowser();
     } else {
       await protocol.send('Target.createTarget', { url: 'chrome://extensions/' });

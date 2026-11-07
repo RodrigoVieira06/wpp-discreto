@@ -17,11 +17,8 @@
   "protectChat": {
     "message": "Embaçar conversa aberta"
   },
-  "recentMessages": {
-    "message": "Mensagens recentes visíveis"
-  },
   "historyHint": {
-    "message": "Ao subir no histórico, todas ficam embaçadas."
+    "message": "A parte inferior fica legível. Role a conversa para ler mensagens antigas nessa área. 0% embaça tudo; 100% mostra todo o texto."
   },
   "blurStrength": {
     "message": "Intensidade do desfoque"
@@ -159,12 +156,15 @@
     "message": "Figurinhas"
   },
   "alwaysBlurMedia": {
-    "message": "Embaçar também nas mensagens recentes"
+    "message": "Embaçar também na área visível"
   },
   "mediaOptionsHint": {
-    "message": "Vale quando a proteção da conversa está ligada. Desligue a última opção para seguir a quantidade de mensagens visíveis."
+    "message": "Vale com a proteção da conversa ligada. Desligue a última opção para mostrar as mídias selecionadas na área visível."
   },
   "mediaFallbackHint": {
     "message": "Se o tipo não for identificado, a mídia continua protegida."
+  },
+  "visibleArea": {
+    "message": "Área visível da conversa"
   }
 }

@@ -9,7 +9,7 @@ Read `AGENTS.md`, the changes, and relevant tests. Prioritize actionable defects
 
 - Confirm strict types, SCSS compilation, and manifest resource paths.
 - Check storage validation, safe text, failed writes, and permission scope.
-- Look for exposure of new/recycled content before rendering and missing history masking.
+- Look for exposure of new/recycled content before rendering and stale viewport geometry or media exclusions during history scrolling.
 - Check alias cleanup on reused rows and restoration when controls are disabled.
 - Confirm regressions cover changed behavior and that checks actually ran.
 - Check consistency between Make targets, package scripts, documentation, and skills.

@@ -4,13 +4,13 @@
 
 - The master switch (`settings.enabled`, default `true`) pauses all blur and alias effects. Stored preferences and aliases remain intact.
 - The aliases switch (`settings.aliasesEnabled`, default `true`) controls title decoration independently of blur.
-- The gear button opens settings for language, blur intensity, recent-message count, media types, always-blur mode, and default restoration. See [media protection](message-protection.md).
-- Default restoration opens a localized confirmation dialog. Cancel/Escape performs no write; explicit confirmation resets settings and retains the `aliases` array. Blur starts disabled, strength defaults to 8 px, recent count to 4, language to automatic, and media preferences to enabled.
+- The gear button opens settings for language, blur intensity, readable screen percentage, media types, always-blur mode, and default restoration. See [media protection](message-protection.md).
+- Default restoration opens a localized confirmation dialog. Cancel/Escape performs no write; explicit confirmation resets settings and retains the `aliases` array. Blur starts disabled, strength defaults to 8 px, readable area to 40%, language to automatic, and media preferences to enabled.
 - Old saved settings migrate through `src/settings.ts`, with missing switches enabled and missing language set to `auto`.
 
 Keep product copy factual and short. Do not add slogans, promotional empty states, or constant ready messages. Status text should communicate an action result, a failure, or an actual limitation.
 
-The persistent footer explains in plain language that aliases/settings affect only this browser, original WhatsApp names/messages stay unchanged, and WPP Mask does not send or save conversation contents. Keep the footer visible while the main controls scroll; factual data-handling information is necessary product copy, not a slogan.
+The persistent footer explains in plain language that aliases/settings affect only this browser, original WhatsApp names/messages stay unchanged, and WPP Mask does not send or save conversation contents. Keep the footer in normal document flow, reachable by scrolling the popup. Preserve the 380 px width and intrinsic control heights; never shrink the controls to fit a fixed footer or an initial viewport height. Factual data-handling information is necessary product copy, not a slogan.
 
 ## Lookup
 

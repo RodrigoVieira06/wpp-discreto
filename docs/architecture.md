@@ -6,7 +6,7 @@ Chrome Manifest V3 restricts execution to WhatsApp Web and declares only the `st
 
 `src/settings.ts` exports typed defaults, validation, Unicode normalization, and alias cleanup. Both entry points import this module; esbuild bundles it without exposing a global API to WhatsApp.
 
-`src/content.ts` observes DOM mutations and reacts to `chrome.storage.onChanged`. It applies prefixed attributes to decorate titles and reveal recent messages. The observer is disconnected while applying its own mutations to prevent loops.
+`src/content.ts` observes DOM mutations and reacts to `chrome.storage.onChanged`. It applies prefixed attributes to decorate titles and update viewport protection. The observer is disconnected while applying its own mutations to prevent loops.
 
 `popup/popup.ts` reads and saves preferences, manages alias entries, restores controls after failed writes, and updates controls when another context changes storage.
 
@@ -16,7 +16,7 @@ Master and aliases switches gate effects without deleting saved data. `src/chats
 
 ## Presentation and data
 
-SCSS compiles to static CSS. `src/messages.ts` discovers individual message units rather than aggregate group wrappers and annotates media/text separately. CSS masks new assets before classification; the observer classifies them before painting and revokes stale reveal exceptions when content changes. Media types and always-blur behavior are configurable. See [message protection](message-protection.md).
+SCSS compiles to static CSS. `src/screen.ts` applies a fixed backdrop mask to the upper conversation viewport, leaving a configurable lower percentage readable during both normal and history scrolling. An inline SVG mask excludes only exempt media assets. `src/messages.ts` classifies those assets; CSS masks new assets before classification and selected media in always mode. The observer refreshes classification and exclusions before painting. Media types and always-blur behavior are configurable. See [message protection](message-protection.md).
 
 Aliases use pseudo-elements without replacing React-owned text. Nested original spans are visually clipped so their own font sizes cannot make the original appear beside the alias. Title extraction excludes unread indicators.
 

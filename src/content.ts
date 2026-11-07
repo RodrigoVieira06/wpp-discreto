@@ -1,5 +1,6 @@
 import { headerTitles, readChatContext, sidebarTitles, unavailableContext } from './chats';
-import { annotateMessages, messageUnits } from './messages';
+import { annotateMessages } from './messages';
+import { ScreenProtection } from './screen';
 import * as model from './settings';
 
 (() => {
@@ -9,7 +10,7 @@ import * as model from './settings';
   let loaded = false;
   let storageFailed = false;
   let stopped = false;
-  let revealed = new Set<HTMLElement>();
+  const screen = new ScreenProtection();
   const decorated = new Set<HTMLElement>();
   const root = () => document.documentElement;
 
@@ -24,24 +25,22 @@ import * as model from './settings';
   }
 
   const observer = new MutationObserver((records) => {
-    // Virtualized chats may reuse a revealed bubble for different content.
-    // Revoke its exception in the observer microtask, before Chrome paints it.
-    for (const node of revealed) {
-      if (
-        records.some(
-          (record) =>
-            (record.type !== 'attributes' ||
-              ['data-id', 'src', 'srcset', 'poster'].includes(record.attributeName ?? '')) &&
-            (node.contains(record.target) ||
-              (record.type === 'attributes' && record.target.contains(node))),
-        )
-      ) {
-        node.removeAttribute('data-wppm-reveal');
-        revealed.delete(node);
-      }
-    }
+    if (
+      records.every(
+        (record) => record.target instanceof Element && record.target.closest('[data-wppm-screen]'),
+      )
+    )
+      return;
     // Classify new/recycled media in the observer microtask, before its first paint.
-    if (config.enabled && config.blurChat) annotateMessages(document);
+    observer.disconnect();
+    try {
+      if (config.enabled && config.blurChat) {
+        annotateMessages(document);
+        screen.update(config);
+      }
+    } finally {
+      observe();
+    }
     schedule();
   });
   function observe() {
@@ -63,30 +62,6 @@ import * as model from './settings';
         'data-icon',
       ],
     });
-  }
-
-  function atConversationEnd(last: HTMLElement | undefined) {
-    // When history is scrolled back, none of the older loaded messages are exposed.
-    for (let node = last?.parentElement; node; node = node.parentElement) {
-      const style = getComputedStyle(node);
-      if (/auto|scroll/.test(style.overflowY) && node.scrollHeight > node.clientHeight + 2) {
-        return node.scrollHeight - node.clientHeight - node.scrollTop <= 24;
-      }
-      if (node.id === 'main') break;
-    }
-    return true;
-  }
-
-  function updateMessages() {
-    const nodes = config.enabled ? messageUnits(document) : [];
-    const next = new Set(
-      config.blurChat && atConversationEnd(nodes.at(-1)) && config.visibleCount > 0
-        ? nodes.slice(-config.visibleCount)
-        : [],
-    );
-    for (const node of revealed) if (!next.has(node)) node.removeAttribute('data-wppm-reveal');
-    for (const node of next) node.setAttribute('data-wppm-reveal', '');
-    revealed = next;
   }
 
   function updateAliases() {
@@ -145,7 +120,7 @@ import * as model from './settings';
         String(config.blurImages || config.blurVideos || config.blurStickers),
       );
       annotateMessages(document);
-      updateMessages();
+      screen.update(config);
       updateAliases();
       if (loaded) root().setAttribute('data-wppm-ready', '');
     } finally {
@@ -192,15 +167,14 @@ import * as model from './settings';
   document.addEventListener(
     'scroll',
     (event) => {
-      if (
-        !(event.target instanceof Element) ||
-        !document.querySelector('#main')?.contains(event.target)
-      )
-        return;
-      // Revoke exceptions synchronously so scrolling cannot expose history for a frame.
-      for (const node of revealed) node.removeAttribute('data-wppm-reveal');
-      revealed.clear();
-      schedule();
+      if (!(event.target instanceof Element)) return;
+      // Update the physical mask in the scroll event, including media exemptions.
+      observer.disconnect();
+      try {
+        screen.update(config);
+      } finally {
+        observe();
+      }
     },
     { capture: true, passive: true },
   );
@@ -211,6 +185,7 @@ import * as model from './settings';
   window.addEventListener('pagehide', () => {
     stopped = true;
     observer.disconnect();
+    screen.update({ ...config, enabled: false });
   });
   window.addEventListener('pageshow', () => {
     stopped = false;

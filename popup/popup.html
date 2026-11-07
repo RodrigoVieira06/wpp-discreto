@@ -25,16 +25,16 @@
         <select id="language"><option value="auto" data-i18n="languageAuto">Automático (navegador)</option><option value="pt_BR" lang="pt-BR">Português (Brasil)</option><option value="en" lang="en">English</option></select>
         <label class="range-label" for="blur-strength"><span data-i18n="blurStrength">Intensidade do desfoque</span><output id="strength-label" for="blur-strength">8 px</output></label>
         <input id="blur-strength" type="range" min="4" max="16" value="8" step="1">
-        <label class="range-label" for="visible-count"><span data-i18n="recentMessages">Mensagens recentes visíveis</span><output id="visible-label" for="visible-count">4</output></label>
-        <input id="visible-count" type="range" min="0" max="12" value="4" step="1">
-        <p class="hint" data-i18n="historyHint">Ao subir no histórico, todas ficam embaçadas.</p>
+        <label class="range-label" for="visible-area"><span data-i18n="visibleArea">Área visível da conversa</span><output id="visible-label" for="visible-area">40%</output></label>
+        <input id="visible-area" type="range" min="0" max="100" value="40" step="1">
+        <p class="hint" data-i18n="historyHint">A parte inferior fica legível. Role a conversa para ler mensagens antigas nessa área. 0% embaça tudo; 100% mostra todo o texto.</p>
         <fieldset class="media-options">
           <legend data-i18n="mediaTypes">Mídias para embaçar</legend>
           <label class="switch-row" for="blur-images"><span data-i18n="mediaImages">Fotos</span><input id="blur-images" type="checkbox" role="switch"></label>
           <label class="switch-row" for="blur-videos"><span data-i18n="mediaVideos">Vídeos</span><input id="blur-videos" type="checkbox" role="switch"></label>
           <label class="switch-row" for="blur-stickers"><span data-i18n="mediaStickers">Figurinhas</span><input id="blur-stickers" type="checkbox" role="switch"></label>
-          <label class="switch-row" for="always-blur-media"><span data-i18n="alwaysBlurMedia">Embaçar também nas mensagens recentes</span><input id="always-blur-media" type="checkbox" role="switch"></label>
-          <p class="hint" data-i18n="mediaOptionsHint">Vale quando a proteção da conversa está ligada. Desligue a última opção para seguir a quantidade de mensagens visíveis.</p>
+          <label class="switch-row" for="always-blur-media"><span data-i18n="alwaysBlurMedia">Embaçar também na área visível</span><input id="always-blur-media" type="checkbox" role="switch"></label>
+          <p class="hint" data-i18n="mediaOptionsHint">Vale com a proteção da conversa ligada. Desligue a última opção para mostrar as mídias selecionadas na área visível.</p>
           <p class="hint" data-i18n="mediaFallbackHint">Se o tipo não for identificado, a mídia continua protegida.</p>
         </fieldset>
         <button id="restore-defaults" type="button" class="secondary" data-i18n="restoreDefaults" data-i18n-title="restoreDefaultsHint" title="Restaura as configurações sem apagar apelidos.">Restaurar padrão</button>

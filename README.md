@@ -13,13 +13,13 @@ A Chrome extension for local conversation aliases and visual message protection 
 - **Conversation picker:** select one of the first ten names loaded in the active WhatsApp tab.
 - **Name validation:** highlight aliases whose original name is absent from the loaded conversations, with a warning icon and explanatory tooltip.
 - **Blur chat previews:** conceal message previews in the sidebar.
-- **Protect conversations:** blur history while keeping 0–12 recent message blocks readable (default: 4).
+- **Protect conversations:** blur the upper conversation area and keep a configurable lower area readable (0–100%, default: 40%).
 - **Adjustable blur:** choose an intensity between 4 and 16 px.
 - **Local preferences:** save settings and aliases without sending them to a backend.
 - **Settings panel:** choose automatic language, Portuguese, or English; adjust protection levels; restore settings without deleting aliases.
-- **Media choices:** select photos, videos, and stickers, and choose whether they stay blurred even in recent messages. These choices apply while open-conversation protection is on.
+- **Media choices:** select photos, videos, and stickers, and choose whether they stay blurred even in the readable area. These choices apply while open-conversation protection is on.
 
-Scrolling into older history masks all messages. Returning to the end reveals the configured recent messages. Hovering does not remove the blur. Both protection options start disabled.
+Scroll older messages into the lower readable area to read them. The boundary follows the screen, including across tall messages and albums. Hovering does not remove the blur. Both protection options start disabled.
 
 ## Stack
 
@@ -39,7 +39,7 @@ make build
 1. Open `chrome://extensions` and enable **Developer mode**.
 2. Select **Load unpacked** and choose **`dist/extension`**.
 3. Open or refresh WhatsApp Web, pin WPP Mask, and open its popup.
-4. Use the master switch to enable the extension and select the desired effects. Open the gear button for language, blur intensity, recent-message count, and default restoration.
+4. Use the master switch to enable the extension and select the desired effects. Open the gear button for language, blur intensity, readable screen percentage, and default restoration.
 5. Open WhatsApp Web in the active tab. Use **Buscar grupos e contatos** to pick a loaded name, or enter an exact original name manually. Save an alias, edit it, or remove it from the list.
 
 Restoring defaults asks for confirmation and resets settings only; saved aliases are retained. The popup footer explains what stays local and unchanged. See [popup controls](docs/popup-controls.md) and [media protection](docs/message-protection.md).

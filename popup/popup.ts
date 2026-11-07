@@ -97,10 +97,10 @@ import * as model from '../src/settings';
     byId<HTMLInputElement>('blur-videos').checked = config.blurVideos;
     byId<HTMLInputElement>('blur-stickers').checked = config.blurStickers;
     byId<HTMLInputElement>('always-blur-media').checked = config.alwaysBlurMedia;
-    byId<HTMLInputElement>('visible-count').value = String(config.visibleCount);
+    byId<HTMLInputElement>('visible-area').value = String(config.visibleArea);
     byId<HTMLInputElement>('blur-strength').value = String(config.blurStrength);
     byId<HTMLSelectElement>('language').value = config.language;
-    byId<HTMLOutputElement>('visible-label').value = String(config.visibleCount);
+    byId<HTMLOutputElement>('visible-label').value = `${config.visibleArea}%`;
     byId<HTMLOutputElement>('strength-label').value = `${config.blurStrength} px`;
     byId<HTMLFieldSetElement>('feature-controls').disabled = !config.enabled;
     byId<HTMLFieldSetElement>('alias-controls').disabled =
@@ -202,7 +202,7 @@ import * as model from '../src/settings';
     });
   }
   for (const [id, key] of [
-    ['visible-count', 'visibleCount'],
+    ['visible-area', 'visibleArea'],
     ['blur-strength', 'blurStrength'],
   ] as const) {
     byId(id).addEventListener('change', () => {
@@ -211,8 +211,9 @@ import * as model from '../src/settings';
       });
     });
   }
-  byId('visible-count').addEventListener('input', () => {
-    byId<HTMLOutputElement>('visible-label').value = byId<HTMLInputElement>('visible-count').value;
+  byId('visible-area').addEventListener('input', () => {
+    byId<HTMLOutputElement>('visible-label').value =
+      `${byId<HTMLInputElement>('visible-area').value}%`;
   });
   byId('blur-strength').addEventListener('input', () => {
     byId<HTMLOutputElement>('strength-label').value =

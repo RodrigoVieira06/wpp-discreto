@@ -36,6 +36,7 @@ export {};
       !document.querySelector('[data-i18n="brandTagline"]') && byId('status').textContent === '',
     );
     check('settings hidden initially', byId('settings-panel').hidden);
+    document.querySelector('footer')?.scrollIntoView({ block: 'end' });
     check(
       'local-only notice is translated and visible',
       document.querySelector('footer [data-i18n="localOnlyNotice"]')?.textContent ===
@@ -78,13 +79,13 @@ export {};
         byId('alias-list').getAttribute('aria-label') === window.expectedMessages.savedAliases,
     );
 
-    change('visible-count', '3');
+    change('visible-area', '60');
     await wait();
     change('blur-strength', '14');
     await wait();
     check(
       'settings sliders persist',
-      stored.settings.visibleCount === 3 &&
+      stored.settings.visibleArea === 60 &&
         stored.settings.blurStrength === 14 &&
         byId('strength-label').value === '14 px',
     );
@@ -105,7 +106,7 @@ export {};
       'master off retains preferences and saved aliases',
       !stored.settings.enabled &&
         stored.settings.blurChat &&
-        stored.settings.visibleCount === 3 &&
+        stored.settings.visibleArea === 60 &&
         stored.aliases.length === 1,
     );
     check(
@@ -219,7 +220,7 @@ export {};
         !stored.settings.blurChat &&
         !stored.settings.blurPreviews &&
         stored.settings.language === 'auto' &&
-        stored.settings.visibleCount === 4 &&
+        stored.settings.visibleArea === 40 &&
         stored.settings.blurStrength === 8 &&
         stored.settings.blurImages &&
         stored.settings.blurVideos &&
@@ -244,13 +245,13 @@ export {};
         language: 'auto',
         blurChat: true,
         blurPreviews: true,
-        visibleCount: 7,
+        visibleArea: 70,
         blurStrength: 10,
       },
     });
     check(
       'external settings updates refresh controls',
-      byId('visible-count').value === '7' && byId('blur-previews').checked,
+      byId('visible-area').value === '70' && byId('blur-previews').checked,
     );
     byId('settings-toggle').click();
     check('settings panel closes', byId('settings-panel').hidden);

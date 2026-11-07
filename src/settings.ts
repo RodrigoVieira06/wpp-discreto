@@ -6,7 +6,7 @@ export interface Settings {
   language: LanguagePreference;
   blurPreviews: boolean;
   blurChat: boolean;
-  visibleCount: number;
+  visibleArea: number;
   blurStrength: number;
   blurImages: boolean;
   blurVideos: boolean;
@@ -25,7 +25,7 @@ export const defaults: Readonly<Settings> = Object.freeze({
   language: 'auto',
   blurPreviews: false,
   blurChat: false,
-  visibleCount: 4,
+  visibleArea: 40,
   blurStrength: 8,
   blurImages: true,
   blurVideos: true,
@@ -49,7 +49,7 @@ export function settings(value: unknown = {}): Settings {
     language: input.language === 'pt_BR' || input.language === 'en' ? input.language : 'auto',
     blurPreviews: input.blurPreviews === true,
     blurChat: input.blurChat === true,
-    visibleCount: bounded(input.visibleCount, defaults.visibleCount, 0, 12),
+    visibleArea: bounded(input.visibleArea, defaults.visibleArea, 0, 100),
     blurStrength: bounded(input.blurStrength, defaults.blurStrength, 4, 16),
     blurImages: input.blurImages !== false,
     blurVideos: input.blurVideos !== false,

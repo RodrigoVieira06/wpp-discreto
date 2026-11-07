@@ -6,7 +6,7 @@ Read the [documentation index](docs/README.md), [AI workflow](docs/ai-instructio
 
 ## Objective and required workflow
 
-Build a public Chrome extension for WhatsApp Web with local group aliases, blurred sidebar previews, and conversation protection that leaves a configurable number of recent messages readable.
+Build a public Chrome extension for WhatsApp Web with local group aliases, blurred sidebar previews, and conversation protection that leaves a configurable lower screen area readable.
 
 - Use **pnpm** exclusively. Keep `pnpm-lock.yaml`; do not create npm or Yarn lockfiles.
 - Use **TypeScript**, **SCSS**, **Biome**, and **Jest**, with strict TypeScript checking.
@@ -26,19 +26,19 @@ Build a public Chrome extension for WhatsApp Web with local group aliases, blurr
 - `src/settings.ts` owns settings types, defaults, validation, and alias normalization.
 - Master and aliases switches default to enabled and retain preferences/mappings when disabled. Restoring defaults resets settings only, never deletes aliases. Existing settings migrate with enabled switches and automatic language.
 - `src/chats.ts` reads up to ten unique loaded sidebar names for suggestions and validates requested original names against loaded titles. Use active-tab message passing without extra permissions. Never persist discovered names automatically; only user-saved mappings are stored.
-- `src/content.ts` observes the DOM, decorates titles, handles preferences, and selects recent messages.
-- `src/messages.ts` isolates logical message units and media/text annotation. Never reveal an aggregate wrapper containing multiple messages. Mask media assets independently so one type exemption cannot expose another type or its older caption.
-- `src/content.scss` masks new messages before explicit reveal exceptions.
+- `src/content.ts` observes the DOM, decorates titles, handles preferences, and updates the conversation viewport mask.
+- `src/screen.ts` masks the upper conversation viewport with a pointer-transparent backdrop overlay. `src/messages.ts` classifies media assets independently so one exemption cannot expose another type or a caption. Do not restore per-message count exceptions.
+- `src/content.scss` keeps initial content protected and masks selected media independently of the viewport overlay.
 - `popup/` contains TypeScript, SCSS, and HTML for controls and aliases.
 - `assets/logo.png` is the approved artwork: smaller WhatsApp symbol behind the larger foreground shield. Preserve it when generating sizes. `make icons` uses Sharp to regenerate the committed 16/32/48/128 px PNGs; the popup and Chrome toolbar use those icons. See `docs/branding.md`.
 - esbuild and Sass compile into `dist/extension`. Load that directory in Chrome, not the repository root.
 - Store only preferences and alias mappings in `chrome.storage.local`. No message persistence, backend, synchronization, analytics, or extension-owned network calls.
 - Do not modify React-owned text or structures. Use `data-wppm-` attributes and visual aliases. Treat aliases as plain text.
-- Blur options default to off; visible count defaults to 4, ranging from 0–12; strength ranges from 4–16 px.
-- Media choices `blurImages`, `blurVideos`, `blurStickers`, and `alwaysBlurMedia` default to true when missing. They apply with chat protection enabled. Selected types remain hidden in recent messages when always mode is on; otherwise they follow the recent-message rule. Unidentified types must not inherit a type exemption. See `docs/message-protection.md`.
+- Blur options default to off; readable lower screen area defaults to 40%, ranging from 0–100%; strength ranges from 4–16 px.
+- Media choices `blurImages`, `blurVideos`, `blurStickers`, and `alwaysBlurMedia` default to true when missing. They apply with chat protection enabled. Selected types remain hidden in the readable area when always mode is on; otherwise they follow the screen boundary. Unidentified types must not inherit a type exemption. See `docs/message-protection.md`.
 - Default restoration requires explicit confirmation; cancel performs no write. Always retain the plain-language footer explaining local-only changes, unchanged original WhatsApp data, and no transmission/persistence of conversation contents. This is necessary information, not promotional copy.
 - Sidebar title extraction must exclude unread counters. Alias CSS must visually hide nested original title children while retaining their DOM text; never concatenate original and alias.
-- History scrolling hides all messages; returning to the end reveals the last N loaded blocks. Hover must not reveal them.
+- History scrolling keeps the same readable lower screen area, so older messages can be read by scrolling them into it. Large messages and albums may cross the boundary. Hover must not reveal protected pixels.
 - Blur is visual protection, not encryption or access control.
 
 ## Known limits
@@ -46,7 +46,7 @@ Build a public Chrome extension for WhatsApp Web with local group aliases, blurr
 - Aliases match exact original names, not group IDs. Same-name conversations, including contacts, share aliases; group renames require updating entries.
 - No automatic group detection. Only sidebar titles and the conversation header are decorated. Search, accessibility text, and group information retain original names.
 - WhatsApp DOM selectors are unstable; isolate integration changes and manually validate before store distribution. Missing names get amber warnings with a tooltip explicitly scoped to loaded conversations. Unavailable tabs must not be treated as invalid aliases. See `docs/popup-controls.md`.
-- Counts use loaded blocks and may group albums. Notifications, search, and media panels are outside the protection scope.
+- Screen masking depends on conversation viewport detection. Notifications, search, and media panels are outside the protection scope. Manually check context menus and floating UI within the masked area.
 
 ## Commands
 
@@ -69,8 +69,10 @@ Tests use Jest with SWC and simulated markup in Chrome headless. Set `CHROME_BIN
 
 ## Regression history and validation
 
-Timer scheduling replaced `requestAnimationFrame` after tests exposed deferred updates in headless execution. Timers can also be throttled; they are not a real-time guarantee. A confirmed red/green regression exposed recycled message contents before deferred rendering; the observer now revokes reveal exceptions in a microtask before painting.
+Timer scheduling replaced `requestAnimationFrame` after tests exposed deferred updates in headless execution. Timers can also be throttled; they are not a real-time guarantee. The previous count-based implementation revoked recycled-message exceptions before painting. Screen protection now avoids message reveal exceptions entirely and refreshes media exclusions in the mutation-observer microtask.
 
 A regression test also covers master-switch recovery after an initial settings read failure: a subsequent settings change supersedes the failed read and can disable all effects.
+
+Popup controls must retain intrinsic height and the existing 380 px width, with normal document scrolling and the footer in document flow. Never constrain controls with `100vh` or a fixed footer. Short-viewport regression checks cover this layout. Screenshot comparisons cover actual screen-mask pixels on synthetic markup.
 
 Actual extension loading and popup initialization are covered by the local deployment smoke test in headless Chrome. Authenticated WhatsApp validation remains pending. The data policy still needs publisher identity and support contact before store publication. Automated Web Store submission is not configured; OAuth/API setup is documented in `docs/distribution.md`.

@@ -15,14 +15,14 @@ test('invalid persisted settings cannot inject CSS or enable options accidentall
     language: 'auto',
     blurPreviews: false,
     blurChat: false,
-    visibleCount: 4,
+    visibleArea: 40,
     blurStrength: 8,
   });
   assert.deepEqual(
     model.settings({
       blurPreviews: 'true',
       blurChat: true,
-      visibleCount: 500,
+      visibleArea: 500,
       blurStrength: 'url(evil)',
     }),
     {
@@ -35,12 +35,12 @@ test('invalid persisted settings cannot inject CSS or enable options accidentall
       language: 'auto',
       blurPreviews: false,
       blurChat: true,
-      visibleCount: 12,
+      visibleArea: 100,
       blurStrength: 8,
     },
   );
-  assert.equal(model.settings({ visibleCount: -3, blurStrength: 0 }).visibleCount, 0);
-  assert.equal(model.settings({ visibleCount: NaN, blurStrength: Infinity }).blurStrength, 8);
+  assert.equal(model.settings({ visibleArea: -3, blurStrength: 0 }).visibleArea, 0);
+  assert.equal(model.settings({ visibleArea: NaN, blurStrength: Infinity }).blurStrength, 8);
 });
 
 test('new preferences migrate existing settings and reject unsupported language values', () => {
@@ -54,7 +54,7 @@ test('new preferences migrate existing settings and reject unsupported language 
     language: 'en',
     blurPreviews: false,
     blurChat: false,
-    visibleCount: 4,
+    visibleArea: 40,
     blurStrength: 8,
   });
   assert.equal(model.settings({ language: 'es' }).language, 'auto');
@@ -88,4 +88,10 @@ test('manifest limits execution to WhatsApp and references existing files', () =
   ]) {
     assert.ok(fs.existsSync(path.join(root, file)), file);
   }
+});
+
+test('screen area migrates count-based settings without interpreting counts as percentages', () => {
+  assert.equal(model.settings({ visibleCount: 12, blurChat: true }).visibleArea, 40);
+  assert.equal(model.settings({ visibleArea: 0 }).visibleArea, 0);
+  assert.equal(model.settings({ visibleArea: 100 }).visibleArea, 100);
 });

@@ -1,32 +1,32 @@
 # Message and media protection
 
-`src/messages.ts` isolates message-unit discovery, media classification, and text annotation. Keep its selectors aligned with `src/content.scss`.
+`src/screen.ts` owns viewport protection. `src/messages.ts` classifies individual media assets; keep its selectors aligned with `src/content.scss`.
 
-## Message units
+## Screen area
 
-A wrapper containing multiple message elements is not a reveal unit. The implementation selects the innermost message elements, including supported message IDs, and preserves at most the configured number of recent units at the conversation end. Scrolling into history revokes those exceptions. An album represented by a single message element can contain multiple assets; its assets are masked independently.
+`visibleArea` is the readable percentage of the conversation viewport, from 0 to 100 (default 40). The upper portion is blurred; the lower portion stays readable. At 0 the whole message viewport is protected; at 100 text is readable throughout it. Media in always mode remains protected independently.
 
-This prevents a grouped `msg-container` from exposing a whole conversation when it happens to be one of the last few wrappers.
+The boundary follows physical screen coordinates, not message count or history position. Scroll any old message into the lower area to read it. A large message or album can cross the boundary: only its upper portion is masked. There are no per-message reveal exceptions or aggregate message-count wrappers.
+
+The extension adds its own fixed, pointer-transparent backdrop overlay outside WhatsApp's React-owned tree. It measures the message scroll viewport, excludes the conversation header/composer, clips to visible bounds, and updates on scrolling, mutations, loading, window resizing, and viewport resizing. Scroll and content-mutation updates also refresh exemptions before painting; deferred rendering is not the only protection update.
+
+Existing settings without `visibleArea` receive 40%; the old `visibleCount` is ignored rather than interpreted as a percentage. Other preferences and aliases remain intact. Both blur options still default to disabled.
 
 ## Media preferences
 
-The settings panel exposes four preferences, all defaulting to `true` when missing from old settings:
+These preferences default to `true` when missing:
 
-- `blurImages`: recognized photo assets.
+- `blurImages`: recognized photos.
 - `blurVideos`: videos and recognized video thumbnails.
-- `blurStickers`: recognized stickers, including their image/canvas assets.
-- `alwaysBlurMedia`: selected types remain blurred even within recent revealed messages.
+- `blurStickers`: recognized stickers, including image/canvas assets.
+- `alwaysBlurMedia`: selected types stay blurred inside the readable area too.
 
-They apply only while the extension and open-conversation protection are enabled. When always mode is off, selected media follows the recent-message exceptions. An explicitly exempt recognized type remains visible while older captions stay masked. If all media types are off, only message text is protected.
+They apply only while the extension and conversation protection are enabled. With always mode off, selected media follows the physical screen boundary. An exempt recognized type stays visible on both sides of the boundary. Unknown types remain protected when any media type is selected.
 
-Unknown assets conservatively follow the protection for selected media instead of inheriting a type exemption. New assets are masked in CSS before classification; classification runs synchronously in the mutation-observer microtask. Pure layout/style changes do not revoke recent-message exceptions, while changes to message identity/content do. Load and metadata events trigger a position refresh.
-
-## Mixed messages
-
-Filtering an entire mixed-media parent would also blur exempt types, and revealing that parent could expose all album items. The implementation therefore masks visual assets and caption/text parents separately. Direct caption text sharing a media parent uses text-only masking without a parent image filter. Text nodes and React-owned structures are not replaced or wrapped; annotations use `data-wppm-` attributes only.
+The overlay uses an inline SVG mask to exclude only exempt asset rectangles. Overlapping exclusions combine without exposing the space between them. Captions and album containers are not exempted. CSS independently masks selected media in always mode and unclassified new assets until synchronous classification. No React-owned text or structures are replaced, wrapped, or removed.
 
 ## Integration limits
 
-Classification depends on WhatsApp's markup and media indicators. Unknown types may stay masked even when a specific type is exempt. Current protection targets chat albums and messages; system notifications and separate search/media panels are not covered by this change.
+Selectors and viewport detection depend on WhatsApp's markup. Validate real chats, tall albums, video previews, stickers, context menus, floating UI, zoom, and side panels before distribution. System notifications, search results, and separate media panels are outside the protection scope. Blur is visual protection, not encryption or access control.
 
-Headless fixtures cover grouped containers, mixed albums, new items, repeated loading/scrolling, per-type exemptions, always mode, captions, and disabling protection. They do not validate an authenticated WhatsApp session. Check real albums, video thumbnails, animated stickers, and group histories manually before distribution.
+Headless fixtures exercise geometry, history scrolling, grouped containers, media choices, loading, resizing, and disabled states. Screenshot pixel comparisons verify actual blur, unchanged readable pixels, and independent photo/video handling on synthetic markup. These are not authenticated WhatsApp validation.

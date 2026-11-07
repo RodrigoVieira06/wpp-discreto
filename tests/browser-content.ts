@@ -7,17 +7,16 @@ export {};
     results.push({ name, pass: !!condition });
   };
   const filter = (node: Element) => getComputedStyle(node).filter;
-  const visible = () => document.querySelectorAll('[data-wppm-reveal]').length;
+  const mask = () => document.querySelector<HTMLElement>('[data-wppm-screen]');
   const history = document.getElementById('history') as HTMLElement;
   try {
     history.scrollTop = history.scrollHeight;
     await wait();
-    check('only four recent messages revealed', visible() === 4);
+    check('conversation uses a viewport mask', !!mask());
     check(
-      'oldest message blurred',
-      filter(history.firstElementChild as HTMLElement) === 'blur(8px)',
+      'message text stays unchanged beneath the visual mask',
+      filter(history.firstElementChild as HTMLElement) === 'none',
     );
-    check('latest message readable', filter(history.lastElementChild as HTMLElement) === 'none');
     check(
       'sidebar preview blurred',
       filter(document.querySelector('[data-testid="chat-subtitle"]') as HTMLElement) ===
@@ -36,7 +35,7 @@ export {};
     await chrome.storage.local.set({ settings: { ...activeSettings, enabled: false } });
     check(
       'master switch removes every visual effect',
-      visible() === 0 &&
+      !mask() &&
         document.querySelectorAll('[data-wppm-alias]').length === 0 &&
         filter(history.firstElementChild as HTMLElement) === 'none' &&
         filter(document.querySelector('[data-testid="chat-subtitle"]') as HTMLElement) === 'none',
@@ -44,8 +43,7 @@ export {};
     await chrome.storage.local.set({ settings: { ...activeSettings, aliasesEnabled: false } });
     check(
       'aliases disabled independently from message protection',
-      document.querySelectorAll('[data-wppm-alias]').length === 0 &&
-        filter(history.firstElementChild as HTMLElement) === 'blur(8px)',
+      document.querySelectorAll('[data-wppm-alias]').length === 0 && !!mask(),
     );
     await chrome.storage.local.set({ settings: activeSettings });
     check(
@@ -139,39 +137,33 @@ export {};
     const newMessage = document.createElement('div');
     newMessage.className = 'message-in';
     newMessage.textContent = 'Nova mensagem';
+    const boundary = mask()?.getBoundingClientRect().bottom;
     history.append(newMessage);
-    check('new messages blurred before observer updates', filter(newMessage) === 'blur(8px)');
-    history.scrollTop = history.scrollHeight;
     await wait();
     check(
-      'new arrival maintains recent count',
-      visible() === 4 && newMessage.hasAttribute('data-wppm-reveal'),
+      'new messages do not move the screen boundary',
+      mask()?.getBoundingClientRect().bottom === boundary,
     );
-
     newMessage.textContent = 'Conteúdo reciclado para outra conversa';
-    await Promise.resolve();
-    check(
-      'recycled message content masked before deferred render',
-      !newMessage.hasAttribute('data-wppm-reveal') && filter(newMessage) === 'blur(8px)',
-    );
     await wait();
-
+    check(
+      'recycling does not introduce message reveal exceptions',
+      !document.querySelector('[data-wppm-reveal]'),
+    );
     history.scrollTop = 0;
     history.dispatchEvent(new Event('scroll'));
-    check('scroll immediately masks history', visible() === 0);
-    await wait();
-    check('history stays masked away from bottom', visible() === 0);
+    check(
+      'scrolling history keeps the readable area available',
+      mask()?.getBoundingClientRect().bottom === boundary,
+    );
     history.scrollTop = history.scrollHeight;
     history.dispatchEvent(new Event('scroll'));
     await wait();
-    check('returning to bottom restores recent messages', visible() === 4);
+    check(
+      'returning to the bottom keeps the same screen boundary',
+      mask()?.getBoundingClientRect().bottom === boundary,
+    );
 
-    for (const count of [0, 3, 12]) {
-      await chrome.storage.local.set({
-        settings: { blurPreviews: true, blurChat: true, visibleCount: count, blurStrength: 12 },
-      });
-      check(`level ${count} respected`, visible() === Math.min(count, history.children.length));
-    }
     await chrome.storage.local.set({
       aliases: [{ original: 'Família Silva', alias: '<img src=x onerror=alert(1)>' }],
     });
@@ -208,21 +200,16 @@ export {};
     nested.dataset.testid = 'msg-container';
     nested.innerHTML = '<div class="message-in">Mensagem aninhada</div>';
     history.replaceChildren(nested);
-    await chrome.storage.local.set({ settings: { blurChat: true, visibleCount: 1 } });
+    await chrome.storage.local.set({ settings: { blurChat: true, visibleArea: 0 } });
     check(
-      'nested message counted once and readable',
-      visible() === 1 && filter(nested.firstElementChild as HTMLElement) === 'none',
-    );
-    await chrome.storage.local.set({ settings: { blurChat: true, visibleCount: 0 } });
-    check(
-      'nested message masked with zero exceptions',
-      filter(nested.firstElementChild as HTMLElement) === 'blur(8px)',
+      'nested message structure does not change full-screen protection',
+      mask()?.getBoundingClientRect().height === history.clientHeight,
     );
 
     // Remove #main to emulate navigating to the WhatsApp home screen.
     document.getElementById('main')?.remove();
     await wait();
-    check('navigation clears detached message references', visible() === 0);
+    check('navigation clears detached message references', !mask());
   } catch (error) {
     results.push({
       name: error instanceof Error ? (error.stack ?? error.message) : String(error),

@@ -22,4 +22,15 @@ test('Chrome loads the actual extension and initializes its popup', () => {
   const report = JSON.parse(result.stdout.trim());
   expect(report.extensionId).toMatch(/^[a-p]{32}$/);
   expect(report.popupReady).toBe(true);
+  expect(report.popupLayout).toEqual(
+    [160, 600].map((height) => ({
+      height,
+      controlsExpanded: true,
+      widthPreserved: true,
+      masterReachable: true,
+      saveReachable: true,
+      footerReachable: true,
+      settingsReachable: true,
+    })),
+  );
 });

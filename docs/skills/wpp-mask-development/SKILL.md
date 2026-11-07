@@ -28,11 +28,11 @@ Confirm whether a terminal is local or connected over SSH before promising a vis
 - TypeScript and SCSS are source; generated JS/CSS belong in `dist`.
 - Sanitize storage through `src/settings.ts`. Avoid `any` and unchecked DOM access.
 - Keep DOM selectors isolated; do not use private WhatsApp application state or modify React-owned text.
-- Preserve immediate masking of new/recycled messages and history scrolling.
+- Keep screen protection in `src/screen.ts`: a readable lower percentage of the viewport, including during history scrolling. Do not reintroduce message-count reveal exceptions. Refresh media exclusions before painting.
 - Keep aliases plain text and settings local. Do not add permissions, networking, or message persistence incidentally.
 - Preserve aliases and preferences when the master/alias switches are off. Restore defaults resets settings, not mappings. Keep lookup limited to loaded conversation names, cap suggestions at ten, and distinguish missing loaded names from unavailable WhatsApp tabs. Follow `docs/popup-controls.md`.
 - Keep UI copy short and explanatory. Do not add slogans, promotional empty states, or persistent ready messages. The language setting can override automatic browser detection.
-- Preserve the visible plain-language footer about local-only effects and unchanged original data. Confirm before restoring settings. Use `src/messages.ts` for grouped message/media handling; keep selectors aligned with SCSS and retain album, unread-counter, and nested-title regression tests.
+- Preserve intrinsic popup control heights, the 380 px width, normal document scrolling, and the plain-language footer about local-only effects and unchanged original data. Confirm before restoring settings. Use `src/messages.ts` for grouped message/media handling; keep selectors aligned with SCSS and retain album, unread-counter, and nested-title regression tests.
 - Keep the approved logo in `assets/logo.png`. Use `make icons` to resize it into the committed Chrome icons; do not redesign the artwork during routine builds. Follow `docs/branding.md` for asset paths and packaging.
 - Keep user-facing copy in Chrome locale catalogs, with Brazilian Portuguese as default and English for English browser UI locales. Unsupported languages use Portuguese. Use the typed message helper for dynamic text and translate accessible labels and placeholders. Follow `docs/internationalization.md`; source identifiers and documentation stay in English.
 
