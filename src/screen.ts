@@ -1,5 +1,6 @@
 import { messageSelector } from './messages';
 import type { Settings } from './settings';
+import { audioElements } from './surfaces';
 
 const namespace = 'http://www.w3.org/2000/svg';
 const maskId = 'wppm-screen-media-mask';
@@ -66,7 +67,7 @@ export class ScreenProtection {
       0,
       Math.min(innerWidth, rect.left + viewport.clientLeft + viewport.clientWidth) - left,
     );
-    const height = Math.max(0, bottom - top) * (1 - config.visibleArea / 100);
+    const height = Math.max(0, bottom - top) * (config.fullBlur ? 1 : 1 - config.visibleArea / 100);
     if (!this.overlay) {
       this.overlay = document.createElement('div');
       this.overlay.setAttribute('data-wppm-screen', '');
@@ -100,6 +101,7 @@ export class ScreenProtection {
       mask.append(node);
     };
     rectangle(0, 0, width, height, 'white');
+    const exemptions = [...audioElements(main)];
     for (const asset of main.querySelectorAll<HTMLElement>('[data-wppm-media]')) {
       const kind = asset.getAttribute('data-wppm-media');
       const selected =
@@ -111,6 +113,9 @@ export class ScreenProtection {
               ? config.blurStickers
               : config.blurImages || config.blurVideos || config.blurStickers;
       if (selected) continue;
+      exemptions.push(asset);
+    }
+    for (const asset of exemptions) {
       const box = asset.getBoundingClientRect();
       const x = Math.max(0, box.left - left);
       const y = Math.max(0, box.top - top);

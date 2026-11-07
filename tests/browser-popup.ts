@@ -45,7 +45,67 @@ export {};
         (document.querySelector('footer')?.getBoundingClientRect().bottom ?? Infinity) <=
           window.innerHeight,
     );
+    check(
+      'media protection starts opt-in',
+      !stored.settings.blurImages &&
+        !stored.settings.blurVideos &&
+        !stored.settings.blurStickers &&
+        !stored.settings.alwaysBlurMedia,
+    );
+    change('advanced-blur', true);
+    await wait();
+    check(
+      'advanced blur enables chat protection and all media settings',
+      stored.settings.blurChat &&
+        stored.settings.blurImages &&
+        stored.settings.blurVideos &&
+        stored.settings.blurStickers &&
+        stored.settings.alwaysBlurMedia,
+    );
+    change('advanced-blur', false);
+    await wait();
+    check(
+      'advanced blur can clear media settings without disabling text protection',
+      stored.settings.blurChat &&
+        !stored.settings.blurImages &&
+        !stored.settings.blurVideos &&
+        !stored.settings.blurStickers &&
+        !stored.settings.alwaysBlurMedia,
+    );
+    change('advanced-blur', true);
+    await wait();
+    check(
+      'advanced blur help is localized',
+      byId('media-help').getAttribute('aria-describedby') === 'advanced-blur-help' &&
+        byId('advanced-blur-help').textContent === window.expectedMessages.advancedBlurHelp,
+    );
+    byId('media-help').focus();
+    check(
+      'advanced help tooltip is available on keyboard focus',
+      getComputedStyle(byId('advanced-blur-help')).display !== 'none',
+    );
+    byId('media-help').click();
+    check(
+      'media help opens settings and focuses individual choices',
+      !byId('settings-panel').hidden && document.activeElement?.id === 'blur-images',
+    );
     byId('settings-toggle').click();
+    byId('settings-toggle').click();
+    check('visible area has an explicit twenty percent minimum', byId('visible-area').min === '20');
+    change('full-blur', true);
+    await wait();
+    check(
+      'full blur is explicit and retains the readable percentage',
+      stored.settings.fullBlur &&
+        byId('visible-area').disabled &&
+        stored.settings.visibleArea === 40,
+    );
+    change('full-blur', false);
+    await wait();
+    check(
+      'leaving full blur restores the percentage control',
+      !stored.settings.fullBlur && !byId('visible-area').disabled,
+    );
     check(
       'settings button opens the panel accessibly',
       !byId('settings-panel').hidden &&
@@ -222,10 +282,11 @@ export {};
         stored.settings.language === 'auto' &&
         stored.settings.visibleArea === 40 &&
         stored.settings.blurStrength === 8 &&
-        stored.settings.blurImages &&
-        stored.settings.blurVideos &&
-        stored.settings.blurStickers &&
-        stored.settings.alwaysBlurMedia &&
+        !stored.settings.blurImages &&
+        !stored.settings.blurVideos &&
+        !stored.settings.blurStickers &&
+        !stored.settings.alwaysBlurMedia &&
+        !stored.settings.fullBlur &&
         stored.aliases.length === aliasCount,
     );
     window.failNextSave = true;

@@ -6,15 +6,16 @@ import * as model from '../src/settings';
 
 test('invalid persisted settings cannot inject CSS or enable options accidentally', () => {
   assert.deepEqual(model.settings(null), {
-    blurImages: true,
-    blurVideos: true,
-    blurStickers: true,
-    alwaysBlurMedia: true,
+    blurImages: false,
+    blurVideos: false,
+    blurStickers: false,
+    alwaysBlurMedia: false,
     enabled: true,
     aliasesEnabled: true,
     language: 'auto',
     blurPreviews: false,
     blurChat: false,
+    fullBlur: false,
     visibleArea: 40,
     blurStrength: 8,
   });
@@ -22,38 +23,41 @@ test('invalid persisted settings cannot inject CSS or enable options accidentall
     model.settings({
       blurPreviews: 'true',
       blurChat: true,
+      fullBlur: false,
       visibleArea: 500,
       blurStrength: 'url(evil)',
     }),
     {
-      blurImages: true,
-      blurVideos: true,
-      blurStickers: true,
-      alwaysBlurMedia: true,
+      blurImages: false,
+      blurVideos: false,
+      blurStickers: false,
+      alwaysBlurMedia: false,
       enabled: true,
       aliasesEnabled: true,
       language: 'auto',
       blurPreviews: false,
       blurChat: true,
+      fullBlur: false,
       visibleArea: 100,
       blurStrength: 8,
     },
   );
-  assert.equal(model.settings({ visibleArea: -3, blurStrength: 0 }).visibleArea, 0);
+  assert.equal(model.settings({ visibleArea: -3, blurStrength: 0 }).visibleArea, 20);
   assert.equal(model.settings({ visibleArea: NaN, blurStrength: Infinity }).blurStrength, 8);
 });
 
 test('new preferences migrate existing settings and reject unsupported language values', () => {
   assert.deepEqual(model.settings({ enabled: false, aliasesEnabled: false, language: 'en' }), {
-    blurImages: true,
-    blurVideos: true,
-    blurStickers: true,
-    alwaysBlurMedia: true,
+    blurImages: false,
+    blurVideos: false,
+    blurStickers: false,
+    alwaysBlurMedia: false,
     enabled: false,
     aliasesEnabled: false,
     language: 'en',
     blurPreviews: false,
     blurChat: false,
+    fullBlur: false,
     visibleArea: 40,
     blurStrength: 8,
   });
@@ -92,6 +96,11 @@ test('manifest limits execution to WhatsApp and references existing files', () =
 
 test('screen area migrates count-based settings without interpreting counts as percentages', () => {
   assert.equal(model.settings({ visibleCount: 12, blurChat: true }).visibleArea, 40);
-  assert.equal(model.settings({ visibleArea: 0 }).visibleArea, 0);
+  assert.equal(model.settings({ visibleArea: 0 }).visibleArea, 20);
+  assert.equal(model.settings({ visibleArea: 0 }).fullBlur, true);
+  assert.equal(model.settings({ visibleArea: 10 }).visibleArea, 20);
+  assert.equal(model.settings({ visibleArea: 10 }).fullBlur, false);
+  assert.equal(model.settings({ fullBlur: true, visibleArea: 60 }).visibleArea, 60);
+  assert.equal(model.settings({ blurImages: true, alwaysBlurMedia: true }).blurImages, true);
   assert.equal(model.settings({ visibleArea: 100 }).visibleArea, 100);
 });

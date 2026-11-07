@@ -1,4 +1,10 @@
-import { headerTitles, readChatContext, sidebarTitles, unavailableContext } from './chats';
+import {
+  headerTitles,
+  infoTitles,
+  readChatContext,
+  sidebarTitles,
+  unavailableContext,
+} from './chats';
 import { annotateMessages } from './messages';
 import { ScreenProtection } from './screen';
 import * as model from './settings';
@@ -74,7 +80,7 @@ import * as model from './settings';
     const byName = new Map(aliases.map(({ original, alias }) => [original, alias]));
     const candidates =
       config.enabled && config.aliasesEnabled
-        ? [...sidebarTitles(document), ...headerTitles(document)]
+        ? [...sidebarTitles(document), ...headerTitles(document), ...infoTitles(document)]
         : [];
     const active = new Set<HTMLElement>();
     for (const node of candidates) {

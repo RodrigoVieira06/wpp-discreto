@@ -50,8 +50,17 @@ export {};
       'resizing recomputes the protected screen area',
       Math.abs((bounds()?.height ?? 0) - 80) < 1,
     );
-    await chrome.storage.local.set({ settings: { blurChat: true, visibleArea: 0 } });
-    check('zero protects the entire message viewport', bounds()?.height === 320);
+    await chrome.storage.local.set({
+      settings: { blurChat: true, fullBlur: true, visibleArea: 60 },
+    });
+    check('explicit full blur protects the entire message viewport', bounds()?.height === 320);
+    await chrome.storage.local.set({
+      settings: { blurChat: true, fullBlur: false, visibleArea: 10 },
+    });
+    check(
+      'readable area cannot drop below twenty percent',
+      Math.abs((bounds()?.height ?? 0) - 256) < 1,
+    );
     await chrome.storage.local.set({ settings: { blurChat: true, visibleArea: 100 } });
     check('one hundred leaves the entire text viewport readable', bounds()?.height === 0);
     await chrome.storage.local.set({ settings: { blurChat: true, enabled: false } });

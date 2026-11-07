@@ -83,7 +83,7 @@ test('rendered screen mask blurs only its area and preserves exempt media', asyn
     };
     const original = await screenshot();
     await evaluate(
-      'chrome.storage.local.set({ settings: { blurChat: true, visibleArea: 40, blurImages: false, alwaysBlurMedia: false } })',
+      'chrome.storage.local.set({ settings: { blurChat: true, visibleArea: 40, blurImages: false, blurVideos: true, alwaysBlurMedia: false } })',
     );
     const protectedImage = await screenshot();
     const crop = (buffer: Buffer, x: number, y: number) =>
@@ -137,6 +137,59 @@ test('rendered screen mask blurs only its area and preserves exempt media', asyn
       await crop(original, 220, 185).raw().toBuffer(),
       'Scrolling old content into the readable area must keep it sharp',
     );
+    const regions = await evaluate<{
+      audio: { left: number; top: number };
+      panel: { left: number; top: number };
+      background: { left: number; top: number };
+    }>(`(async () => {
+      const history = document.getElementById('history');
+      history.scrollTop = 0;
+      history.innerHTML = '<div class="message-in" style="height:1000px;margin:0;padding:0;background:none"><div data-testid="audio-player" style="width:180px;height:70px;background:repeating-linear-gradient(black 0px 2px,white 2px 4px)"><canvas width="180" height="70"></canvas></div><div id="background-tile" style="width:180px;height:70px;background-image:repeating-linear-gradient(black 0px 2px,white 2px 4px)"><span data-icon="video-play"></span></div></div>';
+      const panel = document.createElement('aside');
+      panel.dataset.testid = 'drawer-right';
+      panel.style.cssText = 'position:fixed;left:850px;top:100px;width:120px;height:160px';
+      panel.innerHTML = '<div data-testid="image-thumb" style="height:70px;background-image:repeating-linear-gradient(black 0px 2px,white 2px 4px)"></div>';
+      document.body.append(panel);
+      await chrome.storage.local.set({ settings: { blurChat: false } });
+      const point = (element) => { const rect = element.getBoundingClientRect(); return { left: rect.left + 15, top: rect.top + 15 }; };
+      return { audio: point(history.querySelector('[data-testid="audio-player"]')), panel: point(panel.firstElementChild), background: point(document.getElementById('background-tile')) };
+    })()`);
+    const surfaceOriginal = await screenshot();
+    await evaluate(
+      'chrome.storage.local.set({ settings: { blurChat: true, fullBlur: true, blurImages: true, blurVideos: true, blurStickers: true, alwaysBlurMedia: true } })',
+    );
+    const surfaceProtected = await screenshot();
+    const extract = (buffer: Buffer, region: { left: number; top: number }) =>
+      sharp(buffer).extract({
+        left: Math.round(region.left),
+        top: Math.round(region.top),
+        width: 40,
+        height: 40,
+      });
+    const audioOriginal = await extract(surfaceOriginal, regions.audio).raw().toBuffer();
+    const audioProtected = await extract(surfaceProtected, regions.audio).raw().toBuffer();
+    const meanDifference =
+      audioOriginal.reduce(
+        (sum, value, index) => sum + Math.abs(value - audioProtected[index]),
+        0,
+      ) / audioOriginal.length;
+    // A composited backdrop layer can round color channels by a few values.
+    assert.ok(
+      meanDifference < 2,
+      `Audio controls must remain sharp; mean pixel difference: ${meanDifference}`,
+    );
+    for (const name of ['panel', 'background'] as const) {
+      const sharpPixels = await sharp(
+        await extract(surfaceOriginal, regions[name]).toBuffer(),
+      ).stats();
+      const maskedPixels = await sharp(
+        await extract(surfaceProtected, regions[name]).toBuffer(),
+      ).stats();
+      assert.ok(
+        maskedPixels.channels[0].stdev < sharpPixels.channels[0].stdev * 0.3,
+        `${name} media pixels must actually blur`,
+      );
+    }
   } finally {
     const closed = new Promise<void>((resolve) => browser.once('close', () => resolve()));
     try {

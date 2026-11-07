@@ -18,7 +18,7 @@
     "message": "Blur open conversation"
   },
   "historyHint": {
-    "message": "The lower area stays readable. Scroll to read older messages in that area. 0% blurs everything; 100% shows all text."
+    "message": "The lower area stays readable. Scroll to read older messages there (20% to 100%). Full blur masks all text; media follows the options below."
   },
   "blurStrength": {
     "message": "Blur strength"
@@ -159,12 +159,24 @@
     "message": "Also blur in the visible area"
   },
   "mediaOptionsHint": {
-    "message": "Applies while conversation protection is on. Turn off the last option to show selected media in the visible area."
+    "message": "Applies while conversation protection is on. Turn off the last option to show media in the readable area. In panels and the viewer, selected types always stay blurred."
   },
   "mediaFallbackHint": {
-    "message": "If the type cannot be identified, the media remains protected."
+    "message": "If any type is selected, unidentified media will also be blurred."
   },
   "visibleArea": {
     "message": "Visible conversation area"
+  },
+  "fullBlur": {
+    "message": "Full blur"
+  },
+  "advancedBlur": {
+    "message": "Advanced blur"
+  },
+  "mediaSettings": {
+    "message": "Configure media blur"
+  },
+  "advancedBlurHelp": {
+    "message": "Enables photos, videos and stickers, including in the readable area. Adjust each type in settings (gear). Audio stays visible."
   }
 }

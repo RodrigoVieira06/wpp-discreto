@@ -16,9 +16,9 @@ Master and aliases switches gate effects without deleting saved data. `src/chats
 
 ## Presentation and data
 
-SCSS compiles to static CSS. `src/screen.ts` applies a fixed backdrop mask to the upper conversation viewport, leaving a configurable lower percentage readable during both normal and history scrolling. An inline SVG mask excludes only exempt media assets. `src/messages.ts` classifies those assets; CSS masks new assets before classification and selected media in always mode. The observer refreshes classification and exclusions before painting. Media types and always-blur behavior are configurable. See [message protection](message-protection.md).
+SCSS compiles to static CSS. `src/screen.ts` applies a fixed backdrop mask to the upper conversation viewport, leaving a configurable lower percentage readable during both normal and history scrolling. An inline SVG mask excludes only exempt media assets. `src/messages.ts` classifies those assets; CSS masks new assets before classification and selected media in always mode and in info/media panels. Audio UI is excluded from filters and the viewport mask. CSS background thumbnails are classified alongside image/video/canvas assets. The observer refreshes classification and exclusions before painting. Media protection is opt-in; a popup shortcut selects every media preference. The readable area is bounded to 20–100%, with a separate full-blur setting. Media types and always-blur behavior are configurable. See [message protection](message-protection.md).
 
-Aliases use pseudo-elements without replacing React-owned text. Nested original spans are visually clipped so their own font sizes cannot make the original appear beside the alias. Title extraction excludes unread indicators.
+Aliases use pseudo-elements without replacing React-owned text. Nested original spans are visually clipped so their own font sizes cannot make the original appear beside the alias. Title extraction excludes unread indicators. Info-card titles are decorated only when they match the active conversation name; member lists and descriptions are excluded.
 
 `chrome.storage.local` holds a `settings` object and an `aliases` array. `Settings` and `Alias` interfaces and all sanitization live in `src/settings.ts`. Stored values are untrusted input. Message contents are never persisted.
 
@@ -32,4 +32,4 @@ Aliases use pseudo-elements without replacing React-owned text. Nested original 
 
 ## Integration boundary
 
-DOM selectors live in `src/content.ts`, `src/messages.ts`, `src/chats.ts`, and `src/content.scss`. WhatsApp updates can invalidate them. The fixture contains simulated markup and mock storage, not an authenticated session. Exact-name aliases do not provide stable group identification. Missing loaded names and unavailable tabs are separate validation states.
+DOM selectors live in `src/content.ts`, `src/messages.ts`, `src/surfaces.ts`, `src/chats.ts`, and `src/content.scss`. WhatsApp updates can invalidate them. The fixture contains simulated markup and mock storage, not an authenticated session. Exact-name aliases do not provide stable group identification. Missing loaded names and unavailable tabs are separate validation states.

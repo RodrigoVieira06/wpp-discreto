@@ -1,4 +1,5 @@
 import { normalizeName } from './settings';
+import { infoPanelSelector } from './surfaces';
 
 export interface ChatContext {
   available: boolean;
@@ -42,6 +43,32 @@ export function headerTitles(document: Document): HTMLElement[] {
   ];
 }
 
+/** Match only the active conversation name; member lists and descriptions retain original text. */
+export function infoTitles(document: Document): HTMLElement[] {
+  const names = new Set(
+    headerTitles(document).map((node) =>
+      normalizeName(node.getAttribute('title') || node.textContent),
+    ),
+  );
+  const titles = new Set<HTMLElement>();
+  for (const panel of document.querySelectorAll(infoPanelSelector)) {
+    for (const node of panel.querySelectorAll<HTMLElement>(
+      'h2, h3, [role="heading"], [dir="auto"], span[title]',
+    )) {
+      if (
+        node.closest(
+          '[contenteditable="true"], [role="list"], [role="listitem"], [role="grid"], button',
+        ) ||
+        node.querySelector('[dir="auto"], span[title]')
+      )
+        continue;
+      if (names.has(normalizeName(node.getAttribute('title') || node.textContent)))
+        titles.add(node);
+    }
+  }
+  return [...titles];
+}
+
 const titleName = (node: HTMLElement) =>
   normalizeName(node.getAttribute('title') || node.textContent);
 const namesFrom = (value: unknown): string[] =>
@@ -60,7 +87,11 @@ const namesFrom = (value: unknown): string[] =>
 export function readChatContext(document: Document, requestedNames: unknown): ChatContext {
   const sidebar = sidebarTitles(document).map(titleName);
   if (sidebar.length === 0) return unavailableContext();
-  const known = new Set([...sidebar, ...headerTitles(document).map(titleName)]);
+  const known = new Set([
+    ...sidebar,
+    ...headerTitles(document).map(titleName),
+    ...infoTitles(document).map(titleName),
+  ]);
   return {
     available: true,
     chats: [...new Set(sidebar)].slice(0, 10),

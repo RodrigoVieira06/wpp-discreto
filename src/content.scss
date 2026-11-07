@@ -1,6 +1,6 @@
 // Keep these selectors aligned with src/messages.ts.
 $messages: ':is(.message-in, .message-out, [data-testid="msg-container"], [data-id^="true_"], [data-id^="false_"])';
-$media: ':is(img:not(.emoji):not([data-testid="emoji"] *), video, canvas, [data-testid="sticker"], [data-testid="album"], [data-testid="media-grid"], [data-testid="album-image"], [data-testid="album-video"], [data-testid="media-cell"], [data-testid="image-thumb"], [data-testid="video-thumb"], [role="grid"] [style*="background-image"])';
+$media: ':is(img:not(.emoji):not([data-testid="emoji"] *), video, canvas, [data-testid="sticker"], [data-testid="album"], [data-testid="media-grid"], [data-testid="album-image"], [data-testid="album-video"], [data-testid="media-cell"], [data-testid="image-thumb"], [data-testid="video-thumb"], [style*="background-image"])';
 $active: 'html:is(:not([data-wppm-ready]), [data-wppm-chat="true"])';
 
 // Before preferences load, keep text protected. The viewport mask takes over once ready.
@@ -17,17 +17,19 @@ html:not([data-wppm-ready]) #main .selectable-text {
 }
 
 @each $kind in images, videos, stickers {
-  #{$active}[data-wppm-#{$kind}="true"][data-wppm-media-always="true"] #main [data-wppm-media="#{$kind}"] {
+  #{$active}[data-wppm-#{$kind}="true"][data-wppm-media-always="true"] [data-wppm-media="#{$kind}"],
+  #{$active}[data-wppm-#{$kind}="true"] [data-wppm-media-panel][data-wppm-media="#{$kind}"] {
     filter: blur(var(--wppm-blur, 8px)) !important;
   }
 }
-#{$active}[data-wppm-media-any="true"][data-wppm-media-always="true"] #main [data-wppm-media="unknown"] {
+#{$active}[data-wppm-media-any="true"][data-wppm-media-always="true"] [data-wppm-media="unknown"],
+#{$active}[data-wppm-media-any="true"] [data-wppm-media-panel][data-wppm-media="unknown"] {
   filter: blur(var(--wppm-blur, 8px)) !important;
 }
 
 // New or recycled assets are masked before the observer can classify them.
-html:not([data-wppm-ready]) #main #{$media}:not([data-wppm-media-ignore]):not(header *):not(footer *),
-html[data-wppm-chat="true"][data-wppm-media-any="true"] #main #{$media}:not([data-wppm-media]):not([data-wppm-media-ignore]):not([data-wppm-media] *):not(header *):not(footer *) {
+html:not([data-wppm-ready]) :is(#main, [data-wppm-surface]) #{$media}:not([data-wppm-media-ignore]):not(header *):not(footer *):not([data-wppm-audio]):not([data-wppm-audio] *),
+html[data-wppm-chat="true"][data-wppm-media-any="true"] :is(#main, [data-wppm-surface]) #{$media}:not([data-wppm-media]):not([data-wppm-media-ignore]):not([data-wppm-media] *):not(header *):not(footer *):not([data-wppm-audio]):not([data-wppm-audio] *) {
   filter: blur(var(--wppm-blur, 8px)) !important;
 }
 

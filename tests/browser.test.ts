@@ -41,13 +41,13 @@ function runBrowser(fixture: string, minimumChecks: number) {
     const results = JSON.parse(
       report[1].replaceAll('&lt;', '<').replaceAll('&gt;', '>').replaceAll('&amp;', '&'),
     );
-    assert.ok(
-      results.length >= minimumChecks,
-      `Expected integration checks, received ${results.length}`,
-    );
     assert.deepEqual(
       results.filter((result: { pass: boolean }) => !result.pass),
       [],
+    );
+    assert.ok(
+      results.length >= minimumChecks,
+      `Expected integration checks, received ${results.length}`,
     );
   } finally {
     rmSync(temp, { recursive: true, force: true });
@@ -162,4 +162,15 @@ test('screen protection follows the viewport instead of message counts or histor
       `<script src="${pathToFileURL(path.join(root, 'dist/test-runtime/browser-screen.js')).href}"></script></body>`,
     );
   runBrowser(fixture, 13);
+});
+
+test('albums, info cards, carousels, galleries and opened media follow protection choices', () => {
+  const base = pathToFileURL(path.join(root, 'fixtures/')).href;
+  const fixture = readFileSync(path.join(root, 'fixtures/whatsapp.html'), 'utf8')
+    .replace('<head>', `<head><base href="${base}">`)
+    .replace(
+      '</body>',
+      `<script src="${pathToFileURL(path.join(root, 'dist/test-runtime/browser-surfaces.js')).href}"></script></body>`,
+    );
+  runBrowser(fixture, 17);
 });

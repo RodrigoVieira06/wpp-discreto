@@ -26,16 +26,17 @@
         <label class="range-label" for="blur-strength"><span data-i18n="blurStrength">Intensidade do desfoque</span><output id="strength-label" for="blur-strength">8 px</output></label>
         <input id="blur-strength" type="range" min="4" max="16" value="8" step="1">
         <label class="range-label" for="visible-area"><span data-i18n="visibleArea">Área visível da conversa</span><output id="visible-label" for="visible-area">40%</output></label>
-        <input id="visible-area" type="range" min="0" max="100" value="40" step="1">
-        <p class="hint" data-i18n="historyHint">A parte inferior fica legível. Role a conversa para ler mensagens antigas nessa área. 0% embaça tudo; 100% mostra todo o texto.</p>
+        <input id="visible-area" type="range" min="20" max="100" value="40" step="1">
+        <label class="switch-row" for="full-blur"><span data-i18n="fullBlur">Desfoque completo</span><input id="full-blur" type="checkbox" role="switch"></label>
+        <p class="hint" data-i18n="historyHint">A parte inferior fica legível. Role para ler mensagens antigas nessa área (20% a 100%). Desfoque completo embaça todo o texto; mídias seguem as opções abaixo.</p>
         <fieldset class="media-options">
           <legend data-i18n="mediaTypes">Mídias para embaçar</legend>
           <label class="switch-row" for="blur-images"><span data-i18n="mediaImages">Fotos</span><input id="blur-images" type="checkbox" role="switch"></label>
           <label class="switch-row" for="blur-videos"><span data-i18n="mediaVideos">Vídeos</span><input id="blur-videos" type="checkbox" role="switch"></label>
           <label class="switch-row" for="blur-stickers"><span data-i18n="mediaStickers">Figurinhas</span><input id="blur-stickers" type="checkbox" role="switch"></label>
           <label class="switch-row" for="always-blur-media"><span data-i18n="alwaysBlurMedia">Embaçar também na área visível</span><input id="always-blur-media" type="checkbox" role="switch"></label>
-          <p class="hint" data-i18n="mediaOptionsHint">Vale com a proteção da conversa ligada. Desligue a última opção para mostrar as mídias selecionadas na área visível.</p>
-          <p class="hint" data-i18n="mediaFallbackHint">Se o tipo não for identificado, a mídia continua protegida.</p>
+          <p class="hint" data-i18n="mediaOptionsHint">Vale com a proteção da conversa ligada. Desligue a última opção para mostrar mídias na área legível. Nos painéis e no visualizador, os tipos selecionados ficam sempre embaçados.</p>
+          <p class="hint" data-i18n="mediaFallbackHint">Se algum tipo estiver marcado, mídias não identificadas também serão embaçadas.</p>
         </fieldset>
         <button id="restore-defaults" type="button" class="secondary" data-i18n="restoreDefaults" data-i18n-title="restoreDefaultsHint" title="Restaura as configurações sem apagar apelidos.">Restaurar padrão</button>
       </section>
@@ -45,6 +46,10 @@
           <h2 id="protection-title" data-i18n="protectionTitle">Proteção de mensagens</h2>
           <label class="switch-row" for="blur-previews"><strong data-i18n="blurPreviews">Embaçar prévias na lista</strong><input id="blur-previews" type="checkbox" role="switch"></label>
           <label class="switch-row" for="blur-chat"><strong data-i18n="protectChat">Embaçar conversa aberta</strong><input id="blur-chat" type="checkbox" role="switch"></label>
+          <div class="advanced-row">
+            <label class="switch-row" for="advanced-blur"><strong data-i18n="advancedBlur">Desfoque avançado</strong><input id="advanced-blur" type="checkbox" role="switch"></label>
+            <div class="help-container"><button id="media-help" type="button" class="help-button" aria-describedby="advanced-blur-help" data-i18n-aria-label="mediaSettings" aria-label="Configurar desfoque de mídias">?</button><span id="advanced-blur-help" role="tooltip" data-i18n="advancedBlurHelp">Ativa fotos, vídeos e figurinhas, inclusive na área legível. Ajuste cada tipo nas configurações (engrenagem). Áudios ficam visíveis.</span></div>
+          </div>
         </section>
         <section aria-labelledby="aliases-title">
           <label class="switch-row" for="aliases-enabled"><span class="section-heading"><strong id="aliases-title" data-i18n="groupAliases">Apelidos</strong><span id="alias-count" class="count">0</span></span><input id="aliases-enabled" type="checkbox" role="switch"></label>

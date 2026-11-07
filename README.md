@@ -13,11 +13,12 @@ A Chrome extension for local conversation aliases and visual message protection 
 - **Conversation picker:** select one of the first ten names loaded in the active WhatsApp tab.
 - **Name validation:** highlight aliases whose original name is absent from the loaded conversations, with a warning icon and explanatory tooltip.
 - **Blur chat previews:** conceal message previews in the sidebar.
-- **Protect conversations:** blur the upper conversation area and keep a configurable lower area readable (0–100%, default: 40%).
+- **Protect conversations:** blur the upper conversation area and keep a configurable lower area readable (20–100%, default: 40%), or explicitly enable full text blur.
+- **Advanced blur:** opt into all photo/video/sticker protections at once, then customize individual types in settings. Audio controls remain visible.
 - **Adjustable blur:** choose an intensity between 4 and 16 px.
 - **Local preferences:** save settings and aliases without sending them to a backend.
 - **Settings panel:** choose automatic language, Portuguese, or English; adjust protection levels; restore settings without deleting aliases.
-- **Media choices:** select photos, videos, and stickers, and choose whether they stay blurred even in the readable area. These choices apply while open-conversation protection is on.
+- **Media choices:** select photos, videos, and stickers, and choose whether they stay blurred even in the readable area. These choices apply while conversation protection is on, including info-card carousels, galleries, and opened media. Media options start disabled; saved choices are preserved.
 
 Scroll older messages into the lower readable area to read them. The boundary follows the screen, including across tall messages and albums. Hovering does not remove the blur. Both protection options start disabled.
 
@@ -103,11 +104,10 @@ Product copy lives in Chrome locale catalogs; see [internationalization](docs/in
 ## Current limitations
 
 - Aliases match exact original names, not stable group IDs. All same-name conversations, including contacts, receive the same alias. Update the entry if the original name changes.
-- Groups are not identified automatically. Search, accessibility text, and group-information panels continue using original names.
+- Groups are not identified automatically. Search, accessibility text, member lists, and descriptions retain original names. Supported info cards display the active conversation alias.
 - Suggestions use up to ten unique names already loaded in the active tab, not the entire address book. Validation can check other loaded conversation names and the open header, but cannot establish whether an absent name exists elsewhere in your account. An unavailable WhatsApp tab is reported separately.
-- Counts refer to blocks currently loaded in the DOM; an album may be one block.
-- Media types that cannot be identified remain protected according to the selected media rules. Separate media/search panels remain outside this change's scope; chat albums are covered.
-- Protection does not cover system notifications, search results, media panels, or conversation titles. Blur is not encryption or access control.
+- Media types that cannot be identified remain protected according to the selected media rules. Chat albums, info-card media, galleries, and opened media are covered; search remains outside scope.
+- Protection does not cover system notifications, search results, or conversation titles. Blur is not encryption or access control.
 - WhatsApp changes can break DOM selectors. Simulated tests do not establish live-application compatibility.
 
 ## Data handling and distribution

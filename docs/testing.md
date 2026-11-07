@@ -15,8 +15,9 @@ Build first with `make build` when invoking browser tests directly. Normal `make
 - `settings.test.ts`: persisted input, Unicode names, duplicates, and built manifest resources.
 - `browser.test.ts`: Chrome headless integration with simulated markup and mock storage.
 - `browser-content.ts`: scrolling, arrival, nested blocks, aliases, and recycled elements.
-- `browser-screen.ts`: physical screen boundaries, history scrolling, zero/full readable area, resizing, and navigation.
-- `screen-render.test.ts`: screenshot pixel comparisons for actual backdrop blur, unchanged readable pixels, and exempt photos beside selected videos.
+- `browser-surfaces.ts`: first album background thumbnails, info-card aliases, carousels, galleries/viewers, audio, independent preferences, and switch recovery.
+- `browser-screen.ts`: physical screen boundaries, history scrolling, minimum readable area and explicit full blur, resizing, and navigation.
+- `screen-render.test.ts`: screenshot pixel comparisons for actual backdrop blur, unchanged readable pixels, exempt photos beside selected videos, sharp audio controls in full/advanced mode, panel media, and background tiles.
 - `browser-media.ts`: grouped containers, photo/video/sticker albums, late-loading items, repeated bottom scrolling, per-type exemptions, always mode, and captions. Unknown types must not inherit an exemption accidentally.
 - `browser-popup.ts`: persisted controls, alias changes, safe text, and write failures.
 - Popup regressions cover reset confirmation/cancellation, visible localized data-handling footer, media choices, nested title replacement, and unread-count exclusion in sidebar lookup.
@@ -36,11 +37,13 @@ Before store distribution, check a real authenticated session:
 
 - Sidebar and filtered lists, message arrival, switching chats, and refresh.
 - Aliases in list/header, editing/removal, and duplicate names.
-- Readable areas 0%, 25%, 40%, 75%, and 100%; short chats; groups; audio, media, and albums.
+- Readable areas 20%, 25%, 40%, 75%, and 100%, plus explicit full blur; short chats; groups; audio, media, and albums.
 - Mixed albums with many photos, video thumbnails, animated stickers, lazy loading, and repeated bottom scrolling. Test each media selection, always mode on/off, and verify that exempt media does not reveal older captions.
 - History scrolling: old messages become readable inside the lower area; the upper area stays blurred. Check tall messages and albums crossing the boundary.
 - Disabling options, preference propagation between tabs, and persistence after reload.
 - Master and alias switches, language overrides, default restoration, name selection, and missing-name warnings. Test lookup with WhatsApp active, with an unrelated tab active, while signed out, and after reloading the extension.
+- Advanced shortcut on/off, tooltip focus and settings navigation, individually selected media, full blur retaining its percentage, 20% minimum, and readable audio controls.
+- Info cards and media carousels, galleries, and opened photos/videos: confirm aliases and selected-type protection after loading or switching assets.
 - Cancel and confirm default restoration; check that the explanatory footer remains readable. Verify title replacement and suggestions for conversations with unread badges and nested title spans.
 
 Do not commit actual messages, authentication material, or browser profiles as fixtures. Actual extension loading confirms installation and popup initialization; simulated tests are not live WhatsApp validation.

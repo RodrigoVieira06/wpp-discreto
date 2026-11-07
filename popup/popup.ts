@@ -93,6 +93,14 @@ import * as model from '../src/settings';
     byId<HTMLInputElement>('aliases-enabled').checked = config.aliasesEnabled;
     byId<HTMLInputElement>('blur-previews').checked = config.blurPreviews;
     byId<HTMLInputElement>('blur-chat').checked = config.blurChat;
+    byId<HTMLInputElement>('full-blur').checked = config.fullBlur;
+    byId<HTMLInputElement>('visible-area').disabled = config.fullBlur;
+    byId<HTMLInputElement>('advanced-blur').checked =
+      config.blurChat &&
+      config.blurImages &&
+      config.blurVideos &&
+      config.blurStickers &&
+      config.alwaysBlurMedia;
     byId<HTMLInputElement>('blur-images').checked = config.blurImages;
     byId<HTMLInputElement>('blur-videos').checked = config.blurVideos;
     byId<HTMLInputElement>('blur-stickers').checked = config.blurStickers;
@@ -190,6 +198,7 @@ import * as model from '../src/settings';
     'aliases-enabled': 'aliasesEnabled',
     'blur-previews': 'blurPreviews',
     'blur-chat': 'blurChat',
+    'full-blur': 'fullBlur',
     'blur-images': 'blurImages',
     'blur-videos': 'blurVideos',
     'blur-stickers': 'blurStickers',
@@ -201,6 +210,25 @@ import * as model from '../src/settings';
       if (await save({ settings: next })) await refreshContext();
     });
   }
+  byId('advanced-blur').addEventListener('change', () => {
+    const enabled = byId<HTMLInputElement>('advanced-blur').checked;
+    void save({
+      settings: model.settings({
+        ...config,
+        blurChat: enabled || config.blurChat,
+        blurImages: enabled,
+        blurVideos: enabled,
+        blurStickers: enabled,
+        alwaysBlurMedia: enabled,
+      }),
+    });
+  });
+  byId('media-help').addEventListener('click', () => {
+    settingsOpen = true;
+    draw();
+    byId('settings-panel').scrollIntoView({ block: 'start' });
+    byId('blur-images').focus({ preventScroll: true });
+  });
   for (const [id, key] of [
     ['visible-area', 'visibleArea'],
     ['blur-strength', 'blurStrength'],

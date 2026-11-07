@@ -6,6 +6,7 @@ export interface Settings {
   language: LanguagePreference;
   blurPreviews: boolean;
   blurChat: boolean;
+  fullBlur: boolean;
   visibleArea: number;
   blurStrength: number;
   blurImages: boolean;
@@ -25,12 +26,13 @@ export const defaults: Readonly<Settings> = Object.freeze({
   language: 'auto',
   blurPreviews: false,
   blurChat: false,
+  fullBlur: false,
   visibleArea: 40,
   blurStrength: 8,
-  blurImages: true,
-  blurVideos: true,
-  blurStickers: true,
-  alwaysBlurMedia: true,
+  blurImages: false,
+  blurVideos: false,
+  blurStickers: false,
+  alwaysBlurMedia: false,
 });
 
 export const normalizeName = (value: unknown): string =>
@@ -49,12 +51,13 @@ export function settings(value: unknown = {}): Settings {
     language: input.language === 'pt_BR' || input.language === 'en' ? input.language : 'auto',
     blurPreviews: input.blurPreviews === true,
     blurChat: input.blurChat === true,
-    visibleArea: bounded(input.visibleArea, defaults.visibleArea, 0, 100),
+    fullBlur: input.fullBlur === true || (input.fullBlur === undefined && input.visibleArea === 0),
+    visibleArea: bounded(input.visibleArea, defaults.visibleArea, 20, 100),
     blurStrength: bounded(input.blurStrength, defaults.blurStrength, 4, 16),
-    blurImages: input.blurImages !== false,
-    blurVideos: input.blurVideos !== false,
-    blurStickers: input.blurStickers !== false,
-    alwaysBlurMedia: input.alwaysBlurMedia !== false,
+    blurImages: input.blurImages === true,
+    blurVideos: input.blurVideos === true,
+    blurStickers: input.blurStickers === true,
+    alwaysBlurMedia: input.alwaysBlurMedia === true,
   };
 }
 
