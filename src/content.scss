@@ -12,18 +12,16 @@ html:not([data-wppm-ready]) #main .selectable-text {
 [data-wppm-screen] {
   position: fixed !important;
   pointer-events: none !important;
-  z-index: 2147483646 !important;
+  z-index: 2147483647 !important;
   backdrop-filter: blur(var(--wppm-blur, 8px)) !important;
 }
 
 @each $kind in images, videos, stickers {
-  #{$active}[data-wppm-#{$kind}="true"][data-wppm-media-always="true"] [data-wppm-media="#{$kind}"],
-  #{$active}[data-wppm-#{$kind}="true"] [data-wppm-media-panel][data-wppm-media="#{$kind}"] {
+  #{$active}[data-wppm-#{$kind}="true"] [data-wppm-media="#{$kind}"] {
     filter: blur(var(--wppm-blur, 8px)) !important;
   }
 }
-#{$active}[data-wppm-media-any="true"][data-wppm-media-always="true"] [data-wppm-media="unknown"],
-#{$active}[data-wppm-media-any="true"] [data-wppm-media-panel][data-wppm-media="unknown"] {
+#{$active}[data-wppm-media-any="true"] [data-wppm-media="unknown"] {
   filter: blur(var(--wppm-blur, 8px)) !important;
 }
 

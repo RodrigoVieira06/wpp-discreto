@@ -10,7 +10,7 @@ import { test } from '@jest/globals';
 import sharp from 'sharp';
 import { PipeClient } from '../scripts/lib/cdp';
 
-test('rendered screen mask blurs only its area and preserves exempt media', async () => {
+test('rendered screen mask covers chat media and suspends behind the media viewer', async () => {
   const temp = await mkdtemp(path.join(os.tmpdir(), 'wppm-pixels-'));
   const browser = spawn(
     process.env.CHROME_BIN || '/usr/bin/google-chrome',
@@ -64,7 +64,7 @@ test('rendered screen mask blurs only its area and preserves exempt media', asyn
     }
     const point = await evaluate<{ left: number; top: number }>(`(async () => {
       const history = document.getElementById('history');
-      history.innerHTML = '<div class="message-in" style="position:relative;margin:0;padding:0;height:1000px;border-radius:0;background:repeating-linear-gradient(black 0px 2px,white 2px 4px)"><img data-testid="image-thumb" style="position:absolute;top:10px;left:10px;width:64px;height:64px"><div data-testid="video-thumb" style="position:absolute;top:10px;left:100px;width:64px;height:64px;background:repeating-linear-gradient(black 0px 2px,white 2px 4px)"></div></div>';
+      history.innerHTML = '<div class="message-in" style="position:relative;margin:0;padding:0;height:1000px;border-radius:0;background:repeating-linear-gradient(black 0px 2px,white 2px 4px)"><img data-testid="image-thumb" style="position:absolute;z-index:2147483647;top:10px;left:10px;width:64px;height:240px"><div data-testid="video-thumb" style="position:absolute;top:10px;left:100px;width:64px;height:64px;background:repeating-linear-gradient(black 0px 2px,white 2px 4px)"></div></div>';
       const image = history.querySelector('img');
       image.src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><defs><pattern id="p" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="2" fill="black"/><rect y="2" width="4" height="2" fill="white"/></pattern></defs><rect width="64" height="64" fill="url(#p)"/></svg>');
       await image.decode();
@@ -104,10 +104,16 @@ test('rendered screen mask blurs only its area and preserves exempt media', asyn
       await crop(original, 220, 185).raw().toBuffer(),
       'Pixels in the readable area must remain unchanged',
     );
+    const photoTop = await sharp(await crop(protectedImage, 20, 20).toBuffer()).stats();
+    const originalPhoto = await sharp(await crop(original, 20, 20).toBuffer()).stats();
+    assert.ok(
+      photoTop.channels[0].stdev < originalPhoto.channels[0].stdev * 0.3,
+      'Allowed photos must still blur inside the protected screen area',
+    );
     assert.deepEqual(
-      await crop(protectedImage, 20, 20).raw().toBuffer(),
-      await crop(original, 20, 20).raw().toBuffer(),
-      'Exempt photo pixels must remain unchanged',
+      await crop(protectedImage, 20, 185).raw().toBuffer(),
+      await crop(original, 20, 185).raw().toBuffer(),
+      'Only the part of an allowed photo below the screen boundary becomes readable',
     );
     const video = await sharp(await crop(protectedImage, 110, 20).toBuffer()).stats();
     assert.ok(
@@ -119,11 +125,53 @@ test('rendered screen mask blurs only its area and preserves exempt media', asyn
       await Promise.resolve();
     })()`);
     const recycled = await screenshot();
-    const recycledVideo = await sharp(await crop(recycled, 20, 20).toBuffer()).stats();
+    const recycledVideo = await sharp(await crop(recycled, 20, 185).toBuffer()).stats();
     assert.ok(
       recycledVideo.channels[0].stdev < baseline.channels[0].stdev * 0.3,
-      'Recycled media must lose its previous photo exemption before painting',
+      'Selected video pixels must stay blurred in the readable area, even with a legacy false always flag',
     );
+    await evaluate(`(async () => {
+      document.querySelector('#history img').setAttribute('data-testid', 'image-thumb');
+      const viewer = document.createElement('div');
+      viewer.dataset.testid = 'media-viewer';
+      viewer.style.cssText = 'position:fixed;inset:0;background:#111;z-index:1000';
+      viewer.innerHTML = '<img style="width:100%;height:100%">';
+      viewer.querySelector('img').src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="700"><defs><pattern id="p" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="2" fill="black"/><rect y="2" width="4" height="2" fill="white"/></pattern></defs><rect width="100%" height="100%" fill="url(#p)"/></svg>');
+      document.body.append(viewer);
+      await viewer.querySelector('img').decode();
+      await chrome.storage.local.set({ settings: { blurChat: false } });
+    })()`);
+    const viewerOriginal = await screenshot();
+    await evaluate(
+      'chrome.storage.local.set({ settings: { blurChat: true, visibleArea: 40, blurImages: false, blurVideos: true } })',
+    );
+    const viewerAllowed = await screenshot();
+    for (const y of [30, 185, 380]) {
+      assert.ok(
+        (await crop(viewerAllowed, 220, y).raw().toBuffer()).equals(
+          await crop(viewerOriginal, 220, y).raw().toBuffer(),
+        ),
+        'An allowed opened image must be clear across the entire viewer',
+      );
+    }
+    assert.equal(await evaluate("!!document.querySelector('[data-wppm-screen]')"), false);
+    await evaluate(
+      'chrome.storage.local.set({ settings: { blurChat: true, blurImages: true, alwaysBlurMedia: false } })',
+    );
+    const viewerHidden = await screenshot();
+    for (const y of [30, 185, 380]) {
+      const before = await sharp(await crop(viewerOriginal, 220, y).toBuffer()).stats();
+      const after = await sharp(await crop(viewerHidden, 220, y).toBuffer()).stats();
+      assert.ok(
+        after.channels[0].stdev < before.channels[0].stdev * 0.3,
+        'A selected opened image must blur entirely, not just the previous chat rectangle',
+      );
+    }
+    await evaluate(`(async () => {
+      document.querySelector('[data-testid="media-viewer"]').remove();
+      await chrome.storage.local.set({ settings: { blurChat: true, visibleArea: 40 } });
+    })()`);
+    assert.equal(await evaluate("!!document.querySelector('[data-wppm-screen]')"), true);
     await evaluate(`(() => {
       const history = document.getElementById('history');
       history.scrollTop = 400;

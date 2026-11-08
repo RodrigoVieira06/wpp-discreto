@@ -1,4 +1,9 @@
-import { audioElements, mediaPanelSelector } from './surfaces';
+import {
+  audioElements,
+  hasOpenMediaViewer,
+  mediaPanelSelector,
+  mediaViewerSelector,
+} from './surfaces';
 
 export const messageSelector =
   '.message-in, .message-out, [data-testid="msg-container"], [data-id^="true_"], [data-id^="false_"]';
@@ -35,6 +40,15 @@ function mediaKind(node: HTMLElement): MediaKind {
     node.matches('img[alt="Photo"], img[alt="Foto"], img[alt="Imagem"]')
   )
     return 'images';
+  // A large displayed image is a photo; small unmarked preview tiles remain unknown.
+  if (
+    node.tagName === 'IMG' &&
+    node.closest(`${mediaViewerSelector}, [role="dialog"]`) &&
+    hasOpenMediaViewer(document)
+  ) {
+    const box = node.getBoundingClientRect();
+    if (box.width >= innerWidth * 0.2 || box.height >= innerHeight * 0.3) return 'images';
+  }
   return 'unknown';
 }
 
@@ -53,7 +67,10 @@ export function annotateMessages(document: Document) {
     for (const audio of audioElements(root)) audio.setAttribute('data-wppm-audio', '');
   }
   const assets = new Set(
-    [...roots].flatMap((root) => [...root.querySelectorAll<HTMLElement>(mediaSelector)]),
+    [...roots].flatMap((root) => [
+      ...(root.matches(mediaSelector) ? [root] : []),
+      ...root.querySelectorAll<HTMLElement>(mediaSelector),
+    ]),
   );
   for (const node of assets) {
     const panel = node.closest(mediaPanelSelector);

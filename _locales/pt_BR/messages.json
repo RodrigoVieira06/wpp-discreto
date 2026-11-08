@@ -18,7 +18,7 @@
     "message": "Embaçar conversa aberta"
   },
   "historyHint": {
-    "message": "A parte inferior fica legível. Role para ler mensagens antigas nessa área (20% a 100%). Desfoque completo embaça todo o texto; mídias seguem as opções abaixo."
+    "message": "A parte inferior fica legível. Role para ler mensagens antigas nessa área (20% a 100%). Desfoque completo cobre toda a conversa."
   },
   "blurStrength": {
     "message": "Intensidade do desfoque"
@@ -155,11 +155,8 @@
   "mediaStickers": {
     "message": "Figurinhas"
   },
-  "alwaysBlurMedia": {
-    "message": "Embaçar também na área visível"
-  },
   "mediaOptionsHint": {
-    "message": "Vale com a proteção da conversa ligada. Desligue a última opção para mostrar mídias na área legível. Nos painéis e no visualizador, os tipos selecionados ficam sempre embaçados."
+    "message": "Na conversa, a faixa protegida embaça também as mídias. Os tipos marcados ficam sempre embaçados por inteiro, inclusive ao abrir."
   },
   "mediaFallbackHint": {
     "message": "Se algum tipo estiver marcado, mídias não identificadas também serão embaçadas."
@@ -177,6 +174,6 @@
     "message": "Configurar desfoque de mídias"
   },
   "advancedBlurHelp": {
-    "message": "Ativa fotos, vídeos e figurinhas, inclusive na área legível. Ajuste cada tipo nas configurações (engrenagem). Áudios ficam visíveis."
+    "message": "Marca fotos, vídeos e figurinhas para ficarem sempre embaçados. Ajuste cada tipo nas configurações (engrenagem). Áudios ficam visíveis."
   }
 }

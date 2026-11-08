@@ -4,9 +4,9 @@
 
 - The master switch (`settings.enabled`, default `true`) pauses all blur and alias effects. Stored preferences and aliases remain intact.
 - The aliases switch (`settings.aliasesEnabled`, default `true`) controls title decoration independently of blur.
-- The gear button opens settings for language, blur intensity, readable screen percentage, media types, always-blur mode, and default restoration. See [media protection](message-protection.md).
+- The gear button opens settings for language, blur intensity, readable screen percentage, media types, and default restoration. See [media protection](message-protection.md).
 - Default restoration opens a localized confirmation dialog. Cancel/Escape performs no write; explicit confirmation resets settings and retains the `aliases` array. Blur starts disabled, strength defaults to 8 px, readable area to 40%, language to automatic, and media preferences to disabled.
-- The advanced-blur switch selects photos, videos, stickers, and always mode and enables chat protection. Turning it off clears media choices but retains text protection. Its question-mark help opens media settings and has a localized tooltip. Individual preferences remain independently editable.
+- The advanced-blur switch selects photos, videos, and stickers and enables chat protection. Turning it off clears media choices but retains text protection. Its question-mark help opens media settings and has a localized tooltip. Individual preferences remain independently editable.
 - The readable percentage is bounded to 20–100. A separate full-blur switch masks the entire text viewport and disables the percentage slider without changing its saved value. Audio controls stay readable.
 - Old saved settings migrate through `src/settings.ts`, with missing switches enabled and missing language set to `auto`.
 
@@ -35,3 +35,5 @@ Lookup runs when the popup opens, after relevant edits, and on explicit refresh.
 Reload the extension and refresh WhatsApp after installing this version so that the content script can receive lookup requests. Automated tests use simulated sidebar markup; live WhatsApp compatibility still needs manual validation.
 
 Supported info cards visually display the alias for the active conversation name. Member lists, descriptions, and original DOM text are preserved.
+
+Selected media types always stay blurred, including outside the protected chat area. The former always-blur control is removed; old stored values are ignored. Allowed media remains covered by the chat screen mask and becomes readable only outside that area. In a supported opened-media viewer, the chat overlay is suspended and only the media-type choice applies.

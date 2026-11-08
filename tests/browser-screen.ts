@@ -26,6 +26,55 @@ export {};
       getComputedStyle(overlay() as HTMLElement).backdropFilter === 'blur(8px)' &&
         getComputedStyle(overlay() as HTMLElement).pointerEvents === 'none',
     );
+    const viewer = document.createElement('div');
+    viewer.dataset.testid = 'media-viewer';
+    viewer.style.cssText = 'position:fixed;inset:0;z-index:9999';
+    viewer.hidden = true;
+    viewer.innerHTML = '<img data-testid="image-thumb">';
+    document.body.append(viewer);
+    await wait();
+    check('a hidden media viewer does not disable conversation protection', !!overlay());
+    viewer.hidden = false;
+    await wait();
+    check('opening a media viewer removes the conversation mask', !overlay());
+    viewer.setAttribute('aria-hidden', 'true');
+    await wait();
+    check('hiding a mounted viewer restores conversation protection', !!overlay());
+    viewer.removeAttribute('aria-hidden');
+    await wait();
+    check('reopening a mounted viewer removes the mask again', !overlay());
+    viewer.remove();
+    await wait();
+    check(
+      'closing the viewer restores the original screen boundary',
+      Math.abs((bounds()?.height ?? 0) - viewport.height * 0.6) < 1,
+    );
+    const standaloneImage = document.createElement('img');
+    standaloneImage.dataset.testid = 'media-viewer-img';
+    standaloneImage.style.cssText = 'position:fixed;inset:0;width:100%;height:100%';
+    standaloneImage.src =
+      'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="500" height="500"%3E%3Crect width="500" height="500" fill="red"/%3E%3C/svg%3E';
+    document.body.append(standaloneImage);
+    await chrome.storage.local.set({ settings: { blurChat: true, blurImages: true } });
+    await wait();
+    check(
+      'a standalone viewer image is fully protected when selected',
+      getComputedStyle(standaloneImage).filter === 'blur(8px)',
+    );
+    check('a standalone viewer image also suspends the chat mask', !overlay());
+    standaloneImage.remove();
+    const modal = document.createElement('div');
+    modal.setAttribute('role', 'dialog');
+    modal.style.cssText = 'position:fixed;inset:0';
+    modal.innerHTML = '<img data-testid="image-thumb">';
+    document.body.append(modal);
+    await wait();
+    check('a fullscreen media dialog suspends the chat mask without a test id', !overlay());
+    modal.style.visibility = 'hidden';
+    await wait();
+    check('a hidden fullscreen dialog does not disable the chat mask', !!overlay());
+    modal.remove();
+    await wait();
     history.scrollTop = history.scrollHeight;
     history.dispatchEvent(new Event('scroll'));
     const bottom = bounds()?.bottom;

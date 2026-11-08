@@ -1,9 +1,9 @@
 import { messageSelector } from './messages';
 import type { Settings } from './settings';
-import { audioElements } from './surfaces';
+import { audioElements, hasOpenMediaViewer } from './surfaces';
 
 const namespace = 'http://www.w3.org/2000/svg';
-const maskId = 'wppm-screen-media-mask';
+const maskId = 'wppm-screen-audio-mask';
 
 /** A viewport mask also covers partial messages and albums taller than the screen. */
 export class ScreenProtection {
@@ -18,7 +18,7 @@ export class ScreenProtection {
   update(config: Settings) {
     this.config = config;
     const main = document.querySelector<HTMLElement>('#main');
-    if (!main || !config.enabled || !config.blurChat) {
+    if (!main || !config.enabled || !config.blurChat || hasOpenMediaViewer(document)) {
       this.resize.disconnect();
       this.viewport = undefined;
       this.main = undefined;
@@ -82,8 +82,7 @@ export class ScreenProtection {
       height: `${height}px`,
     });
 
-    // Exempt only classified media assets, never their captions or album containers.
-    // SVG masks combine overlapping holes without exposing the space between them.
+    // Audio controls remain readable. Media never creates holes in the screen mask.
     const svg = document.createElementNS(namespace, 'svg');
     svg.setAttribute('width', '0');
     svg.setAttribute('height', '0');
@@ -101,21 +100,7 @@ export class ScreenProtection {
       mask.append(node);
     };
     rectangle(0, 0, width, height, 'white');
-    const exemptions = [...audioElements(main)];
-    for (const asset of main.querySelectorAll<HTMLElement>('[data-wppm-media]')) {
-      const kind = asset.getAttribute('data-wppm-media');
-      const selected =
-        kind === 'images'
-          ? config.blurImages
-          : kind === 'videos'
-            ? config.blurVideos
-            : kind === 'stickers'
-              ? config.blurStickers
-              : config.blurImages || config.blurVideos || config.blurStickers;
-      if (selected) continue;
-      exemptions.push(asset);
-    }
-    for (const asset of exemptions) {
+    for (const asset of audioElements(main)) {
       const box = asset.getBoundingClientRect();
       const x = Math.max(0, box.left - left);
       const y = Math.max(0, box.top - top);

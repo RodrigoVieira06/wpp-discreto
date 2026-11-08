@@ -35,6 +35,10 @@ export {};
       'no slogan or persistent ready message',
       !document.querySelector('[data-i18n="brandTagline"]') && byId('status').textContent === '',
     );
+    check(
+      'redundant always-blur media control is removed',
+      !document.getElementById('always-blur-media'),
+    );
     check('settings hidden initially', byId('settings-panel').hidden);
     document.querySelector('footer')?.scrollIntoView({ block: 'end' });
     check(
@@ -47,10 +51,7 @@ export {};
     );
     check(
       'media protection starts opt-in',
-      !stored.settings.blurImages &&
-        !stored.settings.blurVideos &&
-        !stored.settings.blurStickers &&
-        !stored.settings.alwaysBlurMedia,
+      !stored.settings.blurImages && !stored.settings.blurVideos && !stored.settings.blurStickers,
     );
     change('advanced-blur', true);
     await wait();
@@ -59,8 +60,7 @@ export {};
       stored.settings.blurChat &&
         stored.settings.blurImages &&
         stored.settings.blurVideos &&
-        stored.settings.blurStickers &&
-        stored.settings.alwaysBlurMedia,
+        stored.settings.blurStickers,
     );
     change('advanced-blur', false);
     await wait();
@@ -69,8 +69,7 @@ export {};
       stored.settings.blurChat &&
         !stored.settings.blurImages &&
         !stored.settings.blurVideos &&
-        !stored.settings.blurStickers &&
-        !stored.settings.alwaysBlurMedia,
+        !stored.settings.blurStickers,
     );
     change('advanced-blur', true);
     await wait();
@@ -151,14 +150,12 @@ export {};
     );
     change('blur-images', false);
     await wait();
-    change('always-blur-media', false);
-    await wait();
     check(
-      'media choices and always mode persist',
+      'individual media choices persist and update the advanced shortcut',
       !stored.settings.blurImages &&
-        !stored.settings.alwaysBlurMedia &&
         stored.settings.blurVideos &&
-        stored.settings.blurStickers,
+        stored.settings.blurStickers &&
+        !byId('advanced-blur').checked,
     );
     change('extension-enabled', false);
     await wait();
@@ -285,7 +282,6 @@ export {};
         !stored.settings.blurImages &&
         !stored.settings.blurVideos &&
         !stored.settings.blurStickers &&
-        !stored.settings.alwaysBlurMedia &&
         !stored.settings.fullBlur &&
         stored.aliases.length === aliasCount,
     );

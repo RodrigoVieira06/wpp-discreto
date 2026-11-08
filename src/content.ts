@@ -59,6 +59,8 @@ import * as model from './settings';
         'title',
         'data-id',
         'aria-selected',
+        'aria-hidden',
+        'hidden',
         'src',
         'srcset',
         'poster',
@@ -120,7 +122,6 @@ import * as model from './settings';
         ['stickers', config.blurStickers],
       ] as const)
         root().setAttribute(`data-wppm-${kind}`, String(selected));
-      root().setAttribute('data-wppm-media-always', String(config.alwaysBlurMedia));
       root().setAttribute(
         'data-wppm-media-any',
         String(config.blurImages || config.blurVideos || config.blurStickers),

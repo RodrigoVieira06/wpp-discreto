@@ -72,7 +72,7 @@ export {};
     check('sidebar avatars are outside media protection', !blurred(sidebarAvatar));
     await chrome.storage.local.set({ settings: { ...selected, alwaysBlurMedia: false } });
     check(
-      'panel media stays protected even when conversation media follows the screen area',
+      'legacy always-blur false cannot disable selected panel media',
       blurred(document.getElementById('carousel-photo')) &&
         blurred(document.getElementById('opened-video')),
     );

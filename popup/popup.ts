@@ -96,15 +96,10 @@ import * as model from '../src/settings';
     byId<HTMLInputElement>('full-blur').checked = config.fullBlur;
     byId<HTMLInputElement>('visible-area').disabled = config.fullBlur;
     byId<HTMLInputElement>('advanced-blur').checked =
-      config.blurChat &&
-      config.blurImages &&
-      config.blurVideos &&
-      config.blurStickers &&
-      config.alwaysBlurMedia;
+      config.blurChat && config.blurImages && config.blurVideos && config.blurStickers;
     byId<HTMLInputElement>('blur-images').checked = config.blurImages;
     byId<HTMLInputElement>('blur-videos').checked = config.blurVideos;
     byId<HTMLInputElement>('blur-stickers').checked = config.blurStickers;
-    byId<HTMLInputElement>('always-blur-media').checked = config.alwaysBlurMedia;
     byId<HTMLInputElement>('visible-area').value = String(config.visibleArea);
     byId<HTMLInputElement>('blur-strength').value = String(config.blurStrength);
     byId<HTMLSelectElement>('language').value = config.language;
@@ -202,7 +197,6 @@ import * as model from '../src/settings';
     'blur-images': 'blurImages',
     'blur-videos': 'blurVideos',
     'blur-stickers': 'blurStickers',
-    'always-blur-media': 'alwaysBlurMedia',
   } as const;
   for (const [id, key] of Object.entries(settingFields)) {
     byId(id).addEventListener('change', async () => {
@@ -219,7 +213,6 @@ import * as model from '../src/settings';
         blurImages: enabled,
         blurVideos: enabled,
         blurStickers: enabled,
-        alwaysBlurMedia: enabled,
       }),
     });
   });

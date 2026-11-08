@@ -18,7 +18,7 @@ A Chrome extension for local conversation aliases and visual message protection 
 - **Adjustable blur:** choose an intensity between 4 and 16 px.
 - **Local preferences:** save settings and aliases without sending them to a backend.
 - **Settings panel:** choose automatic language, Portuguese, or English; adjust protection levels; restore settings without deleting aliases.
-- **Media choices:** select photos, videos, and stickers, and choose whether they stay blurred even in the readable area. These choices apply while conversation protection is on, including info-card carousels, galleries, and opened media. Media options start disabled; saved choices are preserved.
+- **Media choices:** select photos, videos, and stickers to keep them blurred in full, including in the readable area. Allowed media still blurs inside the protected conversation area. These choices apply while conversation protection is on, including info-card carousels, galleries, and opened media. Opening media suspends the conversation overlay: allowed types are fully clear in the viewer, selected types remain fully blurred. Media options start disabled; saved choices are preserved.
 
 Scroll older messages into the lower readable area to read them. The boundary follows the screen, including across tall messages and albums. Hovering does not remove the blur. Both protection options start disabled.
 

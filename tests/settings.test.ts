@@ -9,7 +9,6 @@ test('invalid persisted settings cannot inject CSS or enable options accidentall
     blurImages: false,
     blurVideos: false,
     blurStickers: false,
-    alwaysBlurMedia: false,
     enabled: true,
     aliasesEnabled: true,
     language: 'auto',
@@ -31,7 +30,6 @@ test('invalid persisted settings cannot inject CSS or enable options accidentall
       blurImages: false,
       blurVideos: false,
       blurStickers: false,
-      alwaysBlurMedia: false,
       enabled: true,
       aliasesEnabled: true,
       language: 'auto',
@@ -51,7 +49,6 @@ test('new preferences migrate existing settings and reject unsupported language 
     blurImages: false,
     blurVideos: false,
     blurStickers: false,
-    alwaysBlurMedia: false,
     enabled: false,
     aliasesEnabled: false,
     language: 'en',
@@ -103,4 +100,13 @@ test('screen area migrates count-based settings without interpreting counts as p
   assert.equal(model.settings({ fullBlur: true, visibleArea: 60 }).visibleArea, 60);
   assert.equal(model.settings({ blurImages: true, alwaysBlurMedia: true }).blurImages, true);
   assert.equal(model.settings({ visibleArea: 100 }).visibleArea, 100);
+});
+
+test('legacy always-blur values do not override selected media types', () => {
+  for (const alwaysBlurMedia of [false, true]) {
+    const parsed = model.settings({ blurImages: true, blurVideos: false, alwaysBlurMedia });
+    assert.equal(parsed.blurImages, true);
+    assert.equal(parsed.blurVideos, false);
+    assert.equal('alwaysBlurMedia' in parsed, false);
+  }
 });

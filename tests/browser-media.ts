@@ -15,16 +15,7 @@ export {};
     const mask = document.querySelector<HTMLElement>('[data-wppm-screen]');
     const rect = mask?.getBoundingClientRect();
     const box = element.getBoundingClientRect();
-    const kind = element.getAttribute('data-wppm-media');
-    const selected =
-      kind === 'images'
-        ? stored.settings.blurImages
-        : kind === 'videos'
-          ? stored.settings.blurVideos
-          : kind === 'stickers'
-            ? stored.settings.blurStickers
-            : true;
-    return selected && !!rect && rect.height > 0 && box.top < rect.bottom;
+    return !!rect && rect.height > 0 && box.top < rect.bottom;
   };
   const settings = {
     enabled: true,
@@ -37,7 +28,6 @@ export {};
     blurImages: true,
     blurVideos: true,
     blurStickers: true,
-    alwaysBlurMedia: true,
   };
   try {
     await wait();
@@ -64,7 +54,7 @@ export {};
     );
     for (const id of ['photo', 'video-preview', 'video', 'sticker', 'background-photo'])
       check(
-        `visible-area album ${id} stays protected in always mode`,
+        `visible-area album ${id} stays protected outside the screen mask`,
         blurred(document.getElementById(id)),
       );
 
@@ -84,10 +74,10 @@ export {};
     history.scrollTop = history.scrollHeight;
     await wait();
     check(
-      'media follows the screen area when always mode is off',
-      !blurred(document.getElementById('photo')) &&
-        !blurred(document.getElementById('video')) &&
-        !blurred(document.getElementById('sticker')),
+      'selected media stays hidden even with a legacy false always flag',
+      blurred(document.getElementById('photo')) &&
+        blurred(document.getElementById('video')) &&
+        blurred(document.getElementById('sticker')),
     );
     await chrome.storage.local.set({
       settings: { ...settings, alwaysBlurMedia: false, visibleArea: 0 },
@@ -99,7 +89,7 @@ export {};
         blurred(document.getElementById('sticker')),
     );
     await chrome.storage.local.set({
-      settings: { ...settings, visibleArea: 0, blurImages: false },
+      settings: { ...settings, visibleArea: 100, blurImages: false },
     });
     check(
       'photo exemption does not exempt video previews or stickers',
@@ -108,6 +98,9 @@ export {};
         blurred(document.getElementById('video-preview')) &&
         blurred(document.getElementById('sticker')),
     );
+    await chrome.storage.local.set({
+      settings: { ...settings, fullBlur: true, blurImages: false },
+    });
     check(
       'album caption remains protected when photos are exempt',
       blurred(album.querySelector('.selectable-text')),
@@ -121,7 +114,7 @@ export {};
       blurred(unknown),
     );
     await chrome.storage.local.set({
-      settings: { ...settings, visibleArea: 0, blurVideos: false },
+      settings: { ...settings, visibleArea: 100, blurVideos: false },
     });
     check(
       'video exemption includes the video thumbnail',
@@ -130,7 +123,7 @@ export {};
         blurred(document.getElementById('photo')),
     );
     await chrome.storage.local.set({
-      settings: { ...settings, visibleArea: 0, blurStickers: false },
+      settings: { ...settings, visibleArea: 100, blurStickers: false },
     });
     check(
       'stickers can be exempted independently',

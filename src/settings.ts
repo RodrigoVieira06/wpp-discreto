@@ -12,7 +12,6 @@ export interface Settings {
   blurImages: boolean;
   blurVideos: boolean;
   blurStickers: boolean;
-  alwaysBlurMedia: boolean;
 }
 
 export interface Alias {
@@ -32,7 +31,6 @@ export const defaults: Readonly<Settings> = Object.freeze({
   blurImages: false,
   blurVideos: false,
   blurStickers: false,
-  alwaysBlurMedia: false,
 });
 
 export const normalizeName = (value: unknown): string =>
@@ -57,7 +55,6 @@ export function settings(value: unknown = {}): Settings {
     blurImages: input.blurImages === true,
     blurVideos: input.blurVideos === true,
     blurStickers: input.blurStickers === true,
-    alwaysBlurMedia: input.alwaysBlurMedia === true,
   };
 }
 
