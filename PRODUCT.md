@@ -1,0 +1,48 @@
+# Product
+
+<!-- impeccable:product-schema 1 -->
+
+## Platform
+
+web
+
+## Users
+
+WhatsApp Web users who want local visual protection and conversation aliases. Brazilian Portuguese is the default product language; English is available. The owner confirmed that activating and adjusting blur should have priority when opening the popup.
+
+## Product Purpose
+
+Wpp Discreto changes the display of WhatsApp Web in one browser. Users can blur sidebar previews, protect an upper conversation area, keep selected media blurred, and assign local aliases. Original WhatsApp names and messages remain unchanged.
+
+## Operating Context
+
+Users open a Chrome extension popup while using WhatsApp Web. The owner tests by copying the unpacked build to Windows and loading it manually in Chrome; development runs on Linux over SSH. This owner workflow does not imply an OS restriction for the extension.
+
+The popup is an existing 380 px desktop surface. Preserve its width, intrinsic control heights, natural scrolling, and existing functional paths. Refinement must not repeat the earlier regression that compressed the controls beneath a fixed footer.
+
+## Capabilities and Constraints
+
+- Manifest V3 runs on WhatsApp Web with the storage permission. Preferences and aliases stay in local browser storage, with no extension backend, analytics, or transmission of chat contents.
+- Master and alias switches retain saved choices when disabled. Default restoration requires confirmation and keeps aliases.
+- Readable conversation area ranges from 20–100%, default 40%. Full blur is a separate setting. Selected media stays blurred throughout supported conversations and media viewers; audio controls remain readable.
+- Aliases use exact original names. Suggestions cover up to ten loaded names; missing loaded names and an unavailable WhatsApp tab are different states.
+- Browser language selects Portuguese or English; users can save an override. Keep documentation and source identifiers in English.
+- The popup footer must explain local-only changes and unchanged WhatsApp data, and retain the Rodrigo Lima author credit.
+- Blur is visual protection, not encryption or access control. WhatsApp DOM changes can affect compatibility.
+
+## Brand Commitments
+
+The approved name is Wpp Discreto. Preserve the sharp WhatsApp mark and sharp larger lower-right dialogue bubble in `assets/logo.png`. Future artwork changes require an approved preview before application or GitHub publication.
+
+Use factual copy without slogans or promotional claims. Retain existing product copy during visual refinement unless the owner authorizes wording changes.
+
+## Evidence on Hand
+
+The repository contains the approved logo, a working popup, Portuguese/English catalogs, and Chrome integration/pixel tests with synthetic content. The owner confirmed manual WhatsApp validation on 2026-11-08. Automated tests do not observe authenticated WhatsApp behavior. Store publication and publisher contact setup remain separate work.
+
+## Product Principles
+
+1. Make blur activation and adjustment easy to find.
+2. Keep user data and visual edits local to the browser.
+3. Preserve saved aliases and preferences across disabled states and visual refinements.
+4. Explain protection limits and data handling in plain language.

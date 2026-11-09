@@ -119,16 +119,24 @@ async function main() {
                 return rect.height > 0 && rect.top >= 0 && rect.bottom <= innerHeight;
               };
               const controlsExpanded = main.getBoundingClientRect().height > 300;
-              const widthPreserved = document.body.getBoundingClientRect().width === 380;
+              const widthPreserved = innerWidth === 380 && document.body.getBoundingClientRect().width <= 380;
+              const noHorizontalOverflow = document.documentElement.scrollWidth <= document.documentElement.clientWidth;
+              const switchTargetsAccessible = [...document.querySelectorAll('input[role="switch"]')].filter(node => node.getBoundingClientRect().width > 0).every(node => node.getBoundingClientRect().height >= 24);
+              const switchesAligned = Math.abs(document.getElementById('advanced-blur').getBoundingClientRect().right - document.getElementById('blur-chat').getBoundingClientRect().right) < 1;
               const masterReachable = reachable('#extension-enabled');
               const saveReachable = reachable('#alias-form button');
               const footerReachable = reachable('footer');
               document.getElementById('settings-toggle').click();
               const settingsReachable = reachable('#visible-area');
               document.getElementById('settings-toggle').click();
+              document.getElementById('media-help').focus();
+              const help = document.getElementById('advanced-blur-help').getBoundingClientRect();
+              const helpContained = help.width > 0 && help.top >= 0 && help.bottom <= innerHeight && help.left >= 0 && help.right <= innerWidth;
+              document.getElementById('media-help').blur();
               window.scrollTo(0, 0);
               return { height: innerHeight, controlsExpanded, widthPreserved,
-                masterReachable, saveReachable, footerReachable, settingsReachable };
+                masterReachable, saveReachable, footerReachable, settingsReachable,
+                noHorizontalOverflow, helpContained, switchTargetsAccessible, switchesAligned };
             })()`,
             returnByValue: true,
           },

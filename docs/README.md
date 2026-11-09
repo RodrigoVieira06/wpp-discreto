@@ -4,6 +4,9 @@ For installation, read the root [README](../README.md). Before contributing, rea
 
 | Document | Purpose |
 | --- | --- |
+| [Product context](../PRODUCT.md) | Users, priorities, and product constraints |
+| [Design system](../DESIGN.md) | Implemented popup tokens and component rules |
+| [Design review](design-review.md) | Refinement findings, evidence, and validation limits |
 | [AI instructions](ai-instructions.md) | Task workflow and completion criteria |
 | [Architecture](architecture.md) | Runtime, storage, build, and DOM integration |
 | [Internationalization](internationalization.md) | Portuguese default, English support, and browser language detection |

@@ -4,6 +4,8 @@
 
 Read the [documentation index](docs/README.md), [AI workflow](docs/ai-instructions.md), [architecture](docs/architecture.md), [development guide](docs/development.md), and relevant [project skill](docs/skills/README.md).
 
+For interface changes, read [product context](PRODUCT.md), [visual rules](DESIGN.md), and the [popup surface brief](.impeccable/surfaces/popup.md).
+
 ## Objective and required workflow
 
 Build a public Chrome extension for WhatsApp Web with local group aliases, blurred sidebar previews, and conversation protection that leaves a configurable lower screen area readable.

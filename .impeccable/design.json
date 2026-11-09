@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-09T03:02:30.470835+00:00",
+  "title": "Wpp Discreto design system",
+  "extensions": {},
+  "components": [
+    {
+      "name": "Primary button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Save an alias or confirm restoration.",
+      "html": "<button class=\"ds-primary\">Save alias</button>",
+      "css": ".ds-primary { font: 650 13px/1.5 system-ui, sans-serif; min-height: 40px; padding: 10px 12px; border: 1px solid transparent; border-radius: 8px; background: #a8efc5; color: #153b2a; cursor: pointer; } .ds-primary:hover { background: #baf5d3; } .ds-primary:active { background: #8fe2b2; } .ds-primary:focus-visible { outline: 2px solid #a8efc5; outline-offset: 3px; }"
+    },
+    {
+      "name": "Secondary button",
+      "kind": "button",
+      "description": "Look up loaded conversation names or cancel restoration.",
+      "html": "<button class=\"ds-secondary\">Find groups and contacts</button>",
+      "css": ".ds-secondary { font: 13px/1.5 system-ui, sans-serif; min-height: 40px; padding: 10px 12px; border: 1px solid #33453b; border-radius: 8px; background: #1c2b23; color: #dce8e1; cursor: pointer; } .ds-secondary:hover { background: #293d30; border-color: #597664; } .ds-secondary:active { background: #324c3c; } .ds-secondary:focus-visible { outline: 2px solid #a8efc5; outline-offset: 3px; }"
+    },
+    {
+      "name": "Text field",
+      "kind": "input",
+      "refersTo": "text-field",
+      "description": "Original conversation name or local alias.",
+      "html": "<input class=\"ds-field\" aria-label=\"Original name\" placeholder=\"Exact name in WhatsApp\">",
+      "css": ".ds-field { font: 13px/1.5 system-ui, sans-serif; min-height: 42px; padding: 10px 12px; border: 1px solid #33453b; border-radius: 8px; background: #17231f; color: #e8eeec; caret-color: #a8efc5; } .ds-field::placeholder { color: #a3b6aa; opacity: 1; } .ds-field:hover { border-color: #597664; } .ds-field:focus { border-color: #a8efc5; } .ds-field:focus-visible { outline: 2px solid #a8efc5; outline-offset: 3px; }"
+    },
+    {
+      "name": "Switch",
+      "kind": "input",
+      "description": "Native checkbox with switch semantics.",
+      "html": "<input class=\"ds-switch\" type=\"checkbox\" role=\"switch\" aria-label=\"Blur open conversation\">",
+      "css": ".ds-switch { appearance: none; position: relative; width: 38px; height: 24px; margin: 0; border-radius: 12px; background: #42554b; cursor: pointer; } .ds-switch::before { content: \"\"; position: absolute; width: 16px; height: 16px; top: 4px; left: 4px; border-radius: 50%; background: #eef6f1; } .ds-switch:checked { background: #43b87a; } .ds-switch:checked::before { transform: translateX(14px); } .ds-switch:hover { box-shadow: inset 0 0 0 1px #aebfb6; } .ds-switch:active { box-shadow: inset 0 0 0 2px #a8efc5; } .ds-switch:focus-visible { outline: 2px solid #a8efc5; outline-offset: 3px; }"
+    },
+    {
+      "name": "Settings panel",
+      "kind": "card",
+      "refersTo": "settings-panel",
+      "description": "Groups language, blur strength, readable area, and media settings.",
+      "html": "<section class=\"ds-panel\"><h2>Settings</h2><p>Language and blur controls</p></section>",
+      "css": ".ds-panel { font: 13px/1.5 system-ui, sans-serif; padding: 16px; border: 1px solid #33453b; border-radius: 12px; background: #17231f; color: #e8eeec; } .ds-panel h2 { margin: 0 0 8px; font-size: 13px; font-weight: 650; } .ds-panel p { color: #aebfb6; margin: 0; }"
+    }
+  ],
+  "narrative": {
+    "overview": "Preserve the existing dark green interface, mint actions, system typography, and approved logo. Use spacing, alignment, and visible control states to make settings easy to scan. Product copy stays factual and localized."
+  }
+}

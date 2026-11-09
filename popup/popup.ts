@@ -50,7 +50,16 @@ import * as model from '../src/settings';
         if (invalid) {
           const warning = document.createElement('span');
           warning.className = 'alias-warning';
-          warning.textContent = '⚠';
+          const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+          icon.setAttribute('viewBox', '0 0 24 24');
+          icon.setAttribute('width', '18');
+          icon.setAttribute('height', '18');
+          icon.setAttribute('aria-hidden', 'true');
+          icon.classList.add('control-icon');
+          const shape = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          shape.setAttribute('d', 'M12 3 2 21h20L12 3Zm0 6v5m0 3h.01');
+          icon.append(shape);
+          warning.append(icon);
           warning.title = message('aliasNotFound');
           warning.setAttribute('aria-label', message('aliasNotFound'));
           warning.setAttribute('role', 'img');
@@ -216,6 +225,17 @@ import * as model from '../src/settings';
       }),
     });
   });
+  function positionHelp() {
+    const tooltip = byId('advanced-blur-help');
+    const trigger = byId('media-help').getBoundingClientRect();
+    const height = tooltip.getBoundingClientRect().height;
+    if (!height) return;
+    tooltip.style.top = `${Math.max(8, Math.min(trigger.bottom + 8, innerHeight - height - 8))}px`;
+  }
+  byId('media-help').addEventListener('mouseenter', positionHelp);
+  byId('media-help').addEventListener('focus', positionHelp);
+  document.addEventListener('scroll', positionHelp, { capture: true, passive: true });
+  window.addEventListener('resize', positionHelp);
   byId('media-help').addEventListener('click', () => {
     settingsOpen = true;
     draw();

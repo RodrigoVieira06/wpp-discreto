@@ -7,6 +7,8 @@ description: Develop Wpp Discreto with TypeScript, SCSS, pnpm, TDD, Make, Biome,
 
 Read `AGENTS.md`, `docs/architecture.md`, and `docs/development.md`. Check the working tree and preserve unrelated edits. Keep filenames, source code, comments, documentation, and commit subjects in English.
 
+For interface work, read `PRODUCT.md`, `DESIGN.md`, and `.impeccable/surfaces/popup.md`. Preserve the approved visual identity and verify the built popup at its shipping width. Future landing/showcase pages require an approved reference image before implementation; popup refinements proceed in code.
+
 ## Terminal workflow
 
 1. Use `make help` to find commands and `make doctor` to check tools.
