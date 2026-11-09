@@ -1,36 +1,39 @@
 # Internationalization
 
-The user interface supports Brazilian Portuguese and English using Chrome-compatible locale catalogs. Native Chrome localization handles manifest metadata; the popup's typed renderer also supports an explicit saved language preference. No locale-related permissions or dependencies are added.
+The interface supports Brazilian Portuguese and English through Chrome-compatible catalogs. Chrome localizes manifest metadata; the popup also supports a saved language preference. Language selection requires no added permission or dependency.
 
 ## Language selection
 
-- English browser UI locales, including regional variants such as `en-US` and `en-GB`, use English.
-- Portuguese locales use Brazilian Portuguese.
-- Unsupported languages fall back to Brazilian Portuguese.
+The manifest sets `default_locale` to `pt_BR`. With `settings.language: auto`, `src/i18n.ts` reads `chrome.i18n.getUILanguage()`:
 
-The manifest sets `default_locale` to `pt_BR`. With the `auto` setting, `src/i18n.ts` uses `chrome.i18n.getUILanguage()` and the rules above. The settings panel can override the popup language with `pt_BR` or `en`, persisted in `settings.language`. The popup document language becomes `pt-BR` or `en` accordingly. Manifest metadata continues to follow Chrome's native locale selection. Language selection does not use WhatsApp's interface language or translate saved names and aliases.
+- English locales, including `en-US` and `en-GB`, use English.
+- Portuguese and unsupported locales use Brazilian Portuguese.
+
+In settings, you can override the popup language with `pt_BR` or `en`. The popup document language becomes `pt-BR` or `en`. Manifest metadata continues to use Chrome's locale selection. WhatsApp's language does not affect this choice, and the extension leaves saved names and aliases unchanged.
 
 ## Catalogs and rendering
 
-- `_locales/pt_BR/messages.json`: default Brazilian Portuguese messages.
-- `_locales/en/messages.json`: English messages with the same keys.
-- `src/i18n.ts`: typed catalog lookup, saved preference selection, placeholder interpolation, and static DOM translation.
-- `popup/popup.html`: Portuguese initial text with `data-i18n`, `data-i18n-placeholder`, `data-i18n-title`, and `data-i18n-aria-label` hooks.
-- `popup/popup.ts`: translated status/error messages and dynamically created removal buttons.
+| File | Role |
+| --- | --- |
+| `_locales/pt_BR/messages.json` | Default Brazilian Portuguese copy |
+| `_locales/en/messages.json` | English copy with matching keys |
+| `src/i18n.ts` | Typed lookup, saved preference, placeholder interpolation, and DOM translation |
+| `popup/popup.html` | Portuguese initial text with `data-i18n`, `data-i18n-placeholder`, `data-i18n-title`, and `data-i18n-aria-label` hooks |
+| `popup/popup.ts` | Translated statuses, errors, and dynamic removal buttons |
 
-Manifest name and description use `__MSG_...__` references. Both catalogs are copied to the unpacked build and included in the ZIP. English source identifiers, filenames, and development documentation remain separate from translated product copy.
+Manifest names and descriptions use `__MSG_...__` references. The build and ZIP include both catalogs. Keep filenames, source identifiers, and development documentation in English.
 
-Translate text through `textContent` and attributes, never `innerHTML`. Use Chrome named placeholders with substitution values for dynamic text, such as a user's alias in an accessible button label. Never translate or rewrite user-provided group names or aliases.
+Render translations through `textContent` and attributes, not `innerHTML`. Use Chrome named placeholders for substitutions, such as an alias in an accessible button label. Do not translate or rewrite user-provided names or aliases.
 
-## Adding or changing copy
+## Changing copy
 
-1. Add the same message key to both catalogs, with translated values.
-2. For static popup text, add a translation hook and retain Portuguese initial copy.
+1. Add matching keys and translated values to both catalogs.
+2. For static text, add a translation hook and retain Portuguese initial copy.
 3. For dynamic text, call the typed `message` helper.
-4. Add or update Jest/browser assertions, then run `make check`, `make test`, and `make package`.
+4. Update Jest/browser assertions, then run `make check`, `make test`, and `make package`.
 
-Tests cover Portuguese variants, English variants, unsupported-language fallback, placeholders, accessible labels, status messages, catalog keys, build resources, and actual extension loading.
+Tests cover locale variants and fallback, placeholders, accessible labels, statuses, catalog keys, build resources, and extension loading.
 
 ## Updating a local installation
 
-Run `make build` and copy the **entire** `dist/extension` directory, including `_locales`. In `chrome://extensions`, reload Wpp Discreto, close and reopen its popup, and refresh WhatsApp Web. Switching the browser UI language may require restarting Chrome.
+Run `make build` and copy the entire `dist/extension` directory, including `_locales`. Reload Wpp Discreto in `chrome://extensions`, reopen its popup, and refresh WhatsApp Web. Changing Chrome's UI language may require a browser restart.

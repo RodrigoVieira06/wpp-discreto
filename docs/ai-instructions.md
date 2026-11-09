@@ -15,6 +15,6 @@ Documentation edits do not need invented behavior tests. Validate links and comm
 
 ## Completion
 
-Report delivered behavior, checks actually executed, and remaining limits. Run `make package` after distributed assets change. Do not describe simulated Chrome tests as authenticated WhatsApp validation.
+Report the behavior you changed, checks you ran, and remaining limits. Run `make package` after distributed assets change. Do not describe simulated Chrome tests as authenticated WhatsApp validation.
 
 Do not add frameworks, permissions, remote scripts, telemetry, or backend services without a requirement. Do not bypass hooks or publish to the store as a development side effect. Keep Make targets, package scripts, documentation, and skills consistent.

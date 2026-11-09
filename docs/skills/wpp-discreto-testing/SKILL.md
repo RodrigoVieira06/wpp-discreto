@@ -1,19 +1,26 @@
 ---
 name: wpp-discreto-testing
-description: Apply TDD and maintain Jest and Chrome fixture regression tests for Wpp Discreto.
+description: Follow TDD and maintain Jest and Chrome regression tests for Wpp Discreto.
 ---
 
 # Wpp Discreto testing
 
-Read `AGENTS.md` and `docs/testing.md`. Identify an observable failure instead of only testing implementation details.
+Read `AGENTS.md` and `docs/testing.md`. Identify the observable failure before changing behavior.
 
-1. Add a failing Jest test at the appropriate layer.
-2. Confirm failure for the intended reason. `make test` rebuilds browser scenarios first.
+1. Add a failing Jest test at the relevant layer.
+2. Confirm the intended failure. `make test` rebuilds browser scenarios first.
 3. Implement the smallest correction and rerun.
 4. Refactor while green, then run `make check` and `make test`.
 
-For protection changes, cover new messages, recycled bubbles, scrolling, 20%/100% readable area and explicit full blur, partial tall messages/albums, viewport resizing, nested blocks, disabling protection, first background thumbnails, info-card aliases, carousels, galleries/viewers, allowed images crossing the screen boundary, selected media below it, whole-viewer type choices, viewer open/close/hidden transitions, sibling history strips outside a marked main image, selected/lazy thumbnails, independent thumbnail media types, and readable audio. For aliases, cover normalization, duplicates, safe text, row reuse, updates, and removal. For popup changes, cover persistence, failed writes, short-viewport control reachability, and footer reachability, advanced shortcut on/off, tooltip navigation, saved media choices, and full-blur percentage retention. Use screenshot pixel comparisons when changing backdrop masks; computed CSS alone does not establish visual protection.
+## Regression coverage
 
-Use mock Chrome APIs and temporary profiles. Never save user messages or authentication material as fixtures. Set `CHROME_BIN` when needed, report execution restrictions, and distinguish simulated tests from manual WhatsApp validation.
+- **Protection:** arrivals, recycling, scrolling, 20%/100% readable area, full blur, tall messages/albums crossing the boundary, resizing, nested blocks, and disabled states.
+- **Media:** first background tiles, selected types below the boundary, allowed/blocked fullscreen assets, sibling history outside the main image marker, selected/lazy thumbnails, independent thumbnail types, and readable audio. Include info cards, carousels, galleries, and viewer open/close/hidden transitions.
+- **Aliases:** normalization, duplicates, plain text, reused rows, updates, and removal.
+- **Popup:** saved choices, write errors, controls/footer in short viewports, advanced shortcut, tooltip navigation, and percentage retention during full blur.
 
-For local launcher changes, keep the actual Chrome installation smoke test in `tests/local-deploy.test.ts`: load the compiled extension, initialize its popup with real extension APIs, then close Chrome and remove the temporary profile. Never connect that smoke test to WhatsApp or a persistent personal profile.
+Use screenshot pixel comparisons for backdrop-mask changes. A computed CSS property does not prove that pixels blurred.
+
+Use mock Chrome APIs and temporary profiles. Keep real messages, credentials, and personal browser profiles out of fixtures. Set `CHROME_BIN` as needed; report execution restrictions and distinguish simulated tests from manual WhatsApp checks.
+
+For launcher changes, retain `tests/local-deploy.test.ts`: load the compiled extension through Chrome's debugging pipe, initialize its popup with real APIs, close Chrome, and remove the temporary profile. Do not sign into WhatsApp or use a persistent personal profile in this test.

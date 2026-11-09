@@ -2,34 +2,45 @@
 
 ## Runtime
 
-Chrome Manifest V3 restricts execution to WhatsApp Web and declares only the `storage` API permission. There is no service worker or backend.
+The Manifest V3 extension runs on `https://web.whatsapp.com/*` with the `storage` permission. It has no service worker or backend.
 
-`src/settings.ts` exports typed defaults, validation, Unicode normalization, and alias cleanup. Both entry points import this module; esbuild bundles it without exposing a global API to WhatsApp.
+| Module | Responsibility |
+| --- | --- |
+| `src/settings.ts` | Settings types, defaults, validation, Unicode normalization, and alias cleanup |
+| `src/content.ts` | DOM observation, preferences, title decoration, and viewport updates |
+| `src/screen.ts` | Upper-viewport backdrop mask and audio exclusions |
+| `src/messages.ts` | Media classification and asset annotation |
+| `src/surfaces.ts` | Info-panel, viewer, and audio selectors |
+| `src/chats.ts` | Loaded conversation names and alias validation |
+| `src/i18n.ts` | Typed locale lookup and saved language selection |
+| `popup/popup.ts` | Controls, aliases, settings persistence, and write-error recovery |
 
-`src/content.ts` observes DOM mutations and reacts to `chrome.storage.onChanged`. It applies prefixed attributes to decorate titles and update viewport protection. The observer is disconnected while applying its own mutations to prevent loops.
+`src/content.ts` disconnects its observer while applying its own DOM changes to prevent update loops. Storage changes refresh both content-script preferences and popup controls.
 
-`popup/popup.ts` reads and saves preferences, manages alias entries, restores controls after failed writes, and updates controls when another context changes storage.
+The popup requests loaded conversation names through active-tab messaging to the existing content script. This requires no additional permission. Master and alias switches pause effects without deleting saved data. See [popup controls](popup-controls.md).
 
-The UI uses Chrome-compatible catalogs with `_locales/pt_BR` as default and `_locales/en` for English. `src/i18n.ts` supports automatic browser language or a saved override. Native Chrome localization handles metadata. Build and package scripts include both catalogs. See [internationalization](internationalization.md).
+## Rendering
 
-Master and aliases switches gate effects without deleting saved data. `src/chats.ts` isolates conversation-title extraction and loaded-name validation. The popup requests that context through the active tab's content-script message listener without additional permissions. See [popup controls](popup-controls.md).
+SCSS compiles to static CSS. The screen mask blurs the upper conversation viewport and leaves a configurable lower area readable during history scrolling. Its SVG mask excludes audio controls; media cannot create holes in it. The readable area ranges from 20–100%, with a separate full-blur switch.
 
-## Presentation and data
+Media blur is opt-in. CSS protects new assets before classification and keeps selected media types blurred throughout conversations and media panels. Classification covers image, video, canvas, and CSS background assets. The observer updates classification and viewport/audio geometry before painting.
 
-SCSS compiles to static CSS. `src/screen.ts` applies a fixed backdrop mask to the upper conversation viewport, leaving a configurable lower percentage readable during both normal and history scrolling. An inline SVG mask excludes only audio controls; media never creates holes in the viewport overlay. `src/messages.ts` classifies those assets; CSS masks new assets before classification and selected media in full, both in conversation readable areas and in info/media panels. Audio UI is excluded from filters and the viewport mask. CSS background thumbnails are classified alongside image/video/canvas assets. The observer refreshes classification and viewport/audio geometry before painting. Media protection is opt-in; a popup shortcut selects every media preference. The readable area is bounded to 20–100%, with a separate full-blur setting. Viewer asset discovery includes the positioned fullscreen shell around a marked image so sibling history thumbnails are protected without widening scope to the conversation list. A visible supported viewer suspends the viewport overlay; individual media filters remain active, and hiding/closing the viewer restores the overlay. Media-type choices replace the obsolete always-blur setting. See [message protection](message-protection.md).
+Viewer discovery includes the positioned fullscreen shell around a marked image, covering sibling history thumbnails without extending to the conversation list. A visible supported viewer suspends the chat overlay while individual media filters remain active. Closing or hiding it restores the overlay. Media-type choices replace the obsolete always-blur setting. See [media protection](message-protection.md).
 
-Aliases use pseudo-elements without replacing React-owned text. Nested original spans are visually clipped so their own font sizes cannot make the original appear beside the alias. Title extraction excludes unread indicators. Info-card titles are decorated only when they match the active conversation name; member lists and descriptions are excluded.
+Aliases use pseudo-elements and `data-wppd-` attributes to preserve React-owned text. CSS clips nested original spans so their font sizes cannot expose the original beside the alias. Title extraction excludes unread indicators. Info-card decoration matches the active conversation name and excludes member lists and descriptions.
 
-`chrome.storage.local` holds a `settings` object and an `aliases` array. `Settings` and `Alias` interfaces and all sanitization live in `src/settings.ts`. Stored values are untrusted input. Message contents are never persisted.
+## Storage and language
 
-## Build
+`chrome.storage.local` stores a `settings` object and an `aliases` array. Validate stored input through `src/settings.ts`; the extension does not persist message contents.
 
-`scripts/build.ts` bundles TypeScript, compiles SCSS, and copies the manifest, popup HTML, and icons to `dist/extension`. Browser scenarios compile separately into `dist/test-runtime`.
+Chrome locale catalogs use `_locales/pt_BR` as the default and `_locales/en` for English. Chrome localizes manifest metadata; the popup also supports a saved language override. The build and ZIP include both catalogs. See [internationalization](internationalization.md).
 
-`scripts/package.ts` uses an explicit resource list to create a ZIP without tests, docs, source TypeScript, dependencies, or browser profiles. `scripts/dev.ts` watches sources and serializes rebuilds.
+## Build and launcher
 
-`scripts/deploy-local.ts` launches an isolated Chrome profile and loads the actual build over a local DevTools pipe using `scripts/lib/cdp.ts`. The profile stays under the Git-ignored `.local` directory. Smoke tests use temporary profiles and open only the extension popup, not WhatsApp.
+`scripts/build.ts` bundles TypeScript, compiles SCSS, and copies the manifest, popup HTML, and assets to `dist/extension`. It compiles browser test scenarios into `dist/test-runtime`.
 
-## Integration boundary
+`scripts/package.ts` creates a ZIP from an explicit resource list. It excludes tests, documentation, source TypeScript, dependencies, and browser profiles.
 
-DOM selectors live in `src/content.ts`, `src/messages.ts`, `src/surfaces.ts`, `src/chats.ts`, and `src/content.scss`. WhatsApp updates can invalidate them. The fixture contains simulated markup and mock storage, not an authenticated session. Exact-name aliases do not provide stable group identification. Missing loaded names and unavailable tabs are separate validation states.
+`scripts/deploy-local.ts` loads the build through `scripts/lib/cdp.ts` in an isolated Chrome profile at `.local/chrome-profile`. Smoke tests use temporary profiles, load the extension, and open its popup without signing into WhatsApp.
+
+WhatsApp selectors live in the integration modules above and `src/content.scss`. WhatsApp updates can invalidate them. Fixtures use simulated markup and mock storage; test results do not establish authenticated WhatsApp compatibility.

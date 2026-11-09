@@ -5,15 +5,17 @@ description: Review Wpp Discreto correctness, data handling, DOM integration, te
 
 # Wpp Discreto review
 
-Read `AGENTS.md`, the changes, and relevant tests. Prioritize actionable defects over preferences.
+Read `AGENTS.md`, the diff, and relevant tests. Report defects that affect behavior or maintenance, with a trigger, user-visible consequence, and file location.
 
-- Confirm strict types, SCSS compilation, and manifest resource paths.
-- Check storage validation, safe text, failed writes, and permission scope.
-- Look for exposure of new/recycled content before rendering and stale viewport/audio geometry, media holes, or incorrect viewer suspension during history scrolling.
-- Check alias cleanup on reused rows and restoration when controls are disabled.
-- Confirm regressions cover changed behavior and that checks actually ran.
-- Check consistency between Make targets, package scripts, documentation, and skills.
-- Distinguish simulated tests from live WhatsApp validation.
-- Do not imply `make deploy` uploads or publishes.
+Check:
 
-Report defects with triggers, user-visible consequences, and file locations. If none remain, state that and identify unverified integration risks. Do not post external comments unless requested.
+- Strict types, SCSS compilation, and manifest paths.
+- Storage validation, plain-text rendering, write failures, and permission scope.
+- Content exposed before rendering, stale viewport/audio geometry, media holes, and incorrect viewer suspension during scrolling.
+- Alias cleanup on reused rows and restoration after disabling effects.
+- Regression coverage and the checks the contributor ran.
+- Agreement between Make targets, package scripts, documentation, and skills.
+- Claims about simulated versus authenticated WhatsApp validation.
+- Distribution wording: `make deploy` prepares files for manual submission.
+
+If you find no defects, state that and list unverified integration risks. Post external comments only when requested.

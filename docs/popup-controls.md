@@ -2,38 +2,44 @@
 
 ## Controls
 
-- The master switch (`settings.enabled`, default `true`) pauses all blur and alias effects. Stored preferences and aliases remain intact.
-- The aliases switch (`settings.aliasesEnabled`, default `true`) controls title decoration independently of blur.
-- The gear button opens settings for language, blur intensity, readable screen percentage, media types, and default restoration. See [media protection](message-protection.md).
-- Default restoration opens a localized confirmation dialog. Cancel/Escape performs no write; explicit confirmation resets settings and retains the `aliases` array. Blur starts disabled, strength defaults to 8 px, readable area to 40%, language to automatic, and media preferences to disabled.
-- The advanced-blur switch selects photos, videos, and stickers and enables chat protection. Turning it off clears media choices but retains text protection. Its question-mark help opens media settings and has a localized tooltip. Individual preferences remain independently editable.
-- The readable percentage is bounded to 20–100. A separate full-blur switch masks the entire text viewport and disables the percentage slider without changing its saved value. Audio controls stay readable.
-- Old saved settings migrate through `src/settings.ts`, with missing switches enabled and missing language set to `auto`.
+The master switch (`settings.enabled`) and aliases switch (`settings.aliasesEnabled`) default to `true`. Turning either off retains preferences and mappings. The master switch pauses every effect; the aliases switch pauses title decoration.
 
-Keep product copy factual and short. Do not add slogans, promotional empty states, or constant ready messages. Status text should communicate an action result, a failure, or an actual limitation.
+The gear button opens language, blur strength, readable area, media choices, and default restoration. The readable percentage ranges from 20–100. Full blur covers the conversation viewport and disables the slider without changing its saved value. Audio controls stay readable.
 
-The persistent footer explains in plain language that aliases/settings affect only this browser, original WhatsApp names/messages stay unchanged, and Wpp Discreto does not send or save conversation contents. Keep the footer in normal document flow, reachable by scrolling the popup. Preserve the 380 px width and intrinsic control heights; never shrink the controls to fit a fixed footer or an initial viewport height. Factual data-handling information is necessary product copy, not a slogan. A smaller localized author credit below these notices reads “Desenvolvido por Rodrigo Lima” in Portuguese and “Developed by Rodrigo Lima” in English.
+The advanced-blur switch enables chat protection and selects photos, videos, and stickers. Turning it off clears those media choices while retaining chat protection. The question-mark button displays a localized tooltip and opens individual media settings.
 
-## Lookup
+Selected media types stay blurred in full, including below the chat screen boundary and in panels/viewers. Allowed media stays under the chat mask and clears below its boundary. Opening a supported media viewer suspends that mask; the media-type choice then determines its blur. The former always-blur control is removed, and legacy values are ignored. See [media protection](message-protection.md).
 
-The popup queries only the active tab ID using `chrome.tabs.query` and sends a `wpp-discreto:chat-context` message to the already injected WhatsApp content script. It does not read sensitive tab properties, inject into other sites, or request additional permissions.
+Default restoration opens a localized confirmation dialog. Cancel or Escape writes nothing. Confirmation resets settings and retains the `aliases` array: blur off, strength 8 px, readable area 40%, automatic language, and media choices off. Older settings receive enabled master/alias switches and language `auto` when those fields are missing.
 
-`src/chats.ts` reads original DOM names, not displayed aliases. Suggestions contain up to ten unique sidebar names in document order. Validation compares the saved original names with the loaded sidebar and open header; the response returns only matches for names already requested by the popup.
+Use factual copy that explains actions, failures, or limits. Omit slogans, promotional empty states, and persistent ready messages.
 
-Prefer the dedicated inner title over aggregate title containers, and exclude unread indicators/accessibility counters from extraction. Alias CSS must hide nested original title spans visually without deleting or replacing React-owned text, so the alias cannot appear appended to the original name.
+## Layout and footer
 
-Selecting a suggestion fills the original-name field. Editing an existing entry fills both fields; saving with a changed original name replaces that mapping. Names and aliases are rendered as text.
+Keep the popup 380 px wide, with intrinsic control heights and normal document scrolling. Place the footer in document flow so you can reach it by scrolling. A fixed footer or `100vh` height constraint must not compress the controls.
+
+Retain the footer's data-handling explanation: changes affect this browser, original WhatsApp names/messages remain unchanged, and the extension does not send or save conversation contents. Below it, show the smaller localized credit: “Desenvolvido por Rodrigo Lima” or “Developed by Rodrigo Lima”.
+
+## Lookup and editing
+
+The popup gets the active tab ID through `chrome.tabs.query` and sends `wpp-discreto:chat-context` to the installed content script. It reads no sensitive tab properties, injects into no other site, and requests no extra permission.
+
+`src/chats.ts` reads original DOM names. Suggestions contain up to ten unique sidebar names in document order. Validation compares requested saved names against the loaded sidebar, open header, and supported active info-card title. It returns matches for those requests.
+
+Prefer an inner title over an aggregate container. Exclude unread indicators and accessibility counters. Alias CSS clips nested original spans without deleting or replacing React text, preventing the original and alias from appearing together.
+
+Selecting a suggestion fills the original-name field. Editing fills both fields; saving with a changed original replaces that mapping. Render names and aliases as plain text. Supported info cards display the active conversation alias; member lists, descriptions, and original DOM text remain unchanged.
 
 ## Validation states
 
-- **Found:** the exact normalized original name is loaded; no warning.
-- **Not found in loaded conversations:** the entry gets an amber border/text and a focusable warning icon with a tooltip. This does not prove the contact or group was deleted.
-- **Unavailable:** no WhatsApp receiver, signed-out/empty conversation list, or a connection failure. A helper message asks the user to open or reload WhatsApp; existing aliases are not marked invalid.
+| State | Display |
+| --- | --- |
+| Found | No warning for an exact normalized name in loaded conversations |
+| Not found in loaded conversations | Amber border/text and a focusable warning icon with a tooltip |
+| Unavailable | A helper asks you to open or reload WhatsApp; saved aliases receive no invalid-name warning |
 
-Lookup runs when the popup opens, after relevant edits, and on explicit refresh. Discovered names stay in popup memory and are not stored automatically. Only a user-saved alias mapping is persisted. No messages are read for this feature and no account-wide contact API is used.
+An absent loaded name does not establish that the group or contact was deleted. Unavailable includes a missing receiver, signed-out or empty list, and connection failures.
 
-Reload the extension and refresh WhatsApp after installing this version so that the content script can receive lookup requests. Automated tests use simulated sidebar markup; live WhatsApp compatibility still needs manual validation.
+Lookup runs on popup opening, relevant edits, and explicit refresh. Discovered names stay in memory. The extension persists a mapping only when you save it; lookup reads no messages and uses no account-wide contact API.
 
-Supported info cards visually display the alias for the active conversation name. Member lists, descriptions, and original DOM text are preserved.
-
-Selected media types always stay blurred, including outside the protected chat area. The former always-blur control is removed; old stored values are ignored. Allowed media remains covered by the chat screen mask and becomes readable only outside that area. In a supported opened-media viewer, the chat overlay is suspended and only the media-type choice applies.
+After updating the extension, reload it and refresh WhatsApp so the content script can receive lookup requests. Automated lookup tests use simulated markup; check changes against WhatsApp before distribution.

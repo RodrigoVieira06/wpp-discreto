@@ -1,39 +1,45 @@
 # Message and media protection
 
-`src/screen.ts` owns viewport protection. `src/messages.ts` classifies media assets; keep its selectors aligned with `src/content.scss`.
+`src/screen.ts` controls viewport protection. `src/messages.ts` classifies media assets; keep its selectors aligned with `src/content.scss`.
 
 ## Screen area
 
-`visibleArea` is the readable percentage of the conversation viewport, from 20 to 100 (default 40). The upper portion blurs all conversation content, including photos, videos, stickers, captions, and avatars. Only audio-player UI remains exempt. Media must never cut holes in this mask, even when its type is allowed. A tall allowed image crossing the boundary is blurred above it and sharp below it.
+`visibleArea` sets the readable lower portion of the conversation viewport, from 20 to 100% (default: 40%). The upper mask covers text, media, captions, and avatars. Audio controls remain exempt. Allowed media cannot create holes in this mask: an image crossing the boundary stays blurred above it and sharp below it.
 
-`fullBlur` is a separate explicit switch (default false) that covers the full conversation viewport while retaining the preferred percentage. At 100 the viewport mask has no height; selected media types still remain blurred independently. Scroll old content into the lower readable area to read it. There are no message-count reveal exceptions.
+`fullBlur` defaults to `false`. Enabling it covers the full conversation viewport and retains the preferred percentage. At 100%, the viewport mask has no height, but selected media types keep their own blur. Scroll older content into the lower area to read it; protection uses screen coordinates rather than message-count exceptions.
 
-The extension adds its own fixed, pointer-transparent overlay outside WhatsApp's React-owned tree at the highest normal stacking index. It measures the message scroll viewport, excludes the header/composer, clips to visible bounds, and updates on scrolling, mutations, loading, and resizing. An inline SVG mask excludes audio controls only. Scroll/content updates refresh geometry before painting. Deferred rendering is not the only protection update.
+The extension adds a fixed overlay outside React's tree at the highest normal stacking index. It passes pointer events through to WhatsApp. Geometry excludes the header/composer, clips to visible bounds, and updates on scrolling, mutations, loading, and resizing. An inline SVG mask excludes audio controls. Scroll/content callbacks update geometry before painting, without depending solely on deferred rendering.
 
-Existing settings without `visibleArea` receive 40%; the old `visibleCount` is ignored. Legacy `visibleArea: 0` migrates to explicit full blur; values 1–19 clamp to 20. Aliases and other preferences remain intact. Both blur options still default to disabled.
+## Media choices
 
-## Media preferences
+| Setting | Effect while conversation protection is enabled |
+| --- | --- |
+| `blurImages` | Blur photos in full |
+| `blurVideos` | Blur videos and recognized video thumbnails in full |
+| `blurStickers` | Blur stickers, including image/canvas assets, in full |
 
-These preferences default to `false` when missing; explicit saved choices are preserved:
+Missing fields default to `false`; preserve explicit saved choices. Selected types stay blurred below the chat boundary and in info-card carousels, galleries, opened media, and viewer history. Allowed types follow the boundary in the conversation and stay clear in panels/viewers. Unidentified assets remain protected if any media type is selected.
 
-- `blurImages`: photos stay blurred in full.
-- `blurVideos`: videos and recognized video thumbnails stay blurred in full.
-- `blurStickers`: stickers, including their image/canvas assets, stay blurred in full.
+The advanced-blur shortcut enables chat protection and selects all three types. Turning it off clears media choices while retaining chat protection. Its tooltip explains this behavior and opens individual settings. Audio waveforms and playback UI remain visible, including in full and advanced modes.
 
-A selected type stays hidden throughout the conversation, including its readable area, and in info-card carousels, galleries, and opened media. An unselected type follows the viewport boundary in the conversation and stays clear in panels/viewers. Unknown assets remain protected when any media type is selected.
+CSS masks unclassified assets until synchronous classification. Treat CSS background thumbnails as assets even if they contain an icon or child; do not filter an aggregate album wrapper as one asset. Preserve React-owned text and structures.
 
-The former `alwaysBlurMedia` setting and popup control are removed. Its legacy stored value is ignored; type choices now determine persistent media blur directly. The next settings save serializes only supported preferences. The advanced-blur shortcut enables conversation protection and selects all three types; switching it off clears them while retaining conversation protection. Its tooltip explains the behavior and opens individual media settings.
+## Opened media and history
 
-Media rules apply only while the extension and conversation protection are enabled. CSS protects unclassified new assets until synchronous classification. Background thumbnails are actual assets even if they contain an icon or child. Aggregate album wrappers are not filtered as one asset. Audio waveforms and playback UI stay visible, including in full and advanced modes. React-owned text and structures are not replaced, wrapped, or removed.
+A visible supported viewer suspends the chat viewport overlay. Individual type filters remain active: allowed photos are clear throughout the viewer; selected photos blur in full. Explicit video/sticker indicators take priority over photo detection. A large displayed image can count as a photo, while small unidentified previews retain conservative handling.
 
-## Opened media
+Detection covers explicit viewer surfaces and large media dialogs. If the displayed image carries the only known marker, discovery includes its enclosing positioned fullscreen shell. This covers sibling history strips, including selected, background-image, and newly loaded thumbnails, even inside a generic footer. Stop discovery before application, conversation, sidebar, or document roots.
 
-A visible supported media viewer suspends the conversation viewport overlay. The opened asset itself follows the selected type: an allowed photo is clear everywhere, while a selected photo is blurred in full. Other selected types must not incorrectly classify a large displayed photo as unknown. Explicit video/sticker indicators still take priority; small unidentified preview tiles retain conservative handling.
+Hidden, zero-size, and `aria-hidden` viewers leave chat protection active. Closing or hiding a viewer restores the chat mask; reopening a mounted viewer suspends it again. Info cards and galleries do not generally suspend it.
 
-Viewer detection includes explicit viewer surfaces and large media dialogs. When only the displayed image has a known viewer marker, asset discovery also includes its enclosing positioned fullscreen shell, covering sibling history strips (including selected, background-image, and newly loaded thumbnails). Discovery stops before application, conversation, sidebar, or document roots. Inferred shells are media surfaces even when the history strip uses a generic footer. Hidden, zero-size, or `aria-hidden` viewers do not suspend protection. Closing/hiding the viewer restores the conversation mask; reopening a mounted viewer suspends it again. Individual media filters remain active during these transitions. Info cards and media galleries do not generally suspend conversation protection.
+## Settings migration
 
-## Integration limits and validation
+Settings without `visibleArea` receive 40%. Ignore the old `visibleCount`. A legacy value of `visibleArea: 0` enables full blur; values 1–19 clamp to 20. Preserve aliases and other preferences. Conversation and sidebar blur default to disabled.
 
-Selectors and viewer/viewport detection depend on WhatsApp markup. Manually check real albums, opened photos/videos/stickers, thumbnail strips, zoom, dialogs, floating UI, and group histories before distribution. System notifications and search are outside scope. Blur is visual protection, not encryption or access control.
+The `alwaysBlurMedia` field and control were removed. Ignore its stored value; selected types now determine persistent media blur. The next settings save writes supported preferences only.
 
-Headless fixtures exercise geometry, history, resizing, viewer lifecycle, media choices, audio, and disabled states. Screenshot comparisons cover an allowed tall image across the mask boundary (including maximum stacking index), fully selected media below that boundary, whole-viewer allowed/blocked images, panel/background assets, viewer history strips with independent type preferences, and sharp audio. They use synthetic markup, not an authenticated WhatsApp session.
+## Validation and limits
+
+WhatsApp markup determines selector and viewport compatibility. Before distribution, check integration changes against real albums, opened photos/videos/stickers, thumbnail strips, zoom, dialogs, floating UI, and group histories. System notifications and search are outside scope. Blur does not encrypt content or prevent technical access to it.
+
+Headless fixtures cover geometry, history, resizing, viewer lifecycle, media choices, audio, and disabled states. Pixel comparisons cover a tall allowed image crossing the boundary at maximum stacking index, selected media below it, allowed/blocked fullscreen images, panel/background assets, independent thumbnail types, and sharp audio. These tests use synthetic markup, not an authenticated WhatsApp session.

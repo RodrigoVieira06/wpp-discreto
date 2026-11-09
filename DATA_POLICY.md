@@ -1,15 +1,21 @@
-# Data protection policy — Wpp Discreto
+# Data protection policy: Wpp Discreto
 
-This extension operates on WhatsApp Web in the browser where it is installed.
+Wpp Discreto runs on WhatsApp Web in the browser where you install it.
 
-- It does not send messages, group names, aliases, or preferences to external servers.
-- It includes no analytics, advertising, trackers, or third-party services.
-- It reads interface elements to apply aliases and visual blurring. It does not store message contents.
-- It stores only user-provided original names, aliases, and preferences in `chrome.storage.local`, without cross-device synchronization.
-- Conversation suggestions read up to ten names from the active WhatsApp tab; alias validation checks requested names against loaded conversations. Discovered names stay in memory unless the user saves an alias mapping. The feature does not read message contents or access an account-wide address book.
-- Data remains until removed by the user or the extension is uninstalled. Alias entries can be removed individually in the popup.
-- The `storage` permission enables local preferences. Content scripts run only on `https://web.whatsapp.com/*`.
+## Data use and storage
 
-Blur is visual. It does not encrypt, delete, or prevent technical access to page contents. Aliases do not change actual WhatsApp group names.
+The extension reads interface elements to display local aliases and blur content. It stores your original-name mappings, aliases, and preferences in `chrome.storage.local`, without cross-device synchronization. It does not store message contents or send messages, names, aliases, or preferences to external servers. It uses no analytics, advertising, trackers, or third-party services.
 
-Before Chrome Web Store publication, the publisher must add their identity and support contact and host this policy at an accessible URL.
+Conversation suggestions read up to ten names from the active WhatsApp tab. Alias validation checks requested names against loaded conversations. These discovered names stay in memory unless you save an alias. This lookup feature reads no messages and uses no account-wide address-book API.
+
+You can remove individual aliases in the popup. Saved data remains until you remove it or uninstall the extension.
+
+## Permissions and effects
+
+The `storage` permission saves local preferences and aliases. Content scripts run on `https://web.whatsapp.com/*`.
+
+Aliases affect the display in this browser; they leave original WhatsApp names unchanged. Blur changes the visible presentation. It does not encrypt or delete content, or prevent technical access to page contents.
+
+## Publisher details
+
+Before Chrome Web Store publication, the publisher must add their identity and support contact and host this policy at a public URL.

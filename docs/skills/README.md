@@ -1,6 +1,6 @@
 # Project skills
 
-Versioned instruction packages for assistants working on this repository:
+Use these versioned instructions for repository tasks:
 
 | Skill | Use when |
 | --- | --- |
@@ -8,4 +8,4 @@ Versioned instruction packages for assistants working on this repository:
 | [Testing](wpp-discreto-testing/SKILL.md) | Following TDD, reproducing bugs, or validating DOM behavior |
 | [Review](wpp-discreto-review/SKILL.md) | Reviewing correctness and integration risks |
 
-Read [AGENTS.md](../../AGENTS.md) first, then open the relevant `SKILL.md`. You can direct an assistant to that path explicitly. Automatic discovery depends on the assistant's environment; these files do not install themselves globally or require a particular provider.
+Read [AGENTS.md](../../AGENTS.md), then the relevant `SKILL.md`. Give the file path to your assistant if its environment does not discover project skills. The files stay in this repository and require no provider-specific global installation.

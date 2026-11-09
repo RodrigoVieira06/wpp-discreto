@@ -1,10 +1,14 @@
 # Branding assets
 
-`assets/logo.png` is the approved full-resolution PNG with transparency: a crisp WhatsApp symbol with a larger crisp dark-green dialogue-bubble badge overlapping its lower-right corner, with no blur on either symbol. Preserve that composition when deriving assets. This is the final artwork selected by the user for the first store release. Future artwork changes must be previewed and explicitly approved before applying them to the project or pushing them to GitHub.
+The user selected `assets/logo.png` for the first store release: a transparent PNG with a sharp WhatsApp symbol and a larger sharp dark-green dialogue bubble at the lower right. Neither symbol has blur. Preserve this composition when resizing.
 
-Chrome icons are committed as `assets/icon-16.png`, `assets/icon-32.png`, `assets/icon-48.png`, and `assets/icon-128.png`. The manifest uses these icons for the extension listing and toolbar. The popup displays the 128 px image at 40 CSS pixels alongside the Wpp Discreto heading, with an empty alternative text to avoid repeating the adjacent brand name.
+Preview future artwork changes and obtain explicit approval before applying them or pushing them to GitHub.
 
-To regenerate icons after an explicitly approved artwork update:
+## Icons
+
+Chrome uses the committed `assets/icon-16.png`, `icon-32.png`, `icon-48.png`, and `icon-128.png`. The popup displays the 128 px icon at 40 CSS pixels beside the Wpp Discreto heading. Its empty alternative text avoids repeating that heading.
+
+After an approved artwork update, run:
 
 ```sh
 make icons
@@ -14,10 +18,10 @@ make test
 make package
 ```
 
-The generation script uses Sharp only as a development tool to resize the source while retaining transparency and aspect ratio. Builds use the committed icons, so routine compilation does not regenerate or redesign the logo. Distribution includes only the icons referenced by the manifest and popup; the full-resolution source remains available in the repository and README.
+The Sharp development script resizes the source while preserving transparency and aspect ratio. Builds use the committed icons without regenerating artwork. The ZIP includes the referenced icons; the repository and README retain the full-resolution source.
 
-## Product naming
+## Names and paths
 
-The public product name is **Wpp Discreto** in both locales. The package, repository, checkout directory, ZIP prefix, and project skill directories use `wpp-discreto`. Development documentation and code identifiers remain English; the DOM namespace is `data-wppd-` and the internal message type is `wpp-discreto:chat-context`. Storage keys remain `settings` and `aliases`; changing the brand does not reset them. Git history is preserved.
+The product name is **Wpp Discreto** in both locales. The package, repository, checkout directory, ZIP prefix, and project skill directories use `wpp-discreto`. Keep development documentation and code identifiers in English. DOM attributes use `data-wppd-`; internal messaging uses `wpp-discreto:chat-context`.
 
-When renaming an unpacked extension directory, Chrome may derive a different extension ID from the new path and use separate local storage. To retain existing Windows preferences, copy the new build into the same installed directory and reload the extension and WhatsApp. Reopen the renamed checkout in development tools that saved its old path.
+Storage keys remain `settings` and `aliases`; rebranding preserves those values and Git history. Renaming an unpacked extension directory can cause Chrome to derive a different ID and use separate storage. To retain Windows preferences, copy the build into the installed directory, then reload the extension and WhatsApp. Reopen the renamed checkout in tools that saved the old path.

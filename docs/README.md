@@ -1,6 +1,6 @@
 # Documentation
 
-Start with the root [README](../README.md) for installation and [AGENTS.md](../AGENTS.md) for contributor rules.
+For installation, read the root [README](../README.md). Before contributing, read [AGENTS.md](../AGENTS.md).
 
 | Document | Purpose |
 | --- | --- |
@@ -9,7 +9,7 @@ Start with the root [README](../README.md) for installation and [AGENTS.md](../A
 | [Internationalization](internationalization.md) | Portuguese default, English support, and browser language detection |
 | [Branding](branding.md) | Approved logo, icon sizes, and regeneration |
 | [Popup controls](popup-controls.md) | Master switch, settings, conversation suggestions, and alias warnings |
-| [Message protection](message-protection.md) | Grouped messages, mixed albums, media choices, and masking rules |
+| [Message protection](message-protection.md) | Screen boundaries, albums, viewers, and media choices |
 | [Development](development.md) | Environment, Makefile, Git hooks, and commits |
 | [Local deployment](local-deployment.md) | Install and run the extension from the terminal |
 | [Testing](testing.md) | TDD, Jest, browser tests, and manual validation |
@@ -17,4 +17,4 @@ Start with the root [README](../README.md) for installation and [AGENTS.md](../A
 | [Skills](skills/README.md) | Project-specific instructions for AI assistants |
 | [Data policy](../DATA_POLICY.md) | Local storage and data handling |
 
-Update documentation and skills when commands, defaults, architecture, or validation limits change.
+Update the relevant guides and skills after changing commands, defaults, architecture, or validation limits.

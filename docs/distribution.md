@@ -1,30 +1,26 @@
 # Distribution and release preparation
 
-`make package` builds `dist/extension` and `dist/wpp-discreto-<version>.zip`. Chrome requires the compiled directory; source TypeScript and SCSS are not directly loadable extension resources.
+`make package` builds `dist/extension` and `dist/wpp-discreto-<version>.zip`. Load the compiled directory in Chrome; submit the ZIP to the store.
 
-`make deploy` runs the same preparation as `make release`: Biome, TypeScript, Jest, then packaging. It does not upload, publish, deploy a server, or create a GitHub release.
+`make deploy` and `make release` run Biome, TypeScript, Jest, and packaging. These targets prepare files for manual submission. They do not upload, publish, deploy a server, or create a GitHub release. For an optional isolated test session, use [`make deploy-local`](local-deployment.md).
 
-For interactive testing before a release, use [`make deploy-local`](local-deployment.md).
+## Before store submission
 
-## Store readiness
-
-1. Manual WhatsApp validation was confirmed complete by the user on 2026-11-08. Automated tests still use synthetic markup; repeat relevant manual checks after integration changes.
-2. Align `manifest.json` and `package.json` versions when releasing a new version.
+1. Review manual validation. The user confirmed it on 2026-11-08; repeat relevant checks after integration changes. Automated tests use synthetic markup.
+2. Match versions in `manifest.json` and `package.json`.
 3. Prepare descriptions, screenshots, support details, and data/permission declarations.
-4. Add publisher identity and support contact to [DATA_POLICY.md](../DATA_POLICY.md), then host it at an accessible URL.
-5. Generate a validated ZIP and submit it through the publisher dashboard when publication is explicitly requested.
+4. Add publisher identity and support contact to [DATA_POLICY.md](../DATA_POLICY.md) and host it at a public URL.
+5. Generate a validated ZIP and submit it through the publisher dashboard after explicit publication authorization.
 
-Public GitHub source does not imply Chrome Web Store approval. Follow the [official publishing guide](https://developer.chrome.com/docs/webstore/publish).
+Store approval follows Google's review process. See the [official publishing guide](https://developer.chrome.com/docs/webstore/publish).
 
-## Future automated publishing
+## Automated publishing prerequisites
 
-Chrome Web Store API v2 supports uploading an existing item's package and submitting it for review. An automated publishing Make target can be added after these prerequisites are configured:
+Chrome Web Store API v2 can upload an existing item's package and submit it for review. Before adding a publishing Make target, configure:
 
-- A publisher account, completed listing and data declarations, and two-step verification.
-- An enabled Chrome Web Store API in a Google Cloud project.
-- OAuth client credentials and a refresh token with the `chromewebstore` scope, or a configured service account.
+- A publisher account with two-step verification, completed listing, and data declarations.
+- The Chrome Web Store API in a Google Cloud project.
+- OAuth client credentials and a refresh token with the `chromewebstore` scope, or a service account.
 - Publisher ID and extension ID.
 
-Keep credentials outside Git and browser fixtures. Upload and submission must remain explicit operations, separate from local development. Submission goes through Google's review process and does not guarantee immediate public availability. No store request is performed by the current Makefile.
-
-See the [official API setup guide](https://developer.chrome.com/docs/webstore/using-api).
+Keep credentials outside Git and fixtures. Separate upload/submission from local development and require explicit action. Review can delay or reject public availability; the current Makefile makes no store request. See [API setup](https://developer.chrome.com/docs/webstore/using-api).
