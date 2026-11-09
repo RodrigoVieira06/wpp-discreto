@@ -18,7 +18,7 @@ make test
 make package
 ```
 
-The Sharp development script resizes the source while preserving transparency and aspect ratio. Builds use the committed icons without regenerating artwork. The ZIP includes the referenced icons; the repository and README retain the full-resolution source.
+The Sharp development script trims excess transparent canvas, adds a transparent margin of 5% of the trimmed artwork on each side, and resizes while preserving aspect ratio. This gives the artwork more space inside Chrome's fixed icon slot. The approved full-resolution source remains unchanged. Builds use the committed icons without regenerating artwork. The ZIP includes the referenced icons; the repository and README retain the full-resolution source.
 
 ## Names and paths
 
