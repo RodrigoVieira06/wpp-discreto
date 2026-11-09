@@ -46,7 +46,7 @@ Build a public Chrome extension for WhatsApp Web with local group aliases, blurr
 - Aliases match exact original names, not group IDs. Same-name conversations, including contacts, share aliases; group renames require updating entries.
 - No automatic group detection. Sidebar titles, the conversation header, and the active conversation name in supported info cards are decorated. Search, member lists, descriptions, and accessibility text retain original names.
 - WhatsApp DOM selectors are unstable; isolate integration changes and manually validate before store distribution. Missing names get amber warnings with a tooltip explicitly scoped to loaded conversations. Unavailable tabs must not be treated as invalid aliases. See `docs/popup-controls.md`.
-- Screen masking depends on conversation viewport detection. Notifications and search are outside the protection scope. Selected media in info-card carousels, galleries, and media viewers is protected independently of the chat screen boundary. A visible supported media viewer suspends the chat overlay while individual type filters remain active; closing/hiding it restores the overlay. Manually check context menus and floating UI within the masked area.
+- Screen masking depends on conversation viewport detection. Notifications and search are outside the protection scope. Selected media in info-card carousels, galleries, and media viewers (including history thumbnails beside a marked main image) is protected independently of the chat screen boundary. A visible supported media viewer suspends the chat overlay while individual type filters remain active; closing/hiding it restores the overlay. Manually check context menus and floating UI within the masked area.
 
 ## Commands
 

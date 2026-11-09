@@ -39,6 +39,11 @@ export {};
       'redundant always-blur media control is removed',
       !document.getElementById('always-blur-media'),
     );
+    check(
+      'localized author credit is present in the footer',
+      document.querySelector('footer [data-i18n="developerCredit"]')?.textContent ===
+        window.expectedMessages.developerCredit && !!window.expectedMessages.developerCredit,
+    );
     check('settings hidden initially', byId('settings-panel').hidden);
     document.querySelector('footer')?.scrollIntoView({ block: 'end' });
     check(

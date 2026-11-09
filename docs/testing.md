@@ -49,3 +49,5 @@ Before store distribution, check a real authenticated session:
 Do not commit actual messages, authentication material, or browser profiles as fixtures. Actual extension loading confirms installation and popup initialization; simulated tests are not live WhatsApp validation.
 
 Viewer lifecycle regressions cover open/close, hidden attributes, `aria-hidden`, visibility changes, fullscreen media dialogs, and standalone viewer images. The legacy always-blur field is ignored and absent from the popup/model. These checks do not establish real WhatsApp viewer compatibility.
+
+The viewer pixel fixture includes a generic fullscreen shell where only the main image has a viewer marker. Its sibling footer contains selected, regular, background, and video thumbnails; tests cover full image blur, independent video choices, lazy arrivals, and restoring allowed photos. Popup locale tests also check the author credit.

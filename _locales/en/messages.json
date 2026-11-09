@@ -175,5 +175,8 @@
   },
   "advancedBlurHelp": {
     "message": "Selects photos, videos and stickers to always stay blurred. Adjust each type in settings (gear). Audio stays visible."
+  },
+  "developerCredit": {
+    "message": "Developed by Rodrigo Lima"
   }
 }

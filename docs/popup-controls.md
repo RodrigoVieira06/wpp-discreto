@@ -12,7 +12,7 @@
 
 Keep product copy factual and short. Do not add slogans, promotional empty states, or constant ready messages. Status text should communicate an action result, a failure, or an actual limitation.
 
-The persistent footer explains in plain language that aliases/settings affect only this browser, original WhatsApp names/messages stay unchanged, and WPP Mask does not send or save conversation contents. Keep the footer in normal document flow, reachable by scrolling the popup. Preserve the 380 px width and intrinsic control heights; never shrink the controls to fit a fixed footer or an initial viewport height. Factual data-handling information is necessary product copy, not a slogan.
+The persistent footer explains in plain language that aliases/settings affect only this browser, original WhatsApp names/messages stay unchanged, and WPP Mask does not send or save conversation contents. Keep the footer in normal document flow, reachable by scrolling the popup. Preserve the 380 px width and intrinsic control heights; never shrink the controls to fit a fixed footer or an initial viewport height. Factual data-handling information is necessary product copy, not a slogan. A smaller localized author credit below these notices reads “Desenvolvido por Rodrigo Lima” in Portuguese and “Developed by Rodrigo Lima” in English.
 
 ## Lookup
 

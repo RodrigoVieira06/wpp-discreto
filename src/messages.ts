@@ -2,6 +2,7 @@ import {
   audioElements,
   hasOpenMediaViewer,
   mediaPanelSelector,
+  mediaViewerRoots,
   mediaViewerSelector,
 } from './surfaces';
 
@@ -60,10 +61,14 @@ export function annotateMessages(document: Document) {
     for (const attribute of ['media', 'media-ignore', 'media-panel', 'audio', 'surface'])
       old.removeAttribute(`data-wppm-${attribute}`);
   }
-  const roots = document.querySelectorAll<HTMLElement>(`#main, ${mediaPanelSelector}`);
+  const viewers = new Set(mediaViewerRoots(document));
+  const roots = new Set([
+    ...document.querySelectorAll<HTMLElement>(`#main, ${mediaPanelSelector}`),
+    ...viewers,
+  ]);
   for (const root of roots) {
     if (root.closest('#pane-side, #side')) continue;
-    root.setAttribute('data-wppm-surface', '');
+    root.setAttribute('data-wppm-surface', viewers.has(root) ? 'viewer' : '');
     for (const audio of audioElements(root)) audio.setAttribute('data-wppm-audio', '');
   }
   const assets = new Set(
@@ -73,7 +78,7 @@ export function annotateMessages(document: Document) {
     ]),
   );
   for (const node of assets) {
-    const panel = node.closest(mediaPanelSelector);
+    const panel = node.closest(`${mediaPanelSelector}, [data-wppm-surface="viewer"]`);
     const background = getComputedStyle(node).backgroundImage !== 'none';
     if (
       node.closest(

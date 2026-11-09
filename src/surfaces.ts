@@ -7,6 +7,31 @@ export const mediaPanelSelector = `${infoPanelSelector}, [data-testid="media-gal
 export const audioSelector =
   '[data-testid="audio-player"], [data-testid="ptt-audio-player"], [data-testid="audio-message"], [data-testid="ptt-message"], [data-testid="ptt"]';
 
+/** Include sibling history strips when only the main image has a viewer marker. */
+export function mediaViewerRoots(document: Document): HTMLElement[] {
+  const roots = new Set(document.querySelectorAll<HTMLElement>(mediaViewerSelector));
+  for (const marked of roots) {
+    for (let parent = marked.parentElement; parent; parent = parent.parentElement) {
+      if (
+        parent.matches('body, html, #app, #main, #pane-side, #side') ||
+        parent.querySelector('#main, #pane-side, #side')
+      )
+        break;
+      const box = parent.getBoundingClientRect();
+      if (
+        box.width >= innerWidth * 0.7 &&
+        box.height >= innerHeight * 0.7 &&
+        (/fixed|absolute/.test(getComputedStyle(parent).position) ||
+          parent.matches('[role="dialog"]'))
+      ) {
+        roots.add(parent);
+        break;
+      }
+    }
+  }
+  return [...roots];
+}
+
 /** A visible full-screen viewer replaces the chat viewport as the active media surface. */
 export function hasOpenMediaViewer(document: Document): boolean {
   return [

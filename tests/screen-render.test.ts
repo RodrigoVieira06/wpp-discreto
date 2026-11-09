@@ -133,14 +133,24 @@ test('rendered screen mask covers chat media and suspends behind the media viewe
     await evaluate(`(async () => {
       document.querySelector('#history img').setAttribute('data-testid', 'image-thumb');
       const viewer = document.createElement('div');
-      viewer.dataset.testid = 'media-viewer';
+      viewer.id = 'pixel-viewer';
       viewer.style.cssText = 'position:fixed;inset:0;background:#111;z-index:1000';
-      viewer.innerHTML = '<img style="width:100%;height:100%">';
+      viewer.innerHTML = '<img data-testid="media-viewer-img" style="width:100%;height:calc(100% - 100px)"><footer style="position:absolute;bottom:0;left:0;height:90px;display:flex;gap:12px;padding:10px"><img id="history-selected" aria-current="true" style="width:64px;height:64px;outline:2px solid green"><img id="history-photo" style="width:64px;height:64px"><div id="history-background" style="width:64px;height:64px"></div><img id="history-video" data-testid="video-thumb" style="width:64px;height:64px"></footer>';
       viewer.querySelector('img').src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="700"><defs><pattern id="p" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="2" fill="black"/><rect y="2" width="4" height="2" fill="white"/></pattern></defs><rect width="100%" height="100%" fill="url(#p)"/></svg>');
+      const thumbnail = document.querySelector('#history img').src;
+      for (const img of viewer.querySelectorAll('footer img')) img.src = thumbnail;
+      viewer.querySelector('#history-background').style.backgroundImage = 'url("' + thumbnail + '")';
       document.body.append(viewer);
-      await viewer.querySelector('img').decode();
+      await Promise.all([...viewer.querySelectorAll('img')].map((img) => img.decode()));
       await chrome.storage.local.set({ settings: { blurChat: false } });
     })()`);
+    const historyRegions = await evaluate<{ id: string; left: number; top: number }[]>(
+      `[...document.querySelectorAll('#pixel-viewer footer > *')].map((node) => { const box = node.getBoundingClientRect(); return { id: node.id, left: Math.round(box.left + 12), top: Math.round(box.top + 12) }; })`,
+    );
+    const thumbnailPixels = async (buffer: Buffer, region: { left: number; top: number }) =>
+      sharp(buffer)
+        .extract({ left: region.left, top: region.top, width: 40, height: 40 })
+        .toBuffer();
     const viewerOriginal = await screenshot();
     await evaluate(
       'chrome.storage.local.set({ settings: { blurChat: true, visibleArea: 40, blurImages: false, blurVideos: true } })',
@@ -167,8 +177,51 @@ test('rendered screen mask covers chat media and suspends behind the media viewe
         'A selected opened image must blur entirely, not just the previous chat rectangle',
       );
     }
+    for (const region of historyRegions) {
+      const before = await sharp(await thumbnailPixels(viewerOriginal, region)).stats();
+      const after = await sharp(await thumbnailPixels(viewerHidden, region)).stats();
+      if (region.id === 'history-video') {
+        assert.ok(
+          (await thumbnailPixels(viewerHidden, region)).equals(
+            await thumbnailPixels(viewerOriginal, region),
+          ),
+          'Unselected video history must remain clear',
+        );
+      } else {
+        assert.ok(
+          after.channels[0].stdev < before.channels[0].stdev * 0.3,
+          `${region.id} must blur alongside the opened photo`,
+        );
+      }
+    }
+    assert.equal(
+      await evaluate("document.getElementById('history-selected').getAttribute('aria-current')"),
+      'true',
+    );
     await evaluate(`(async () => {
-      document.querySelector('[data-testid="media-viewer"]').remove();
+      const image = document.createElement('img');
+      image.id = 'history-lazy';
+      image.style.cssText = 'width:64px;height:64px';
+      image.src = document.getElementById('history-photo').src;
+      document.querySelector('#pixel-viewer footer').append(image);
+      await image.decode();
+    })()`);
+    assert.equal(
+      await evaluate("getComputedStyle(document.getElementById('history-lazy')).filter"),
+      'blur(8px)',
+      'New history entries must inherit protection',
+    );
+    await evaluate('chrome.storage.local.set({ settings: { blurChat: true, blurImages: false } })');
+    const historyAllowed = await screenshot();
+    for (const region of historyRegions)
+      assert.ok(
+        (await thumbnailPixels(historyAllowed, region)).equals(
+          await thumbnailPixels(viewerOriginal, region),
+        ),
+        'Allowing photos restores history thumbnails',
+      );
+    await evaluate(`(async () => {
+      document.getElementById('pixel-viewer').remove();
       await chrome.storage.local.set({ settings: { blurChat: true, visibleArea: 40 } });
     })()`);
     assert.equal(await evaluate("!!document.querySelector('[data-wppm-screen]')"), true);
