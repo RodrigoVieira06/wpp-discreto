@@ -96,7 +96,7 @@ Use the surface color for the page and the raised surface for fields and setting
 
 ## Typography
 
-Use the platform's system UI font. The product title is 18 px; section headings and controls are 13 px. Field labels, helper text, and the footer are 12 px. Saved aliases use 14 px semibold with the original name below. The alias count uses 11 px. The developer credit has a 12 px localized label and a 14 px semibold name, separated from data notices by a divider and 16 px spacing. Range values use tabular numerals.
+Use the platform's system UI font. The product title is 18 px; section headings and controls are 13 px. Field labels, helper text, and the footer are 12 px. Saved aliases use 14 px semibold with the original name below. The alias count uses 11 px. The developer credit uses muted text, an 11 px localized label, and a 12 px medium-weight name, separated from data notices by a divider and 12 px spacing. Range values use tabular numerals.
 
 ## Layout
 
