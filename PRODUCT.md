@@ -38,7 +38,7 @@ Use factual copy without slogans or promotional claims. Retain existing product 
 
 ## Evidence on Hand
 
-The repository contains the approved logo, a working popup, Portuguese/English catalogs, and Chrome integration/pixel tests with synthetic content. The owner confirmed manual WhatsApp validation on 2026-11-08. Automated tests do not observe authenticated WhatsApp behavior. Store publication and publisher contact setup remain separate work.
+The repository contains the approved logo, a working popup, Portuguese/English catalogs, and Chrome integration/pixel tests with synthetic content. The owner confirmed manual WhatsApp validation on 2026-11-08. Automated tests do not observe authenticated WhatsApp behavior. The data policy identifies Rodrigo Lima and the support email rodrigovlima06@gmail.com. Store publication remains separate work; contact email verification takes place in the publisher dashboard.
 
 ## Product Principles
 

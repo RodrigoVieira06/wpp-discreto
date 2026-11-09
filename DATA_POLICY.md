@@ -1,10 +1,12 @@
 # Data protection policy: Wpp Discreto
 
+Last updated: 2026-11-09.
+
 Wpp Discreto runs on WhatsApp Web in the browser where you install it.
 
 ## Data use and storage
 
-The extension reads interface elements to display local aliases and blur content. It stores your original-name mappings, aliases, and preferences in `chrome.storage.local`, without cross-device synchronization. It does not store message contents or send messages, names, aliases, or preferences to external servers. It uses no analytics, advertising, trackers, or third-party services.
+The extension processes WhatsApp Web interface elements locally to display aliases and blur conversations and media. This includes contact and group names, which may identify people, and the visual presentation of personal communications and website content. It stores your original-name mappings, aliases, and preferences in `chrome.storage.local`, without cross-device synchronization. It does not store message contents or send messages, names, aliases, or preferences to external servers. It uses no analytics, advertising, trackers, or third-party services.
 
 Conversation suggestions read up to ten names from the active WhatsApp tab. Alias validation checks requested names against loaded conversations. These discovered names stay in memory unless you save an alias. This lookup feature reads no messages and uses no account-wide address-book API.
 
@@ -18,4 +20,8 @@ Aliases affect the display in this browser; they leave original WhatsApp names u
 
 ## Publisher details
 
-Before Chrome Web Store publication, the publisher must add their identity and support contact and host this policy at a public URL.
+Publisher: Rodrigo Lima.
+
+For support or questions about this policy, contact [rodrigovlima06@gmail.com](mailto:rodrigovlima06@gmail.com).
+
+Public policy URL: [DATA_POLICY.md](https://github.com/RodrigoVieira06/wpp-discreto/blob/main/DATA_POLICY.md).

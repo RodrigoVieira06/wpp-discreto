@@ -9,7 +9,7 @@
 1. Review manual validation. The user confirmed it on 2026-11-08; repeat relevant checks after integration changes. Automated tests use synthetic markup.
 2. Match versions in `manifest.json` and `package.json`.
 3. Prepare descriptions, screenshots, support details, and data/permission declarations.
-4. Add publisher identity and support contact to [DATA_POLICY.md](../DATA_POLICY.md) and host it at a public URL.
+4. Use the [public data policy](https://github.com/RodrigoVieira06/wpp-discreto/blob/main/DATA_POLICY.md) in the store policy URL field. It identifies Rodrigo Lima and the support email rodrigovlima06@gmail.com. Keep these details consistent with the publisher dashboard and verify the contact email there.
 5. Generate a validated ZIP and submit it through the publisher dashboard after explicit publication authorization.
 
 Store approval follows Google's review process. See the [official publishing guide](https://developer.chrome.com/docs/webstore/publish).
