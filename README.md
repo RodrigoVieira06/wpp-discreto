@@ -1,10 +1,10 @@
 # Wpp Discreto
 
-<img src="assets/logo.png" width="128" height="128" alt="Wpp Discreto">
+<img src="assets/logo.png" width="160" height="160" alt="Wpp Discreto — WhatsApp symbol with a dialogue bubble">
 
 A Chrome extension for local conversation aliases and visual message protection on WhatsApp Web.
 
-**Status:** early development, version 0.1.0. Automated tests use a simulated interface; compatibility with an authenticated WhatsApp Web session still requires manual validation.
+**Status:** version 0.1.0, preparing the first Chrome Web Store submission. Manual WhatsApp Web validation was confirmed by the user on 2026-11-08. Automated tests use simulated markup.
 
 ## Features
 
