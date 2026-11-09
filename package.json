@@ -6,6 +6,7 @@
   "description": "Local group aliases and message blurring for WhatsApp Web",
   "scripts": {
     "icons": "node scripts/generate-icons.ts",
+    "store:assets": "pnpm build && node scripts/store-assets.ts",
     "build": "node scripts/build.ts",
     "dev": "node scripts/dev.ts",
     "deploy:local": "node scripts/deploy-local.ts",

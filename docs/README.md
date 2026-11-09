@@ -16,6 +16,7 @@ For installation, read the root [README](../README.md). Before contributing, rea
 | [Development](development.md) | Environment, Makefile, Git hooks, and commits |
 | [Local deployment](local-deployment.md) | Install and run the extension from the terminal |
 | [Testing](testing.md) | TDD, Jest, browser tests, and manual validation |
+| [Store listing assets](../store/README.md) | Portuguese copy, screenshots, icon, and promotional files |
 | [Distribution](distribution.md) | Local releases and store preparation |
 | [Skills](skills/README.md) | Project-specific instructions for AI assistants |
 | [Data policy](../DATA_POLICY.md) | Local storage and data handling |

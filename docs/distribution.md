@@ -14,6 +14,10 @@
 
 Store approval follows Google's review process. See the [official publishing guide](https://developer.chrome.com/docs/webstore/publish).
 
+## Listing assets
+
+See [store assets](../store/README.md) for the Portuguese listing, upload dimensions, provenance, and reproduction command. `make store-assets` creates `dist/wpp-discreto-store-assets.zip`, which is an asset bundle, not an installable extension package. Upload each image to its matching listing field.
+
 ## Automated publishing prerequisites
 
 Chrome Web Store API v2 can upload an existing item's package and submit it for review. Before adding a publishing Make target, configure:

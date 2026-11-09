@@ -4,7 +4,7 @@
 CHROME_BIN ?= /usr/bin/google-chrome
 export CHROME_BIN
 
-.PHONY: help install hooks doctor dev run icons build lint lint-fix format typecheck check test test-watch package release deploy deploy-local clean status
+.PHONY: help install hooks doctor dev run icons store-assets build lint lint-fix format typecheck check test test-watch package release deploy deploy-local clean status
 
 help: ## Show available terminal commands
 	@awk 'BEGIN {FS = ":.*## "; printf "\nWpp Discreto development commands\n\n"} /^[a-zA-Z_-]+:.*## / {printf "  make %-13s %s\n", $$1, $$2} END {print ""}' $(MAKEFILE_LIST)
@@ -28,6 +28,9 @@ run: dev ## Start the local development workflow
 
 icons: ## Regenerate Chrome icon sizes from the approved logo
 	pnpm icons
+
+store-assets: ## Capture fictitious demos and export Chrome Web Store assets
+	pnpm store:assets
 
 build: ## Compile the unpacked extension into dist/extension
 	pnpm build

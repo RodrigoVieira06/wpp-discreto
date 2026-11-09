@@ -1,0 +1,25 @@
+Wpp Discreto
+
+Desfoque mensagens e mídias no WhatsApp Web e crie apelidos para suas conversas neste navegador.
+
+Com o Wpp Discreto, você escolhe o que fica visível na tela do WhatsApp Web. Ative o desfoque das prévias na lista de conversas, proteja a conversa aberta e defina uma área na parte inferior para continuar lendo.
+
+DESFOQUE DE CONVERSAS
+Escolha a intensidade do desfoque e mantenha de 20% a 100% da área inferior da conversa legível. Para ler mensagens antigas, role até que elas cheguem à área visível. A opção de desfoque completo cobre toda a área das mensagens.
+
+FOTOS, VÍDEOS E FIGURINHAS
+Escolha quais tipos de mídia devem permanecer embaçados, inclusive na área legível, nas galerias e no visualizador. O desfoque avançado seleciona os três tipos de uma vez. Os controles de áudio continuam visíveis.
+
+APELIDOS PARA GRUPOS E CONTATOS
+Defina nomes que aparecem para você neste navegador. Busque até dez conversas já carregadas na lista para preencher o nome original. Conversas com o mesmo nome compartilham o apelido.
+
+CONTROLE E IDIOMA
+Ative ou desative a extensão sem perder seus ajustes e apelidos. A interface oferece português e inglês, com seleção pelo idioma do navegador ou escolha nas configurações. Restaurar o padrão mantém seus apelidos salvos.
+
+SEUS DADOS
+Os ajustes e apelidos ficam no armazenamento local do navegador. A extensão não envia nem salva o conteúdo das conversas e não altera os nomes ou as mensagens originais no WhatsApp.
+
+O desfoque protege a exibição na tela. Ele não funciona como criptografia ou bloqueio de acesso. Atualizações do WhatsApp Web podem exigir ajustes de compatibilidade.
+
+Projeto independente, sem vínculo oficial com WhatsApp ou Meta.
+Desenvolvido por Rodrigo Lima.

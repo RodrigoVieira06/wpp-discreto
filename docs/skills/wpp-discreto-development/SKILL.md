@@ -19,6 +19,8 @@ For interface work, read `PRODUCT.md`, `DESIGN.md`, and `.impeccable/surfaces/po
 6. Run `make package` after changing distributed assets.
 7. Use `make deploy` to prepare a validated ZIP for manual store submission.
 
+Use `make store-assets` to regenerate the store icon and synthetic demonstration screenshots. See `store/README.md`; promotional artwork is supplied separately and preserved by the command. The bundle is separate from the extension package.
+
 Use pnpm for direct package operations. Update Make targets, scripts, documentation, and this skill together if commands change.
 
 Read `docs/local-deployment.md` before using the launcher. Keep `.local/chrome-profile` ignored and outside packages; leave the personal Chrome profile unchanged. Store API publishing requires separate configuration and authorization.
