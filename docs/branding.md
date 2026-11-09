@@ -1,8 +1,8 @@
 # Branding assets
 
-`assets/logo.png` is the approved full-resolution PNG with transparency: a smaller WhatsApp symbol behind a larger foreground shield. Preserve that composition when deriving assets.
+`assets/logo.png` is the approved full-resolution PNG with transparency: a lightly blurred WhatsApp symbol with a small sharp dialogue-bubble badge overlapping its lower-right corner. Preserve that composition when deriving assets.
 
-Chrome icons are committed as `assets/icon-16.png`, `assets/icon-32.png`, `assets/icon-48.png`, and `assets/icon-128.png`. The manifest uses these icons for the extension listing and toolbar. The popup displays the 128 px image at 44 CSS pixels alongside the Wpp Discreto heading, with an empty alternative text to avoid repeating the adjacent brand name.
+Chrome icons are committed as `assets/icon-16.png`, `assets/icon-32.png`, `assets/icon-48.png`, and `assets/icon-128.png`. The manifest uses these icons for the extension listing and toolbar. The popup displays the 128 px image at 40 CSS pixels alongside the Wpp Discreto heading, with an empty alternative text to avoid repeating the adjacent brand name.
 
 To regenerate icons after an explicitly approved artwork update:
 
