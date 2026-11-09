@@ -113,7 +113,7 @@ async function main() {
             expression: `(() => {
               const main = document.querySelector('main');
               const reachable = (selector) => {
-                const element = document.querySelector(selector);
+                const element = typeof selector === 'string' ? document.querySelector(selector) : selector;
                 element.scrollIntoView({ block: 'center' });
                 const rect = element.getBoundingClientRect();
                 return rect.height > 0 && rect.top >= 0 && rect.bottom <= innerHeight;
@@ -125,7 +125,7 @@ async function main() {
               const switchesAligned = Math.abs(document.getElementById('advanced-blur').getBoundingClientRect().right - document.getElementById('blur-chat').getBoundingClientRect().right) < 1;
               const masterReachable = reachable('#extension-enabled');
               const saveReachable = reachable('#alias-form button');
-              const footerReachable = reachable('footer');
+              const footerReachable = [...document.querySelector('footer').children].every(reachable);
               document.getElementById('settings-toggle').click();
               const settingsReachable = reachable('#visible-area');
               document.getElementById('settings-toggle').click();

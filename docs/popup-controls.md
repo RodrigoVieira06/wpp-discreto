@@ -18,7 +18,7 @@ Use factual copy that explains actions, failures, or limits. Omit slogans, promo
 
 Keep the popup 380 px wide, with intrinsic control heights and normal document scrolling. Place the footer in document flow so you can reach it by scrolling. A fixed footer or `100vh` height constraint must not compress the controls.
 
-Retain the footer's data-handling explanation: changes affect this browser, original WhatsApp names/messages remain unchanged, and the extension does not send or save conversation contents. Below it, show the smaller localized credit: “Desenvolvido por Rodrigo Lima” or “Developed by Rodrigo Lima”.
+Retain the footer's data-handling explanation: changes affect this browser, original WhatsApp names/messages remain unchanged, and the extension does not send or save conversation contents. Place the developer credit in its own footer area, separated from the data notices by a divider and spacing. Show the localized label “Desenvolvido por” or “Developed by” above “Rodrigo Lima”, with the name larger and semibold. Keep the credit in normal document flow.
 
 ## Lookup and editing
 
