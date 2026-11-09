@@ -29,7 +29,7 @@ async function closeBrowser() {
 
 async function main() {
   await access(path.join(extension, 'manifest.json'));
-  if (smoke) temporaryProfile = await mkdtemp(path.join(os.tmpdir(), 'wppm-local-'));
+  if (smoke) temporaryProfile = await mkdtemp(path.join(os.tmpdir(), 'wppd-local-'));
   const profile = temporaryProfile ?? path.join(root, '.local/chrome-profile');
   await mkdir(profile, { recursive: true });
   browser = spawn(
@@ -142,7 +142,7 @@ async function main() {
       await protocol.send('Target.createTarget', { url: 'chrome://extensions/' });
       await protocol.send('Target.createTarget', { url: 'https://web.whatsapp.com/' });
       console.log(
-        `WPP Mask loaded: ${result.id}\nTest profile: ${profile}\nSign in to WhatsApp in this window. Close it or press Ctrl+C to stop.\nAfter rebuilding, close this session and run make deploy-local again.`,
+        `Wpp Discreto loaded: ${result.id}\nTest profile: ${profile}\nSign in to WhatsApp in this window. Close it or press Ctrl+C to stop.\nAfter rebuilding, close this session and run make deploy-local again.`,
       );
       await new Promise<void>((resolve) => browser?.once('close', () => resolve()));
     }

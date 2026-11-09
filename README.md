@@ -1,6 +1,6 @@
-# WPP Mask
+# Wpp Discreto
 
-<img src="assets/logo.png" width="128" height="128" alt="WPP Mask">
+<img src="assets/logo.png" width="128" height="128" alt="Wpp Discreto">
 
 A Chrome extension for local conversation aliases and visual message protection on WhatsApp Web.
 
@@ -31,15 +31,15 @@ TypeScript with strict checking, SCSS, Chrome Manifest V3, esbuild, pnpm, Biome,
 Requirements: Node.js 22.18 or later, pnpm 11.23.0, Git, and GNU Make. Chrome is required for integration tests. The verified development environment uses Node.js 26.2.0 on Linux.
 
 ```sh
-git clone https://github.com/RodrigoVieira06/wpp-mask.git
-cd wpp-mask
+git clone https://github.com/RodrigoVieira06/wpp-discreto.git
+cd wpp-discreto
 make install
 make build
 ```
 
 1. Open `chrome://extensions` and enable **Developer mode**.
 2. Select **Load unpacked** and choose **`dist/extension`**.
-3. Open or refresh WhatsApp Web, pin WPP Mask, and open its popup.
+3. Open or refresh WhatsApp Web, pin Wpp Discreto, and open its popup.
 4. Use the master switch to enable the extension and select the desired effects. Open the gear button for language, blur intensity, readable screen percentage, and default restoration.
 5. Open WhatsApp Web in the active tab. Use **Buscar grupos e contatos** to pick a loaded name, or enter an exact original name manually. Save an alias, edit it, or remove it from the list.
 
@@ -70,7 +70,7 @@ After a development rebuild, reload the extension in `chrome://extensions` and r
 make deploy-local
 ```
 
-This builds the extension, opens Chrome with a separate persistent profile, loads WPP Mask through the Chrome DevTools Protocol, and opens WhatsApp Web and the extensions page. Sign in to WhatsApp once in that window. Close it or press Ctrl+C in the terminal to stop. After changing the code, close the test window and run the command again.
+This builds the extension, opens Chrome with a separate persistent profile, loads Wpp Discreto through the Chrome DevTools Protocol, and opens WhatsApp Web and the extensions page. Sign in to WhatsApp once in that window. Close it or press Ctrl+C in the terminal to stop. After changing the code, close the test window and run the command again.
 
 The test profile lives in `.local/chrome-profile/`, is ignored by Git, and survives `make clean`. The command does not change your regular Chrome profile. Keep only one local deployment session open at a time. A graphical desktop and a recent Chrome with `Extensions.loadUnpacked` support are required; Chrome 157 was verified here. See the [local deployment guide](docs/local-deployment.md).
 
@@ -83,7 +83,7 @@ make test CHROME_BIN=/path/to/chrome
 make deploy-local CHROME_BIN=/path/to/chrome
 ```
 
-Output: `dist/extension/` for local installation and `dist/wpp-mask-0.1.0.zip` for distribution. Generated files are ignored by Git.
+Output: `dist/extension/` for local installation and `dist/wpp-discreto-0.1.0.zip` for distribution. Generated files are ignored by Git.
 
 ## Contributing and AI assistance
 

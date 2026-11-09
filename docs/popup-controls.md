@@ -12,11 +12,11 @@
 
 Keep product copy factual and short. Do not add slogans, promotional empty states, or constant ready messages. Status text should communicate an action result, a failure, or an actual limitation.
 
-The persistent footer explains in plain language that aliases/settings affect only this browser, original WhatsApp names/messages stay unchanged, and WPP Mask does not send or save conversation contents. Keep the footer in normal document flow, reachable by scrolling the popup. Preserve the 380 px width and intrinsic control heights; never shrink the controls to fit a fixed footer or an initial viewport height. Factual data-handling information is necessary product copy, not a slogan. A smaller localized author credit below these notices reads “Desenvolvido por Rodrigo Lima” in Portuguese and “Developed by Rodrigo Lima” in English.
+The persistent footer explains in plain language that aliases/settings affect only this browser, original WhatsApp names/messages stay unchanged, and Wpp Discreto does not send or save conversation contents. Keep the footer in normal document flow, reachable by scrolling the popup. Preserve the 380 px width and intrinsic control heights; never shrink the controls to fit a fixed footer or an initial viewport height. Factual data-handling information is necessary product copy, not a slogan. A smaller localized author credit below these notices reads “Desenvolvido por Rodrigo Lima” in Portuguese and “Developed by Rodrigo Lima” in English.
 
 ## Lookup
 
-The popup queries only the active tab ID using `chrome.tabs.query` and sends a `wpp-mask:chat-context` message to the already injected WhatsApp content script. It does not read sensitive tab properties, inject into other sites, or request additional permissions.
+The popup queries only the active tab ID using `chrome.tabs.query` and sends a `wpp-discreto:chat-context` message to the already injected WhatsApp content script. It does not read sensitive tab properties, inject into other sites, or request additional permissions.
 
 `src/chats.ts` reads original DOM names, not displayed aliases. Suggestions contain up to ten unique sidebar names in document order. Validation compares the saved original names with the loaded sidebar and open header; the response returns only matches for names already requested by the popup.
 

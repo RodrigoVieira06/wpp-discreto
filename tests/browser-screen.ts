@@ -5,7 +5,7 @@ export {};
   const check = (name: string, pass: unknown) => results.push({ name, pass: !!pass });
   const wait = () => new Promise((resolve) => setTimeout(resolve, 80));
   const history = document.getElementById('history') as HTMLElement;
-  const overlay = () => document.querySelector<HTMLElement>('[data-wppm-screen]');
+  const overlay = () => document.querySelector<HTMLElement>('[data-wppd-screen]');
   const bounds = () => overlay()?.getBoundingClientRect();
   try {
     await wait();
@@ -86,7 +86,7 @@ export {};
     );
     check(
       'no message-count reveal exceptions remain',
-      !document.querySelector('[data-wppm-reveal]'),
+      !document.querySelector('[data-wppd-reveal]'),
     );
     await chrome.storage.local.set({ settings: { blurChat: true, visibleArea: 75 } });
     check(

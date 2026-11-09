@@ -33,4 +33,4 @@ Tests cover Portuguese variants, English variants, unsupported-language fallback
 
 ## Updating a local installation
 
-Run `make build` and copy the **entire** `dist/extension` directory, including `_locales`. In `chrome://extensions`, reload WPP Mask, close and reopen its popup, and refresh WhatsApp Web. Switching the browser UI language may require restarting Chrome.
+Run `make build` and copy the **entire** `dist/extension` directory, including `_locales`. In `chrome://extensions`, reload Wpp Discreto, close and reopen its popup, and refresh WhatsApp Web. Switching the browser UI language may require restarting Chrome.

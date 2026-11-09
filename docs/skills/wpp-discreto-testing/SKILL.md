@@ -1,9 +1,9 @@
 ---
-name: wpp-mask-testing
-description: Apply TDD and maintain Jest and Chrome fixture regression tests for WPP Mask.
+name: wpp-discreto-testing
+description: Apply TDD and maintain Jest and Chrome fixture regression tests for Wpp Discreto.
 ---
 
-# WPP Mask testing
+# Wpp Discreto testing
 
 Read `AGENTS.md` and `docs/testing.md`. Identify an observable failure instead of only testing implementation details.
 

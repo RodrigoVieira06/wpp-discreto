@@ -11,7 +11,7 @@ import sharp from 'sharp';
 import { PipeClient } from '../scripts/lib/cdp';
 
 test('rendered screen mask covers chat media and suspends behind the media viewer', async () => {
-  const temp = await mkdtemp(path.join(os.tmpdir(), 'wppm-pixels-'));
+  const temp = await mkdtemp(path.join(os.tmpdir(), 'wppd-pixels-'));
   const browser = spawn(
     process.env.CHROME_BIN || '/usr/bin/google-chrome',
     [
@@ -58,7 +58,7 @@ test('rendered screen mask covers chat media and suspends behind the media viewe
       return response.result.value;
     };
     for (let attempt = 0; attempt < 100; attempt++) {
-      if (await evaluate<boolean>("document.documentElement.hasAttribute('data-wppm-ready')"))
+      if (await evaluate<boolean>("document.documentElement.hasAttribute('data-wppd-ready')"))
         break;
       await delay(20);
     }
@@ -164,7 +164,7 @@ test('rendered screen mask covers chat media and suspends behind the media viewe
         'An allowed opened image must be clear across the entire viewer',
       );
     }
-    assert.equal(await evaluate("!!document.querySelector('[data-wppm-screen]')"), false);
+    assert.equal(await evaluate("!!document.querySelector('[data-wppd-screen]')"), false);
     await evaluate(
       'chrome.storage.local.set({ settings: { blurChat: true, blurImages: true, alwaysBlurMedia: false } })',
     );
@@ -224,7 +224,7 @@ test('rendered screen mask covers chat media and suspends behind the media viewe
       document.getElementById('pixel-viewer').remove();
       await chrome.storage.local.set({ settings: { blurChat: true, visibleArea: 40 } });
     })()`);
-    assert.equal(await evaluate("!!document.querySelector('[data-wppm-screen]')"), true);
+    assert.equal(await evaluate("!!document.querySelector('[data-wppd-screen]')"), true);
     await evaluate(`(() => {
       const history = document.getElementById('history');
       history.scrollTop = 400;

@@ -1,9 +1,9 @@
 ---
-name: wpp-mask-development
-description: Develop WPP Mask with TypeScript, SCSS, pnpm, TDD, Make, Biome, Jest, and Lefthook, and prepare local extension releases.
+name: wpp-discreto-development
+description: Develop Wpp Discreto with TypeScript, SCSS, pnpm, TDD, Make, Biome, Jest, and Lefthook, and prepare local extension releases.
 ---
 
-# WPP Mask development
+# Wpp Discreto development
 
 Read `AGENTS.md`, `docs/architecture.md`, and `docs/development.md`. Inspect the working tree and preserve unrelated edits. Use English filenames, source code, comments, documentation, and commit subjects.
 

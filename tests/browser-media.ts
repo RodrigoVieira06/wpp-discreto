@@ -12,7 +12,7 @@ export {};
       if (getComputedStyle(node).filter !== 'none') return true;
     }
     if (!element) return false;
-    const mask = document.querySelector<HTMLElement>('[data-wppm-screen]');
+    const mask = document.querySelector<HTMLElement>('[data-wppd-screen]');
     const rect = mask?.getBoundingClientRect();
     const box = element.getBoundingClientRect();
     return !!rect && rect.height > 0 && box.top < rect.bottom;
@@ -50,7 +50,7 @@ export {};
     await chrome.storage.local.set({ settings });
     check(
       'grouped container does not create message reveal exceptions',
-      !document.querySelector('[data-wppm-reveal]'),
+      !document.querySelector('[data-wppd-reveal]'),
     );
     for (const id of ['photo', 'video-preview', 'video', 'sticker', 'background-photo'])
       check(
@@ -66,7 +66,7 @@ export {};
       await wait();
       check(
         `media remains masked through load and bottom-scroll round ${iteration}`,
-        blurred(document.getElementById('photo')) && !document.querySelector('[data-wppm-reveal]'),
+        blurred(document.getElementById('photo')) && !document.querySelector('[data-wppd-reveal]'),
       );
     }
 
@@ -142,7 +142,7 @@ export {};
     await wait();
     check(
       'scrolling into history masks text and selected media',
-      document.querySelector<HTMLElement>('[data-wppm-screen]')?.getBoundingClientRect().height ===
+      document.querySelector<HTMLElement>('[data-wppd-screen]')?.getBoundingClientRect().height ===
         history.clientHeight && blurred(inserted),
     );
     await chrome.storage.local.set({ settings: { ...settings, enabled: false } });

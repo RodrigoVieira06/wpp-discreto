@@ -1,9 +1,9 @@
 ---
-name: wpp-mask-review
-description: Review WPP Mask correctness, data handling, DOM integration, tests, and release readiness.
+name: wpp-discreto-review
+description: Review Wpp Discreto correctness, data handling, DOM integration, tests, and release readiness.
 ---
 
-# WPP Mask review
+# Wpp Discreto review
 
 Read `AGENTS.md`, the changes, and relevant tests. Prioritize actionable defects over preferences.
 

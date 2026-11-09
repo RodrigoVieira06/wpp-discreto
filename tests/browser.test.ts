@@ -9,7 +9,7 @@ import { test } from '@jest/globals';
 const root = path.resolve(__dirname, '..');
 
 function runBrowser(fixture: string, minimumChecks: number) {
-  const temp = mkdtempSync(path.join(os.tmpdir(), 'wppm-browser-'));
+  const temp = mkdtempSync(path.join(os.tmpdir(), 'wppd-browser-'));
   try {
     const entry = path.join(temp, 'test.html');
     writeFileSync(entry, fixture);

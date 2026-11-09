@@ -27,8 +27,8 @@ The browser runs on the computer executing the launcher. Running `make deploy-lo
 To test in Windows Chrome, run the source checkout and launcher from a **local PowerShell window**, with Node.js 22.18 or later, pnpm 11.23.0, Git, and Chrome installed:
 
 ```powershell
-git clone https://github.com/RodrigoVieira06/wpp-mask.git
-cd wpp-mask
+git clone https://github.com/RodrigoVieira06/wpp-discreto.git
+cd wpp-discreto
 pnpm install --frozen-lockfile
 pnpm build
 $env:CHROME_BIN = 'C:\Program Files\Google\Chrome\Application\chrome.exe'

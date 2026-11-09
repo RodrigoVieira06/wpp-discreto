@@ -1,4 +1,4 @@
-# Data protection policy — WPP Mask
+# Data protection policy — Wpp Discreto
 
 This extension operates on WhatsApp Web in the browser where it is installed.
 

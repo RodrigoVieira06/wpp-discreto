@@ -3,7 +3,7 @@ import type { Settings } from './settings';
 import { audioElements, hasOpenMediaViewer } from './surfaces';
 
 const namespace = 'http://www.w3.org/2000/svg';
-const maskId = 'wppm-screen-audio-mask';
+const maskId = 'wppd-screen-audio-mask';
 
 /** A viewport mask also covers partial messages and albums taller than the screen. */
 export class ScreenProtection {
@@ -70,7 +70,7 @@ export class ScreenProtection {
     const height = Math.max(0, bottom - top) * (config.fullBlur ? 1 : 1 - config.visibleArea / 100);
     if (!this.overlay) {
       this.overlay = document.createElement('div');
-      this.overlay.setAttribute('data-wppm-screen', '');
+      this.overlay.setAttribute('data-wppd-screen', '');
       this.overlay.setAttribute('aria-hidden', 'true');
       this.overlay.style.maskImage = `url("${document.URL.split('#')[0]}#${maskId}")`;
       document.documentElement.append(this.overlay);

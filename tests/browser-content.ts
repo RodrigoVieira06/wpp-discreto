@@ -7,7 +7,7 @@ export {};
     results.push({ name, pass: !!condition });
   };
   const filter = (node: Element) => getComputedStyle(node).filter;
-  const mask = () => document.querySelector<HTMLElement>('[data-wppm-screen]');
+  const mask = () => document.querySelector<HTMLElement>('[data-wppd-screen]');
   const history = document.getElementById('history') as HTMLElement;
   try {
     history.scrollTop = history.scrollHeight;
@@ -24,7 +24,7 @@ export {};
     );
     check(
       'alias applied to header and sidebar',
-      document.querySelectorAll('[data-wppm-alias="Meu pessoal"]').length === 2,
+      document.querySelectorAll('[data-wppd-alias="Meu pessoal"]').length === 2,
     );
     check(
       'original DOM text preserved',
@@ -36,19 +36,19 @@ export {};
     check(
       'master switch removes every visual effect',
       !mask() &&
-        document.querySelectorAll('[data-wppm-alias]').length === 0 &&
+        document.querySelectorAll('[data-wppd-alias]').length === 0 &&
         filter(history.firstElementChild as HTMLElement) === 'none' &&
         filter(document.querySelector('[data-testid="chat-subtitle"]') as HTMLElement) === 'none',
     );
     await chrome.storage.local.set({ settings: { ...activeSettings, aliasesEnabled: false } });
     check(
       'aliases disabled independently from message protection',
-      document.querySelectorAll('[data-wppm-alias]').length === 0 && !!mask(),
+      document.querySelectorAll('[data-wppd-alias]').length === 0 && !!mask(),
     );
     await chrome.storage.local.set({ settings: activeSettings });
     check(
       'reenabling restores saved aliases',
-      document.querySelectorAll('[data-wppm-alias="Meu pessoal"]').length === 2,
+      document.querySelectorAll('[data-wppd-alias="Meu pessoal"]').length === 2,
     );
 
     const pane = document.getElementById('pane-side');
@@ -61,7 +61,7 @@ export {};
     let chatContext: { available: boolean; chats: string[]; found: string[] } | undefined;
     for (const listener of messageListeners)
       listener(
-        { type: 'wpp-mask:chat-context', names: ['Família Silva', 'Contato 12', 'Missing'] },
+        { type: 'wpp-discreto:chat-context', names: ['Família Silva', 'Contato 12', 'Missing'] },
         { id: 'test-extension' },
         (response) => {
           chatContext = response as typeof chatContext;
@@ -85,7 +85,7 @@ export {};
     pane?.prepend(unreadRow);
     for (const listener of messageListeners)
       listener(
-        { type: 'wpp-mask:chat-context', names: ['Nome do Grupo'] },
+        { type: 'wpp-discreto:chat-context', names: ['Nome do Grupo'] },
         { id: 'test-extension' },
         (response) => {
           chatContext = response as typeof chatContext;
@@ -98,7 +98,7 @@ export {};
     await chrome.storage.local.set({ aliases: [{ original: 'Nome do Grupo', alias: 'Equipe' }] });
     check(
       'alias decorates only the title and preserves unread badge',
-      unreadRow.querySelector('[dir="auto"]')?.getAttribute('data-wppm-alias') === 'Equipe' &&
+      unreadRow.querySelector('[dir="auto"]')?.getAttribute('data-wppd-alias') === 'Equipe' &&
         unreadRow.querySelector('[data-testid="unread-count"]')?.textContent ===
           '6 mensagens não lidas',
     );
@@ -127,7 +127,7 @@ export {};
     check(
       'alias replacement retains original text for WhatsApp',
       nestedTitleRow.querySelector('[title]')?.textContent === 'Example Contact' &&
-        nestedTitleRow.querySelector('[data-wppm-alias]')?.getAttribute('data-wppm-alias') ===
+        nestedTitleRow.querySelector('[data-wppd-alias]')?.getAttribute('data-wppd-alias') ===
           'Example alias',
     );
     await chrome.storage.local.set({
@@ -148,7 +148,7 @@ export {};
     await wait();
     check(
       'recycling does not introduce message reveal exceptions',
-      !document.querySelector('[data-wppm-reveal]'),
+      !document.querySelector('[data-wppd-reveal]'),
     );
     history.scrollTop = 0;
     history.dispatchEvent(new Event('scroll'));
@@ -170,7 +170,7 @@ export {};
     check(
       'alias safely displayed as plain text',
       !document.querySelector('#main header img') &&
-        document.querySelector<HTMLElement>('#main header span')?.dataset.wppmAlias ===
+        document.querySelector<HTMLElement>('#main header span')?.dataset.wppdAlias ===
           '<img src=x onerror=alert(1)>',
     );
 
@@ -179,11 +179,11 @@ export {};
     recycled.title = 'Outro grupo';
     recycled.textContent = 'Outro grupo';
     await wait();
-    check('recycled rows lose previous alias', !recycled.hasAttribute('data-wppm-alias'));
+    check('recycled rows lose previous alias', !recycled.hasAttribute('data-wppd-alias'));
     await chrome.storage.local.set({ aliases: [] });
     check(
       'deleting aliases restores all titles',
-      document.querySelectorAll('[data-wppm-alias]').length === 0,
+      document.querySelectorAll('[data-wppd-alias]').length === 0,
     );
 
     await chrome.storage.local.set({ settings: { blurPreviews: false, blurChat: false } });

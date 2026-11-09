@@ -22,6 +22,6 @@ const files: string[] = [
 const entries: Record<string, Uint8Array> = {};
 for (const file of new Set(files)) entries[file] = await readFile(path.join(source, file));
 await mkdir(path.join(root, 'dist'), { recursive: true });
-const output = path.join(root, 'dist', `wpp-mask-${manifest.version}.zip`);
+const output = path.join(root, 'dist', `wpp-discreto-${manifest.version}.zip`);
 await writeFile(output, zipSync(entries));
 console.log(output);

@@ -1,6 +1,6 @@
 {
   "extensionName": {
-    "message": "WPP Mask — Apelidos e proteção de mensagens"
+    "message": "Wpp Discreto — Apelidos e proteção de mensagens"
   },
   "extensionDescription": {
     "message": "Apelidos locais para grupos e desfoque ajustável de mensagens no WhatsApp Web."
@@ -129,7 +129,7 @@
     "message": "Os apelidos e ajustes só aparecem para você, neste navegador. As mensagens e os nomes originais continuam iguais no WhatsApp."
   },
   "conversationDataNotice": {
-    "message": "O WPP Mask não envia nem salva o conteúdo das suas conversas."
+    "message": "O Wpp Discreto não envia nem salva o conteúdo das suas conversas."
   },
   "resetConfirmTitle": {
     "message": "Restaurar configurações padrão?"

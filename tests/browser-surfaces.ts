@@ -48,7 +48,7 @@ export {};
     check('second album photo is blurred', blurred(document.getElementById('second-photo')));
     check(
       'info card uses the saved alias',
-      info.querySelector('[dir="auto"]')?.getAttribute('data-wppm-alias') === 'Meu pessoal',
+      info.querySelector('[dir="auto"]')?.getAttribute('data-wppd-alias') === 'Meu pessoal',
     );
     check(
       'info card preserves the original React-owned name',
@@ -67,7 +67,7 @@ export {};
       );
     check(
       'audio waveform is not classified as protected media',
-      !blurred(audio.querySelector('canvas')) && !audio.querySelector('[data-wppm-media]'),
+      !blurred(audio.querySelector('canvas')) && !audio.querySelector('[data-wppd-media]'),
     );
     check('sidebar avatars are outside media protection', !blurred(sidebarAvatar));
     await chrome.storage.local.set({ settings: { ...selected, alwaysBlurMedia: false } });
@@ -93,7 +93,7 @@ export {};
     await chrome.storage.local.set({ settings: { ...selected, aliasesEnabled: false } });
     check(
       'aliases switch also restores info card names',
-      !info.querySelector('[data-wppm-alias]') && blurred(lazy),
+      !info.querySelector('[data-wppd-alias]') && blurred(lazy),
     );
     await chrome.storage.local.set({ settings: { ...selected, enabled: false } });
     check(
@@ -114,7 +114,7 @@ export {};
     await wait();
     check(
       'closing panels clears their alias decorations',
-      !info.querySelector('[data-wppm-alias]'),
+      !info.querySelector('[data-wppd-alias]'),
     );
   } catch (error) {
     check(error instanceof Error ? (error.stack ?? error.message) : String(error), false);

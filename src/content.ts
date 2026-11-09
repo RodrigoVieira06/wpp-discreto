@@ -33,7 +33,7 @@ import * as model from './settings';
   const observer = new MutationObserver((records) => {
     if (
       records.every(
-        (record) => record.target instanceof Element && record.target.closest('[data-wppm-screen]'),
+        (record) => record.target instanceof Element && record.target.closest('[data-wppd-screen]'),
       )
     )
       return;
@@ -75,8 +75,8 @@ import * as model from './settings';
   function updateAliases() {
     // Restore the original presentation before measuring nested title fonts.
     for (const node of decorated) {
-      node.removeAttribute('data-wppm-alias');
-      node.style.removeProperty('--wppm-name-size');
+      node.removeAttribute('data-wppd-alias');
+      node.style.removeProperty('--wppd-name-size');
     }
     decorated.clear();
     const byName = new Map(aliases.map(({ original, alias }) => [original, alias]));
@@ -93,10 +93,10 @@ import * as model from './settings';
       if (model.normalizeName(node.textContent) !== original) continue;
       const alias = byName.get(original);
       if (!alias) continue;
-      if (!node.hasAttribute('data-wppm-alias')) {
-        node.style.setProperty('--wppm-name-size', getComputedStyle(node).fontSize);
+      if (!node.hasAttribute('data-wppd-alias')) {
+        node.style.setProperty('--wppd-name-size', getComputedStyle(node).fontSize);
       }
-      node.setAttribute('data-wppm-alias', alias);
+      node.setAttribute('data-wppd-alias', alias);
       active.add(node);
     }
     for (const node of active) decorated.add(node);
@@ -108,28 +108,28 @@ import * as model from './settings';
     try {
       // Keep masking while the initial settings are unavailable.
       root().setAttribute(
-        'data-wppm-chat',
+        'data-wppd-chat',
         String(storageFailed || (config.enabled && config.blurChat)),
       );
       root().setAttribute(
-        'data-wppm-previews',
+        'data-wppd-previews',
         String(storageFailed || (config.enabled && config.blurPreviews)),
       );
-      root().style.setProperty('--wppm-blur', `${config.blurStrength}px`);
+      root().style.setProperty('--wppd-blur', `${config.blurStrength}px`);
       for (const [kind, selected] of [
         ['images', config.blurImages],
         ['videos', config.blurVideos],
         ['stickers', config.blurStickers],
       ] as const)
-        root().setAttribute(`data-wppm-${kind}`, String(selected));
+        root().setAttribute(`data-wppd-${kind}`, String(selected));
       root().setAttribute(
-        'data-wppm-media-any',
+        'data-wppd-media-any',
         String(config.blurImages || config.blurVideos || config.blurStickers),
       );
       annotateMessages(document);
       screen.update(config);
       updateAliases();
-      if (loaded) root().setAttribute('data-wppm-ready', '');
+      if (loaded) root().setAttribute('data-wppd-ready', '');
     } finally {
       observe();
     }
@@ -150,7 +150,7 @@ import * as model from './settings';
   chrome.runtime.onMessage.addListener((request: unknown, sender, respond) => {
     if (sender.id !== chrome.runtime.id || !request || typeof request !== 'object') return false;
     const input = request as Record<string, unknown>;
-    if (input.type !== 'wpp-mask:chat-context') return false;
+    if (input.type !== 'wpp-discreto:chat-context') return false;
     respond(
       loaded && config.enabled ? readChatContext(document, input.names) : unavailableContext(),
     );
@@ -167,7 +167,7 @@ import * as model from './settings';
     })
     .catch(() => {
       storageFailed = true;
-      console.warn('WPP Mask: could not load settings. Reload the extension and this page.');
+      console.warn('Wpp Discreto: could not load settings. Reload the extension and this page.');
       render();
     });
 

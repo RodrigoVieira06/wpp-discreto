@@ -1,6 +1,6 @@
 # Distribution and release preparation
 
-`make package` builds `dist/extension` and `dist/wpp-mask-<version>.zip`. Chrome requires the compiled directory; source TypeScript and SCSS are not directly loadable extension resources.
+`make package` builds `dist/extension` and `dist/wpp-discreto-<version>.zip`. Chrome requires the compiled directory; source TypeScript and SCSS are not directly loadable extension resources.
 
 `make deploy` runs the same preparation as `make release`: Biome, TypeScript, Jest, then packaging. It does not upload, publish, deploy a server, or create a GitHub release.
 
@@ -8,7 +8,7 @@ For interactive testing before a release, use [`make deploy-local`](local-deploy
 
 ## Store readiness
 
-1. Complete [manual validation](testing.md) in WhatsApp Web.
+1. Manual WhatsApp validation was confirmed complete by the user on 2026-11-08. Automated tests still use synthetic markup; repeat relevant manual checks after integration changes.
 2. Align `manifest.json` and `package.json` versions when releasing a new version.
 3. Prepare descriptions, screenshots, support details, and data/permission declarations.
 4. Add publisher identity and support contact to [DATA_POLICY.md](../DATA_POLICY.md), then host it at an accessible URL.

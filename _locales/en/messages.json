@@ -1,6 +1,6 @@
 {
   "extensionName": {
-    "message": "WPP Mask — Aliases and message protection"
+    "message": "Wpp Discreto — Aliases and message protection"
   },
   "extensionDescription": {
     "message": "Local group aliases and adjustable message blurring for WhatsApp Web."
@@ -129,7 +129,7 @@
     "message": "Aliases and settings are only visible to you, in this browser. Your messages and original names stay unchanged on WhatsApp."
   },
   "conversationDataNotice": {
-    "message": "WPP Mask does not send or save the contents of your conversations."
+    "message": "Wpp Discreto does not send or save the contents of your conversations."
   },
   "resetConfirmTitle": {
     "message": "Restore default settings?"

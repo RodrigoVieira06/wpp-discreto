@@ -1,4 +1,4 @@
-# WPP Mask — AI contributor instructions
+# Wpp Discreto — AI contributor instructions
 
 ## Read first
 
@@ -33,7 +33,7 @@ Build a public Chrome extension for WhatsApp Web with local group aliases, blurr
 - `assets/logo.png` is the approved artwork: smaller WhatsApp symbol behind the larger foreground shield. Preserve it when generating sizes. `make icons` uses Sharp to regenerate the committed 16/32/48/128 px PNGs; the popup and Chrome toolbar use those icons. See `docs/branding.md`.
 - esbuild and Sass compile into `dist/extension`. Load that directory in Chrome, not the repository root.
 - Store only preferences and alias mappings in `chrome.storage.local`. No message persistence, backend, synchronization, analytics, or extension-owned network calls.
-- Do not modify React-owned text or structures. Use `data-wppm-` attributes and visual aliases. Treat aliases as plain text.
+- Do not modify React-owned text or structures. Use `data-wppd-` attributes and visual aliases. Treat aliases as plain text.
 - Blur options default to off; readable lower screen area defaults to 40%, ranging from 20–100%; a separate `fullBlur` switch defaults to false and protects the full text viewport without changing the percentage; strength ranges from 4–16 px.
 - Media choices `blurImages`, `blurVideos`, and `blurStickers` default to false when missing. Preserve explicit saved choices. The advanced-blur shortcut enables chat protection and selects all three media types; switching it off clears media options while retaining text protection. Audio controls are always exempt from visual protection. Media preferences apply with chat protection enabled. Selected types always remain blurred in full, including in the readable area and viewers. Allowed media still blurs inside the protected screen area and clears only outside it. The obsolete `alwaysBlurMedia` preference is ignored and removed from the popup. Unidentified types must not inherit a type exemption. See `docs/message-protection.md`.
 - Default restoration requires explicit confirmation; cancel performs no write. Always retain the plain-language footer explaining local-only changes, unchanged original WhatsApp data, and no transmission/persistence of conversation contents. This is necessary information, not promotional copy.
@@ -75,4 +75,4 @@ A regression test also covers master-switch recovery after an initial settings r
 
 Popup controls must retain intrinsic height and the existing 380 px width, with normal document scrolling and the footer in document flow. Never constrain controls with `100vh` or a fixed footer. Short-viewport regression checks cover this layout. Screenshot comparisons cover actual screen-mask pixels on synthetic markup.
 
-Actual extension loading and popup initialization are covered by the local deployment smoke test in headless Chrome. Authenticated WhatsApp validation remains pending. The data policy still needs publisher identity and support contact before store publication. Automated Web Store submission is not configured; OAuth/API setup is documented in `docs/distribution.md`.
+Actual extension loading and popup initialization are covered by the local deployment smoke test in headless Chrome. The user confirmed completion of manual WhatsApp validation on 2026-11-08; this was user-reported, not an authenticated session observed by automated tests. The data policy still needs publisher identity and support contact before store publication. Automated Web Store submission is not configured; OAuth/API setup is documented in `docs/distribution.md`.

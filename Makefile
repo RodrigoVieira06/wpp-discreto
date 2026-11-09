@@ -7,7 +7,7 @@ export CHROME_BIN
 .PHONY: help install hooks doctor dev run icons build lint lint-fix format typecheck check test test-watch package release deploy deploy-local clean status
 
 help: ## Show available terminal commands
-	@awk 'BEGIN {FS = ":.*## "; printf "\nWPP Mask development commands\n\n"} /^[a-zA-Z_-]+:.*## / {printf "  make %-13s %s\n", $$1, $$2} END {print ""}' $(MAKEFILE_LIST)
+	@awk 'BEGIN {FS = ":.*## "; printf "\nWpp Discreto development commands\n\n"} /^[a-zA-Z_-]+:.*## / {printf "  make %-13s %s\n", $$1, $$2} END {print ""}' $(MAKEFILE_LIST)
 
 install: ## Install locked dependencies and Git hooks
 	pnpm install --frozen-lockfile

@@ -173,7 +173,7 @@ import * as model from '../src/settings';
       if (tab?.id !== undefined) {
         next = parseChatContext(
           await chrome.tabs.sendMessage(tab.id, {
-            type: 'wpp-mask:chat-context',
+            type: 'wpp-discreto:chat-context',
             names: entries.map((entry) => entry.original),
           }),
         );

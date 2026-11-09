@@ -56,10 +56,10 @@ function mediaKind(node: HTMLElement): MediaKind {
 /** Classify actual assets, including background thumbnails, across all supported surfaces. */
 export function annotateMessages(document: Document) {
   for (const old of document.querySelectorAll(
-    '[data-wppm-media], [data-wppm-media-ignore], [data-wppm-media-panel], [data-wppm-audio], [data-wppm-surface]',
+    '[data-wppd-media], [data-wppd-media-ignore], [data-wppd-media-panel], [data-wppd-audio], [data-wppd-surface]',
   )) {
     for (const attribute of ['media', 'media-ignore', 'media-panel', 'audio', 'surface'])
-      old.removeAttribute(`data-wppm-${attribute}`);
+      old.removeAttribute(`data-wppd-${attribute}`);
   }
   const viewers = new Set(mediaViewerRoots(document));
   const roots = new Set([
@@ -68,8 +68,8 @@ export function annotateMessages(document: Document) {
   ]);
   for (const root of roots) {
     if (root.closest('#pane-side, #side')) continue;
-    root.setAttribute('data-wppm-surface', viewers.has(root) ? 'viewer' : '');
-    for (const audio of audioElements(root)) audio.setAttribute('data-wppm-audio', '');
+    root.setAttribute('data-wppd-surface', viewers.has(root) ? 'viewer' : '');
+    for (const audio of audioElements(root)) audio.setAttribute('data-wppd-audio', '');
   }
   const assets = new Set(
     [...roots].flatMap((root) => [
@@ -78,21 +78,21 @@ export function annotateMessages(document: Document) {
     ]),
   );
   for (const node of assets) {
-    const panel = node.closest(`${mediaPanelSelector}, [data-wppm-surface="viewer"]`);
+    const panel = node.closest(`${mediaPanelSelector}, [data-wppd-surface="viewer"]`);
     const background = getComputedStyle(node).backgroundImage !== 'none';
     if (
       node.closest(
-        '#pane-side, #side, [contenteditable="true"], [data-testid="emoji"], [data-wppm-audio]',
+        '#pane-side, #side, [contenteditable="true"], [data-testid="emoji"], [data-wppd-audio]',
       ) ||
       (!panel && node.closest('header, footer')) ||
       node.querySelector(messageSelector) ||
       (!background && node.querySelector(mediaSelector)) ||
       (background && !node.closest(messageSelector) && !panel)
     ) {
-      node.setAttribute('data-wppm-media-ignore', '');
+      node.setAttribute('data-wppd-media-ignore', '');
       continue;
     }
-    node.setAttribute('data-wppm-media', mediaKind(node));
-    if (panel) node.setAttribute('data-wppm-media-panel', '');
+    node.setAttribute('data-wppd-media', mediaKind(node));
+    if (panel) node.setAttribute('data-wppd-media-panel', '');
   }
 }
