@@ -43,3 +43,7 @@ Check the rendered build at 380 px width with 600 px and short viewport heights.
 ## Unread-count control
 
 Keep unread badges readable when preview blur is enabled. Add an independent opt-in switch under Settings → Conversation list, with a concise hint explaining that WhatsApp notifications are unchanged. Reuse the media fieldset's flat divider and legend rather than adding a card or another main-panel control. Validate Portuguese/English labels, keyboard access, reset/master behavior, and exact badge pixels on shared preview containers.
+
+## Informational help
+
+Use one styled, nonmodal popover for all informational hints, including lookup scope and missing-alias warnings. Keep the existing action paths and confirmation dialogs. The lookup help explains passive collection and manual scrolling; place its question-mark trigger alongside the scope text. Support hover, focus, click, Escape, and outside dismissal, with viewport-contained placement and no native title tooltips.

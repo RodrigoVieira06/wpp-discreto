@@ -1,6 +1,7 @@
 import { type ChatContext, parseChatContext, unavailableContext } from '../src/chats';
 import { type MessageKey, message, setLanguage, translateDocument } from '../src/i18n';
 import * as model from '../src/settings';
+import { InfoPopover } from './info-popover';
 
 (() => {
   const byId = <T extends HTMLElement = HTMLElement>(id: string): T => {
@@ -8,6 +9,8 @@ import * as model from '../src/settings';
     if (!element) throw new Error(`Missing popup element: ${id}`);
     return element as T;
   };
+  const info = new InfoPopover(byId('info-popover'));
+  for (const trigger of document.querySelectorAll<HTMLElement>('[data-info]')) info.bind(trigger);
   let config = model.settings();
   let entries: model.Alias[] = [];
   let context: ChatContext = unavailableContext();
@@ -49,7 +52,8 @@ import * as model from '../src/settings';
         text.append(alias, original);
         item.append(text);
         if (invalid) {
-          const warning = document.createElement('span');
+          const warning = document.createElement('button');
+          warning.type = 'button';
           warning.className = 'alias-warning';
           const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
           icon.setAttribute('viewBox', '0 0 24 24');
@@ -61,9 +65,9 @@ import * as model from '../src/settings';
           shape.setAttribute('d', 'M12 3 2 21h20L12 3Zm0 6v5m0 3h.01');
           icon.append(shape);
           warning.append(icon);
-          warning.title = message('aliasNotFound');
+          warning.dataset.info = 'aliasNotFound';
+          info.bind(warning);
           warning.setAttribute('aria-label', message('aliasNotFound'));
-          warning.setAttribute('role', 'img');
           warning.tabIndex = 0;
           item.append(warning);
         }
@@ -96,6 +100,7 @@ import * as model from '../src/settings';
   }
 
   function draw() {
+    info.close();
     setLanguage(config.language);
     translateDocument(document);
     byId<HTMLFieldSetElement>('controls').disabled = loading || saving;
@@ -281,17 +286,6 @@ import * as model from '../src/settings';
       }),
     });
   });
-  function positionHelp() {
-    const tooltip = byId('advanced-blur-help');
-    const trigger = byId('media-help').getBoundingClientRect();
-    const height = tooltip.getBoundingClientRect().height;
-    if (!height) return;
-    tooltip.style.top = `${Math.max(8, Math.min(trigger.bottom + 8, innerHeight - height - 8))}px`;
-  }
-  byId('media-help').addEventListener('mouseenter', positionHelp);
-  byId('media-help').addEventListener('focus', positionHelp);
-  document.addEventListener('scroll', positionHelp, { capture: true, passive: true });
-  window.addEventListener('resize', positionHelp);
   byId('media-help').addEventListener('click', () => {
     settingsOpen = true;
     draw();

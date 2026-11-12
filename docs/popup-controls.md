@@ -57,3 +57,11 @@ After updating the extension, reload it and refresh WhatsApp so the content scri
 Removal opens a localized dialog naming the alias. Cancel and Escape leave storage unchanged. The optional “do not ask again” checkbox takes effect only after confirming a successful deletion; the aliases and `settings.confirmAliasRemoval: false` are saved together. A failed save keeps the dialog open with an error and retains both the alias and prior preference.
 
 `confirmAliasRemoval` defaults to `true` for missing or invalid saved values. The settings panel can reenable it. Default restoration also reenables confirmation without deleting saved aliases. Opting out applies only to alias deletion, not the independent default-restoration dialog.
+
+## Informational popovers
+
+Use `popup/info-popover.ts` for all informational hints in the popup. Add `data-info` with a catalog key to the trigger and bind it with the shared controller. Dynamically rendered alias warnings use the same component. Do not add native `title` tooltips or separate hover-only surfaces.
+
+The single styled `popover` surface uses the browser top layer to escape scroll containers. Hover, keyboard focus, or click reveals help; Escape, outside pointer input, blur, scrolling, or resizing dismisses it. During scrolling, keyboard-focused help stays positioned beside its trigger while that trigger remains within the viewport. Pointer users can move into the text without immediately dismissing it. Click pins help until dismissed. Existing action buttons retain their action and close help when activated (for example, media help opens settings). The active trigger references the tooltip through `aria-describedby`; content uses text-only localized catalog lookup.
+
+The lookup scope includes a question-mark button explaining that collection covers names already loaded in the current WhatsApp tab. To find more, close the popup, manually scroll WhatsApp's sidebar, then run lookup again. Filtering only searches collected names. No automatic scrolling, page manipulation, or additional storage is introduced.

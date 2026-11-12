@@ -101,13 +101,14 @@ export {};
     check('advanced blur retains enabled chat protection', stored.settings.blurChat);
     check(
       'advanced blur help is localized',
-      byId('media-help').getAttribute('aria-describedby') === 'advanced-blur-help' &&
-        byId('advanced-blur-help').textContent === window.expectedMessages.advancedBlurHelp,
+      !byId('media-help').hasAttribute('title') &&
+        byId('media-help').dataset.info === 'advancedBlurHelp',
     );
     byId('media-help').focus();
     check(
       'advanced help tooltip is available on keyboard focus',
-      getComputedStyle(byId('advanced-blur-help')).display !== 'none',
+      byId('info-popover').matches(':popover-open') &&
+        byId('info-popover').textContent === window.expectedMessages.advancedBlurHelp,
     );
     byId('media-help').click();
     check(
@@ -236,6 +237,42 @@ export {};
       'lookup clears its loading state when finished',
       byId('fetch-chats').getAttribute('aria-busy') === 'false' && byId('chat-loading').hidden,
     );
+    const help = byId('chat-lookup-help');
+    help.scrollIntoView({ block: 'center' });
+    help.focus();
+    await wait();
+    check(
+      'lookup scope uses the shared localized informational popover',
+      byId('info-popover').matches(':popover-open') &&
+        byId('info-popover').textContent === window.expectedMessages.chatLookupHelp &&
+        help.getAttribute('aria-describedby') === 'info-popover',
+    );
+    const box = byId('info-popover').getBoundingClientRect();
+    check(
+      'informational popover fits the popup viewport',
+      box.left >= 8 && box.right <= innerWidth - 8 && box.top >= 8 && box.bottom <= innerHeight - 8,
+    );
+    help.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    check(
+      'Escape closes help and retains trigger focus',
+      !byId('info-popover').matches(':popover-open') && document.activeElement === help,
+    );
+    help.click();
+    check('click reopens help', byId('info-popover').matches(':popover-open'));
+    document.body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+    check('outside click dismisses help', !byId('info-popover').matches(':popover-open'));
+    help.blur();
+    help.dispatchEvent(new MouseEvent('mouseenter'));
+    check('pointer can reveal help', byId('info-popover').matches(':popover-open'));
+    document.dispatchEvent(new Event('scroll'));
+    check(
+      'scroll dismisses stale informational popovers',
+      !byId('info-popover').matches(':popover-open'),
+    );
+    check(
+      'informational native title tooltips have been replaced',
+      !document.querySelector('[title], [data-i18n-title]'),
+    );
     const suggestions = byId('chat-suggestions').querySelectorAll('button');
     check('fetch shows all discovered names', suggestions.length === window.availableChats.length);
     const search = byId('chat-search');
@@ -291,9 +328,17 @@ export {};
     check(
       'missing name shows warning color class and tooltip',
       missing?.classList.contains('alias-invalid') &&
-        warning?.title === window.expectedMessages.aliasNotFound &&
+        warning?.dataset.info === 'aliasNotFound' &&
+        !warning.hasAttribute('title') &&
         warning.tabIndex === 0,
     );
+    warning?.focus();
+    check(
+      'dynamic alias warning uses the shared popover',
+      byId('info-popover').matches(':popover-open') &&
+        byId('info-popover').textContent === window.expectedMessages.aliasNotFound,
+    );
+    warning?.blur();
     window.availableChats.push('Missing name');
     byId('fetch-chats').click();
     await wait();

@@ -135,7 +135,7 @@ async function main() {
               const settingsReachable = reachable('#visible-area');
               document.getElementById('settings-toggle').click();
               document.getElementById('media-help').focus();
-              const help = document.getElementById('advanced-blur-help').getBoundingClientRect();
+              const help = document.getElementById('info-popover').getBoundingClientRect();
               const helpContained = help.width > 0 && help.top >= 0 && help.bottom <= innerHeight && help.left >= 0 && help.right <= innerWidth;
               document.getElementById('media-help').blur();
               window.scrollTo(0, 0);

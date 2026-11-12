@@ -106,7 +106,7 @@ Keep switches aligned to a shared right edge. Place advanced-blur help beside it
 
 ## Elevation & Depth
 
-Use flat sections with one-pixel dividers and tonal separation for the settings panel. There are no drop shadows. The reset dialog uses the native modal layer with a 65% black backdrop. The help tooltip uses a bordered tonal surface positioned inside the viewport.
+Use flat sections with one-pixel dividers and tonal separation for the settings panel. There are no drop shadows. The reset dialog uses the native modal layer with a 65% black backdrop. Informational hints share a bordered tonal popover in the browser top layer, positioned inside the viewport. All hints use the same hover, focus, dismissal, and click-pinning behavior; action buttons retain their action.
 
 ## Shapes
 
