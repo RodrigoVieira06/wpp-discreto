@@ -62,6 +62,19 @@ export {};
     );
     change('blur-chat', false);
     await wait();
+    check('unread counter protection starts disabled', !byId('blur-unread-counts').checked);
+    change('blur-previews', false);
+    await wait();
+    change('blur-unread-counts', true);
+    await wait();
+    check(
+      'unread counter setting persists independently',
+      stored.settings.blurUnreadCounts && !stored.settings.blurPreviews,
+    );
+    change('blur-unread-counts', false);
+    await wait();
+    change('blur-previews', true);
+    await wait();
     change('advanced-blur', true);
     await wait();
     check(
@@ -384,6 +397,7 @@ export {};
         stored.settings.confirmAliasRemoval &&
         !stored.settings.blurChat &&
         !stored.settings.blurPreviews &&
+        !stored.settings.blurUnreadCounts &&
         stored.settings.language === 'auto' &&
         stored.settings.visibleArea === 40 &&
         stored.settings.blurStrength === 8 &&

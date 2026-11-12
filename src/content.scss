@@ -32,11 +32,21 @@ html[data-wppd-enabled="true"][data-wppd-media-any="true"] :is(#main, [data-wppd
   filter: blur(var(--wppd-blur, 8px)) !important;
 }
 
-/* The second grid cell is the message preview in the standard chat-list layout. */
-html:not([data-wppd-ready]) #pane-side [role="gridcell"]:nth-child(2),
-html[data-wppd-previews="true"] #pane-side [role="gridcell"]:nth-child(2),
-html:not([data-wppd-ready]) #pane-side :is([data-testid="last-msg-status"], [data-testid="chat-subtitle"]),
-html[data-wppd-previews="true"] #pane-side :is([data-testid="last-msg-status"], [data-testid="chat-subtitle"]) {
+// Preview filters never cover a shared container that also holds an unread counter.
+html:is(:not([data-wppd-ready]), [data-wppd-previews="true"]) [data-wppd-preview] {
+  filter: blur(var(--wppd-blur, 8px)) !important;
+  color: var(--wppd-sidebar-color) !important;
+  text-shadow: none !important;
+}
+html:is(:not([data-wppd-ready]), [data-wppd-previews="true"]) [data-wppd-preview-text] {
+  color: transparent !important;
+  text-shadow: 0 0 var(--wppd-blur, 8px) var(--wppd-sidebar-color) !important;
+}
+[data-wppd-sidebar-exempt] {
+  color: var(--wppd-sidebar-color) !important;
+  text-shadow: none !important;
+}
+html[data-wppd-unread-counts="true"] [data-wppd-unread-counter] {
   filter: blur(var(--wppd-blur, 8px)) !important;
 }
 

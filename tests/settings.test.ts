@@ -14,6 +14,7 @@ test('invalid persisted settings cannot inject CSS or enable options accidentall
     aliasesEnabled: true,
     language: 'auto',
     blurPreviews: false,
+    blurUnreadCounts: false,
     blurChat: false,
     fullBlur: false,
     visibleArea: 40,
@@ -36,6 +37,7 @@ test('invalid persisted settings cannot inject CSS or enable options accidentall
       aliasesEnabled: true,
       language: 'auto',
       blurPreviews: false,
+      blurUnreadCounts: false,
       blurChat: true,
       fullBlur: false,
       visibleArea: 100,
@@ -56,6 +58,7 @@ test('new preferences migrate existing settings and reject unsupported language 
     aliasesEnabled: false,
     language: 'en',
     blurPreviews: false,
+    blurUnreadCounts: false,
     blurChat: false,
     fullBlur: false,
     visibleArea: 40,
@@ -118,4 +121,10 @@ test('alias removal confirmation defaults to on and preserves an explicit opt-ou
   assert.equal(model.settings({}).confirmAliasRemoval, true);
   assert.equal(model.settings({ confirmAliasRemoval: false }).confirmAliasRemoval, false);
   assert.equal(model.settings({ confirmAliasRemoval: 'false' }).confirmAliasRemoval, true);
+});
+
+test('unread counter blur is opt-in and independent of preview blur', () => {
+  assert.equal(model.settings({ blurPreviews: true }).blurUnreadCounts, false);
+  assert.equal(model.settings({ blurUnreadCounts: true }).blurUnreadCounts, true);
+  assert.equal(model.settings({ blurUnreadCounts: 'true' }).blurUnreadCounts, false);
 });

@@ -105,6 +105,7 @@ import * as model from '../src/settings';
     byId<HTMLInputElement>('extension-enabled').checked = config.enabled;
     byId<HTMLInputElement>('aliases-enabled').checked = config.aliasesEnabled;
     byId<HTMLInputElement>('blur-previews').checked = config.blurPreviews;
+    byId<HTMLInputElement>('blur-unread-counts').checked = config.blurUnreadCounts;
     byId<HTMLInputElement>('blur-chat').checked = config.blurChat;
     byId<HTMLInputElement>('full-blur').checked = config.fullBlur;
     byId<HTMLInputElement>('visible-area').disabled = config.fullBlur;
@@ -256,6 +257,7 @@ import * as model from '../src/settings';
     'aliases-enabled': 'aliasesEnabled',
     'confirm-alias-removal': 'confirmAliasRemoval',
     'blur-previews': 'blurPreviews',
+    'blur-unread-counts': 'blurUnreadCounts',
     'blur-chat': 'blurChat',
     'full-blur': 'fullBlur',
     'blur-images': 'blurImages',

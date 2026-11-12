@@ -40,6 +40,7 @@ await build({
     'tests/browser-surfaces.ts',
     'tests/browser-compose.ts',
     'tests/browser-directory.ts',
+    'tests/browser-sidebar.ts',
   ],
   outdir: path.join(root, 'dist/test-runtime'),
   bundle: true,

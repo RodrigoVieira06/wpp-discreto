@@ -221,5 +221,14 @@
   },
   "chatLookupScope": {
     "message": "A busca inclui as conversas que você já carregou nesta aba."
+  },
+  "sidebarSettings": {
+    "message": "Lista de conversas"
+  },
+  "blurUnreadCounts": {
+    "message": "Embaçar contador de não lidas"
+  },
+  "unreadCountsHint": {
+    "message": "Desfoca o número no indicador verde da lista. As notificações do WhatsApp continuam iguais."
   }
 }

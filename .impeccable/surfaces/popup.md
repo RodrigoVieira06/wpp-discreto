@@ -39,3 +39,7 @@ Baseline captures in `.local/design-preview/before-*.png` show the built extensi
 ## Acceptance
 
 Check the rendered build at 380 px width with 600 px and short viewport heights. Require visible focus, contained tooltips, aligned switches, readable long aliases, normal footer reachability, and no horizontal overflow. Existing behavior tests must pass. App screens use code-first work; the stored comp-first preference applies to future landing/showcase surfaces.
+
+## Unread-count control
+
+Keep unread badges readable when preview blur is enabled. Add an independent opt-in switch under Settings → Conversation list, with a concise hint explaining that WhatsApp notifications are unchanged. Reuse the media fieldset's flat divider and legend rather than adding a card or another main-panel control. Validate Portuguese/English labels, keyboard access, reset/master behavior, and exact badge pixels on shared preview containers.

@@ -14,6 +14,12 @@ Default restoration opens a localized confirmation dialog. Cancel or Escape writ
 
 Use factual copy that explains actions, failures, or limits. Omit slogans, promotional empty states, and persistent ready messages.
 
+## Sidebar preview and unread-count controls
+
+The main preview switch affects message previews only. The settings panel groups `blurUnreadCounts` under “Conversation list”, with its own switch and explanatory hint. It defaults to `false`, including when migrating saved `blurPreviews: true`, and works independently of preview protection. Neither option changes WhatsApp notification behavior. The master switch disables both effects; restoring defaults clears the unread-count preference.
+
+`src/sidebar.ts` recognizes semantic unread-count markers and accessible labels, with a numeric rounded-green-badge fallback in the preview cell. It annotates separate preview and counter targets; it never wraps or replaces native text. Counter-only blur retains previews, timestamps, and original DOM text. Shared containers are partitioned so their composited filter cannot blur a protected counter by inheritance.
+
 ## Layout and footer
 
 Keep the popup 380 px wide, with intrinsic control heights and normal document scrolling. The title header stays at the top with `position: sticky`; its opaque background covers scrolled content. Root scroll padding leaves room for the 73 px header plus an 8 px gap, keeping focused and scrolled-to controls clear of it. Opening settings with the header button scrolls the settings panel into view below the header; closing it does not request another scroll. Place the footer in document flow so you can reach it by scrolling. A fixed footer or `100vh` height constraint must not compress the controls.

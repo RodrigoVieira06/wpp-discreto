@@ -1,6 +1,6 @@
 {
   "name": "wpp-discreto",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "private": true,
   "packageManager": "pnpm@11.23.0",
   "description": "Local group aliases and message blurring for WhatsApp Web",

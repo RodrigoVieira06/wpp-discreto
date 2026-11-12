@@ -11,6 +11,7 @@ The Manifest V3 extension runs on `https://web.whatsapp.com/*` with the `storage
 | `src/screen.ts` | Upper-viewport backdrop mask and audio exclusions |
 | `src/messages.ts` | Media classification and asset annotation |
 | `src/surfaces.ts` | Info-panel, viewer, and audio selectors |
+| `src/sidebar.ts` | Preview/counter annotation without modifying sidebar text or ordering |
 | `src/chats.ts` | Passive sidebar discovery, visual ordering, and alias validation |
 | `src/i18n.ts` | Typed locale lookup and saved language selection |
 | `popup/popup.ts` | Controls, aliases, settings persistence, and write-error recovery |
@@ -21,7 +22,7 @@ The popup requests conversation names through active-tab messaging to the existi
 
 ## Rendering
 
-SCSS compiles to static CSS. The screen mask blurs the upper conversation viewport and leaves a configurable lower area readable during history scrolling. Its SVG mask excludes audio controls; media cannot create holes in it. The readable area ranges from 20–100%, with a separate full-blur switch.
+SCSS compiles to static CSS. `src/sidebar.ts` partitions preview containers around unread counters and timestamps instead of filtering a shared grid cell. The independent `blurUnreadCounts` flag defaults to false. Direct text nodes use text-shadow blur so a sibling counter can retain its native pixels without wrapping React-owned text. The screen mask blurs the upper conversation viewport and leaves a configurable lower area readable during history scrolling. Its SVG mask excludes audio controls; media cannot create holes in it. The readable area ranges from 20–100%, with a separate full-blur switch.
 
 Media blur is opt-in and independent of conversation blur. The `data-wppd-enabled` attribute gates media effects with the master switch; `data-wppd-chat` controls the viewport mask separately. CSS protects new assets before classification and keeps selected media types blurred throughout conversations and media panels. Classification covers image, video, canvas, and CSS background assets. The observer updates classification and viewport/audio geometry before painting.
 

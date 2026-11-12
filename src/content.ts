@@ -9,6 +9,7 @@ import {
 import { annotateMessages } from './messages';
 import { ScreenProtection } from './screen';
 import * as model from './settings';
+import { annotateSidebar } from './sidebar';
 import { noteMediaPaste } from './surfaces';
 
 (() => {
@@ -55,6 +56,8 @@ import { noteMediaPaste } from './surfaces';
     // Classify new/recycled media in the observer microtask, before its first paint.
     observer.disconnect();
     try {
+      if (!loaded || (config.enabled && (config.blurPreviews || config.blurUnreadCounts)))
+        annotateSidebar(document);
       if (
         config.enabled &&
         (config.blurChat || config.blurImages || config.blurVideos || config.blurStickers)
@@ -137,6 +140,11 @@ import { noteMediaPaste } from './surfaces';
         'data-wppd-previews',
         String(storageFailed || (config.enabled && config.blurPreviews)),
       );
+      root().setAttribute(
+        'data-wppd-unread-counts',
+        String(config.enabled && config.blurUnreadCounts),
+      );
+      annotateSidebar(document);
       root().style.setProperty('--wppd-blur', `${config.blurStrength}px`);
       for (const [kind, selected] of [
         ['images', config.blurImages],

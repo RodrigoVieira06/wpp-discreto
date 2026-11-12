@@ -2,6 +2,10 @@
 
 `src/screen.ts` controls viewport protection. `src/messages.ts` classifies media assets; keep its selectors aligned with `src/content.scss`.
 
+## Sidebar previews
+
+Message-preview blur and unread-count blur are independent. Unread badges remain clear by default; `blurUnreadCounts` opts into their visual blur. `src/sidebar.ts` avoids filtering a shared preview/counter container and preserves original text, order, and WhatsApp notification behavior. See [popup controls](popup-controls.md).
+
 ## Screen area
 
 `visibleArea` sets the readable lower portion of the conversation viewport, from 20 to 100% (default: 40%). The upper mask covers text, media, captions, and avatars. Audio controls remain exempt. Allowed media cannot create holes in this mask: an image crossing the boundary stays blurred above it and sharp below it.

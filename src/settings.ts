@@ -6,6 +6,7 @@ export interface Settings {
   confirmAliasRemoval: boolean;
   language: LanguagePreference;
   blurPreviews: boolean;
+  blurUnreadCounts: boolean;
   blurChat: boolean;
   fullBlur: boolean;
   visibleArea: number;
@@ -26,6 +27,7 @@ export const defaults: Readonly<Settings> = Object.freeze({
   confirmAliasRemoval: true,
   language: 'auto',
   blurPreviews: false,
+  blurUnreadCounts: false,
   blurChat: false,
   fullBlur: false,
   visibleArea: 40,
@@ -51,6 +53,7 @@ export function settings(value: unknown = {}): Settings {
     confirmAliasRemoval: input.confirmAliasRemoval !== false,
     language: input.language === 'pt_BR' || input.language === 'en' ? input.language : 'auto',
     blurPreviews: input.blurPreviews === true,
+    blurUnreadCounts: input.blurUnreadCounts === true,
     blurChat: input.blurChat === true,
     fullBlur: input.fullBlur === true || (input.fullBlur === undefined && input.visibleArea === 0),
     visibleArea: bounded(input.visibleArea, defaults.visibleArea, 20, 100),

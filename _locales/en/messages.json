@@ -221,5 +221,14 @@
   },
   "chatLookupScope": {
     "message": "Search includes conversations already loaded in this tab."
+  },
+  "sidebarSettings": {
+    "message": "Conversation list"
+  },
+  "blurUnreadCounts": {
+    "message": "Blur unread message counts"
+  },
+  "unreadCountsHint": {
+    "message": "Blurs the number in the green sidebar badge. WhatsApp notifications stay unchanged."
   }
 }

@@ -4,14 +4,14 @@
 
 Customize conversation names and blur messages in WhatsApp Web without changing the original WhatsApp data.
 
-The project is at version 0.1.5. The owner reported submitting the first Chrome Web Store release on 2026-11-09. The user confirmed manual WhatsApp Web validation on 2026-11-08. Automated tests use simulated markup.
+The project is at version 0.1.6. The owner reported submitting the first Chrome Web Store release on 2026-11-09. The user confirmed manual WhatsApp Web validation on 2026-11-08. Automated tests use simulated markup.
 
 ## Features
 
 - **Local aliases:** give groups or contacts a display name for this browser. Read names already loaded in the sidebar, filter the discovered names, or enter the original name. An amber warning identifies names absent from discovered conversations.
 - **Conversation protection:** blur the upper chat area and keep the lower 20–100% readable (default: 40%). Scroll older messages into that area to read them, or enable full blur. Choose a blur strength from 4 to 16 px.
 - **Media protection:** select photos, videos, or stickers to keep them blurred in full, including albums, info-card carousels, galleries, opened media, and viewer history thumbnails. Media protection works with conversation blur off. The advanced-blur switch selects all three types without changing conversation blur. Outgoing media previews stay clear while you edit and send them; protection resumes after closing the preview. Audio controls stay visible.
-- **Sidebar protection:** blur message previews in the conversation list.
+- **Sidebar protection:** blur message previews while keeping unread counts visible by default. An independent settings option can blur the unread counters.
 - **Controls:** pause the extension or aliases without deleting saved choices. Choose automatic language, Portuguese, or English. Restoring defaults asks for confirmation and keeps aliases.
 
 Conversation and sidebar blur start disabled, as do media choices. In a protected conversation, allowed media stays blurred above the screen boundary and clears below it. Opening media suspends that overlay: the viewer shows allowed types clearly and keeps selected types blurred. Hovering does not reveal protected content. Alias removal requires confirmation by default; its optional opt-out can be reversed in settings.
@@ -48,7 +48,7 @@ Run `make` or `make help` for the full command list.
 | `make check` | Run Biome and strict TypeScript checks |
 | `make test` | Build and run Jest, including Chrome integration tests |
 | `make test-watch` | Run Jest in watch mode |
-| `make package` | Build `dist/extension/` and `dist/wpp-discreto-0.1.5.zip` |
+| `make package` | Build `dist/extension/` and `dist/wpp-discreto-0.1.6.zip` |
 | `make deploy` | Run checks, tests, and packaging for manual store submission |
 | `make clean` | Remove build and coverage output |
 

@@ -62,8 +62,8 @@ input::placeholder { color: #a3b6aa; opacity: 1; }
 .range-label { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; margin-top: 20px; }
 output { color: $accent; font-weight: 650; font-variant-numeric: tabular-nums; white-space: nowrap; }
 input[type="range"] { width: 100%; min-height: 24px; margin: 8px 0 0; accent-color: $accent; }
-.media-options { margin-top: 20px; border-top: 1px solid $border; padding-top: 8px; }
-.media-options legend { font-size: 13px; font-weight: 600; padding: 12px 0 4px; }
+.media-options, .sidebar-options { margin-top: 20px; border-top: 1px solid $border; padding-top: 8px; }
+.media-options legend, .sidebar-options legend { font-size: 13px; font-weight: 600; padding: 12px 0 4px; }
 .media-options .switch-row { font-size: 13px; }
 .hint { font-size: 12px; color: $muted; margin: 10px 0; overflow-wrap: anywhere; }
 .hint:empty { display: none; }

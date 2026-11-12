@@ -225,3 +225,14 @@ test('sidebar lookup never scrolls or reorders the list and remembers user-loade
     );
   runBrowser(fixture, 10);
 });
+
+test('sidebar preview protection leaves unread counters clear unless selected separately', () => {
+  const base = pathToFileURL(path.join(root, 'fixtures/')).href;
+  const fixture = readFileSync(path.join(root, 'fixtures/whatsapp.html'), 'utf8')
+    .replace('<head>', `<head><base href="${base}">`)
+    .replace(
+      '</body>',
+      `<script src="${pathToFileURL(path.join(root, 'dist/test-runtime/browser-sidebar.js')).href}"></script></body>`,
+    );
+  runBrowser(fixture, 15);
+});

@@ -336,6 +336,63 @@ test('rendered screen mask covers chat media and suspends behind the media viewe
       `(async () => {document.getElementById('pixel-draft').remove();document.getElementById('pixel-paste-input').remove();await new Promise(resolve=>setTimeout(resolve,30));})()`,
     );
     assert.equal(await evaluate("!!document.querySelector('[data-wppd-screen]')"), true);
+    const sidebarRegions = await evaluate<{
+      count: { left: number; top: number };
+      preview: { left: number; top: number };
+    }>(`(async () => {
+      document.getElementById('pane-side').innerHTML = '<div role="row"><div role="gridcell"><span title="Mãe">Mãe</span></div><div role="gridcell" data-testid="last-msg-status" style="display:flex;gap:32px;align-items:center"><span data-testid="chat-subtitle" style="display:inline-block;width:120px;height:32px;background:repeating-linear-gradient(black 0px 2px,white 2px 4px)"></span><span data-testid="icon-unread-count" style="display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:32px;height:32px;background:#25d366;color:#111b21;border-radius:16px">7</span></div></div>';
+      await chrome.storage.local.set({ settings: { blurPreviews: false, blurUnreadCounts: false } });
+      const count = document.querySelector('[data-testid="icon-unread-count"]').getBoundingClientRect();
+      const preview = document.querySelector('[data-testid="chat-subtitle"]').getBoundingClientRect();
+      return { count: { left: count.left, top: count.top }, preview: { left: preview.left+10, top: preview.top+4 } };
+    })()`);
+    const sidebarOriginal = await screenshot();
+    await evaluate('chrome.storage.local.set({ settings: { blurPreviews: true } })');
+    const sidebarProtected = await screenshot();
+    const countPixels = (buffer: Buffer) =>
+      sharp(buffer)
+        .extract({
+          left: Math.round(sidebarRegions.count.left),
+          top: Math.round(sidebarRegions.count.top),
+          width: 32,
+          height: 32,
+        })
+        .raw()
+        .toBuffer();
+    assert.deepEqual(
+      await countPixels(sidebarProtected),
+      await countPixels(sidebarOriginal),
+      'Preview blur must preserve every unread-badge pixel by default',
+    );
+    const previewPixels = (buffer: Buffer) =>
+      sharp(buffer)
+        .extract({
+          left: Math.round(sidebarRegions.preview.left),
+          top: Math.round(sidebarRegions.preview.top),
+          width: 80,
+          height: 24,
+        })
+        .raw()
+        .toBuffer();
+    assert.notDeepEqual(
+      await previewPixels(sidebarProtected),
+      await previewPixels(sidebarOriginal),
+      'Preview pixels must still blur when unread counters stay sharp',
+    );
+    await evaluate(
+      'chrome.storage.local.set({ settings: { blurPreviews: false, blurUnreadCounts: true } })',
+    );
+    const countsProtected = await screenshot();
+    assert.notDeepEqual(
+      await countPixels(countsProtected),
+      await countPixels(sidebarOriginal),
+      'The independent unread-count setting must blur the actual badge pixels',
+    );
+    assert.deepEqual(
+      await previewPixels(countsProtected),
+      await previewPixels(sidebarOriginal),
+      'Counter-only protection must not blur preview pixels',
+    );
   } finally {
     const closed = new Promise<void>((resolve) => browser.once('close', () => resolve()));
     try {

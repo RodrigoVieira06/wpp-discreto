@@ -37,6 +37,11 @@
           <p class="hint" data-i18n="mediaOptionsHint">Os tipos marcados ficam embaçados por inteiro, inclusive ao abrir, mesmo com o desfoque da conversa desligado.</p>
           <p class="hint" data-i18n="mediaFallbackHint">Se algum tipo estiver marcado, mídias não identificadas também serão embaçadas.</p>
         </fieldset>
+        <fieldset class="sidebar-options">
+          <legend data-i18n="sidebarSettings">Lista de conversas</legend>
+          <label class="switch-row" for="blur-unread-counts"><span data-i18n="blurUnreadCounts">Embaçar contador de não lidas</span><input id="blur-unread-counts" type="checkbox" role="switch" aria-describedby="unread-counts-hint"></label>
+          <p id="unread-counts-hint" class="hint" data-i18n="unreadCountsHint">Desfoca o número no indicador verde da lista. As notificações do WhatsApp continuam iguais.</p>
+        </fieldset>
         <label class="switch-row" for="confirm-alias-removal"><span data-i18n="confirmAliasRemoval">Confirmar exclusão de apelidos</span><input id="confirm-alias-removal" type="checkbox" role="switch"></label>
         <button id="restore-defaults" type="button" class="secondary" data-i18n="restoreDefaults" data-i18n-title="restoreDefaultsHint" title="Restaura as configurações sem apagar apelidos.">Restaurar padrão</button>
       </section>
