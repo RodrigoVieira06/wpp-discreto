@@ -40,3 +40,7 @@ Before giving launch instructions, establish the target machine and OS. SSH star
 - Keep UI copy in both Chrome catalogs. Use Brazilian Portuguese by default and for unsupported languages, English for English browser locales, and the saved language override when set. Use the typed helper for dynamic text; translate statuses, placeholders, accessible labels, and metadata. See `docs/internationalization.md`.
 
 Use Conventional Commits and allow Lefthook to run. Do not bypass failing hooks. Report delivered behavior, executed checks, artifacts, and remaining integration limits. GitHub pushes and store publication require separate authorization.
+
+## Release versions
+
+Keep the current version during routine fixes and local builds. Increment the manifest and package versions together only when preparing an agreed release; update the README package path at that point. Commits track intermediate changes. Do not create a new release version for each UI adjustment.
