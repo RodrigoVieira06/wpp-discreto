@@ -32,6 +32,14 @@ Detection covers explicit viewer surfaces and large media dialogs. If the displa
 
 Hidden, zero-size, and `aria-hidden` viewers leave chat protection active. Closing or hiding a viewer restores the chat mask; reopening a mounted viewer suspends it again. Info cards and galleries do not generally suspend it.
 
+## Outgoing media drafts
+
+Visible outgoing media editors suspend the conversation overlay and exempt their preview, editing canvas, caption, and thumbnail strip from individual media filters. This also applies in media-only mode. Received media outside that editor retains its selected type filters. Sending or canceling, hiding the editor, or marking it `aria-hidden` restores the conversation mask and ordinary media rules without changing saved preferences.
+
+`src/surfaces.ts` detects explicit composer markers or a bounded container with a media preview, send control, and caption field or editing tools. A send icon alone does not identify a draft. Detection stops at conversation messages and application/chat/sidebar roots, so normal text composers and received media viewers are not exempted. Classification marks recognized roots with `data-wppd-composer`; CSS excludes their assets before delayed rendering, including newly inserted thumbnails.
+
+Selectors are integration heuristics. Validate actual WhatsApp attachment editing and cancel/send flows before publishing this change.
+
 ## Settings migration
 
 Settings without `visibleArea` receive 40%. Ignore the old `visibleCount`. A legacy value of `visibleArea: 0` enables full blur; values 1–19 clamp to 20. Preserve aliases and other preferences. Conversation and sidebar blur default to disabled.
@@ -42,4 +50,4 @@ The `alwaysBlurMedia` field and control were removed. Ignore its stored value; s
 
 WhatsApp markup determines selector and viewport compatibility. Before distribution, check integration changes against real albums, opened photos/videos/stickers, thumbnail strips, zoom, dialogs, floating UI, and group histories. System notifications and search are outside scope. Blur does not encrypt content or prevent technical access to it.
 
-Headless fixtures cover geometry, history, resizing, viewer lifecycle, media choices, media-only mode on initial load and live changes, audio, and disabled states. Pixel comparisons cover a tall allowed image crossing the boundary at maximum stacking index, selected media below it, allowed/blocked fullscreen images, panel/background assets, independent thumbnail types, and sharp audio. These tests use synthetic markup, not an authenticated WhatsApp session.
+Headless fixtures cover geometry, history, resizing, viewer and outgoing-editor lifecycle, media choices, media-only mode on initial load and live changes, audio, and disabled states. Pixel comparisons cover a tall allowed image crossing the boundary at maximum stacking index, selected media below it, allowed/blocked fullscreen images, panel/background assets, independent thumbnail types, and sharp audio. These tests use synthetic markup, not an authenticated WhatsApp session.

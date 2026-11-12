@@ -203,3 +203,14 @@ test('albums, info cards, carousels, galleries and opened media follow protectio
     );
   runBrowser(fixture, 17);
 });
+
+test('outgoing media previews stay usable and restore protection after closing', () => {
+  const base = pathToFileURL(path.join(root, 'fixtures/')).href;
+  const fixture = readFileSync(path.join(root, 'fixtures/whatsapp.html'), 'utf8')
+    .replace('<head>', `<head><base href="${base}">`)
+    .replace(
+      '</body>',
+      `<script src="${pathToFileURL(path.join(root, 'dist/test-runtime/browser-compose.js')).href}"></script></body>`,
+    );
+  runBrowser(fixture, 16);
+});

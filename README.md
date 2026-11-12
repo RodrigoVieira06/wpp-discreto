@@ -4,13 +4,13 @@
 
 Customize conversation names and blur messages in WhatsApp Web without changing the original WhatsApp data.
 
-The project is at version 0.1.2. The owner reported submitting the first Chrome Web Store release on 2026-11-09. The user confirmed manual WhatsApp Web validation on 2026-11-08. Automated tests use simulated markup.
+The project is at version 0.1.3. The owner reported submitting the first Chrome Web Store release on 2026-11-09. The user confirmed manual WhatsApp Web validation on 2026-11-08. Automated tests use simulated markup.
 
 ## Features
 
 - **Local aliases:** give groups or contacts a display name for this browser. Choose from up to ten loaded conversation names or enter the original name. An amber warning identifies names absent from loaded conversations.
 - **Conversation protection:** blur the upper chat area and keep the lower 20–100% readable (default: 40%). Scroll older messages into that area to read them, or enable full blur. Choose a blur strength from 4 to 16 px.
-- **Media protection:** select photos, videos, or stickers to keep them blurred in full, including albums, info-card carousels, galleries, opened media, and viewer history thumbnails. Media protection works with conversation blur off. The advanced-blur switch selects all three types without changing conversation blur. Audio controls stay visible.
+- **Media protection:** select photos, videos, or stickers to keep them blurred in full, including albums, info-card carousels, galleries, opened media, and viewer history thumbnails. Media protection works with conversation blur off. The advanced-blur switch selects all three types without changing conversation blur. Outgoing media previews stay clear while you edit and send them; protection resumes after closing the preview. Audio controls stay visible.
 - **Sidebar protection:** blur message previews in the conversation list.
 - **Controls:** pause the extension or aliases without deleting saved choices. Choose automatic language, Portuguese, or English. Restoring defaults asks for confirmation and keeps aliases.
 
@@ -48,7 +48,7 @@ Run `make` or `make help` for the full command list.
 | `make check` | Run Biome and strict TypeScript checks |
 | `make test` | Build and run Jest, including Chrome integration tests |
 | `make test-watch` | Run Jest in watch mode |
-| `make package` | Build `dist/extension/` and `dist/wpp-discreto-0.1.2.zip` |
+| `make package` | Build `dist/extension/` and `dist/wpp-discreto-0.1.3.zip` |
 | `make deploy` | Run checks, tests, and packaging for manual store submission |
 | `make clean` | Remove build and coverage output |
 

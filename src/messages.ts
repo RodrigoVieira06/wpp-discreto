@@ -1,6 +1,7 @@
 import {
   audioElements,
   hasOpenMediaViewer,
+  mediaComposerRoots,
   mediaPanelSelector,
   mediaViewerRoots,
   mediaViewerSelector,
@@ -56,15 +57,25 @@ function mediaKind(node: HTMLElement): MediaKind {
 /** Classify actual assets, including background thumbnails, across all supported surfaces. */
 export function annotateMessages(document: Document) {
   for (const old of document.querySelectorAll(
-    '[data-wppd-media], [data-wppd-media-ignore], [data-wppd-media-panel], [data-wppd-audio], [data-wppd-surface]',
+    '[data-wppd-media], [data-wppd-media-ignore], [data-wppd-media-panel], [data-wppd-audio], [data-wppd-surface], [data-wppd-composer]',
   )) {
-    for (const attribute of ['media', 'media-ignore', 'media-panel', 'audio', 'surface'])
+    for (const attribute of [
+      'media',
+      'media-ignore',
+      'media-panel',
+      'audio',
+      'surface',
+      'composer',
+    ])
       old.removeAttribute(`data-wppd-${attribute}`);
   }
+  const composers = mediaComposerRoots(document);
+  for (const composer of composers) composer.setAttribute('data-wppd-composer', '');
   const viewers = new Set(mediaViewerRoots(document));
   const roots = new Set([
     ...document.querySelectorAll<HTMLElement>(`#main, ${mediaPanelSelector}`),
     ...viewers,
+    ...composers,
   ]);
   for (const root of roots) {
     if (root.closest('#pane-side, #side')) continue;
@@ -82,7 +93,7 @@ export function annotateMessages(document: Document) {
     const background = getComputedStyle(node).backgroundImage !== 'none';
     if (
       node.closest(
-        '#pane-side, #side, [contenteditable="true"], [data-testid="emoji"], [data-wppd-audio]',
+        '#pane-side, #side, [contenteditable="true"], [data-testid="emoji"], [data-wppd-audio], [data-wppd-composer]',
       ) ||
       (!panel && node.closest('header, footer')) ||
       node.querySelector(messageSelector) ||

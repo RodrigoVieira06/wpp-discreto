@@ -307,6 +307,30 @@ test('rendered screen mask covers chat media and suspends behind the media viewe
         `${name} media pixels must actually blur`,
       );
     }
+    await evaluate(`(async () => {
+      await chrome.storage.local.set({ settings: { enabled: false } });
+      const draft = document.createElement('section');
+      draft.id = 'pixel-draft';
+      draft.dataset.testid = 'media-editor';
+      draft.style.cssText = 'position:fixed;left:400px;top:100px;width:220px;height:220px;background:#111;z-index:1000';
+      draft.innerHTML = '<canvas width="180" height="180" style="background:repeating-linear-gradient(black 0px 2px,white 2px 4px)"></canvas><div contenteditable="true">Draft caption</div><button><span data-icon="send"></span></button>';
+      document.getElementById('main').append(draft);
+    })()`);
+    const draftOriginal = await screenshot();
+    await evaluate(
+      'chrome.storage.local.set({ settings: { blurChat: true, fullBlur: true, blurImages: true, blurVideos: true, blurStickers: true } })',
+    );
+    const draftProtected = await screenshot();
+    assert.deepEqual(
+      await extract(draftProtected, { left: 415, top: 115 }).raw().toBuffer(),
+      await extract(draftOriginal, { left: 415, top: 115 }).raw().toBuffer(),
+      'Outgoing media editing pixels must stay sharp under full protection',
+    );
+    assert.equal(await evaluate("!!document.querySelector('[data-wppd-screen]')"), false);
+    await evaluate(
+      `(async () => {document.getElementById('pixel-draft').remove();await new Promise(resolve=>setTimeout(resolve,30));})()`,
+    );
+    assert.equal(await evaluate("!!document.querySelector('[data-wppd-screen]')"), true);
   } finally {
     const closed = new Promise<void>((resolve) => browser.once('close', () => resolve()));
     try {

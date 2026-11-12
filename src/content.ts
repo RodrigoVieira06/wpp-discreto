@@ -71,6 +71,9 @@ import * as model from './settings';
         'style',
         'data-testid',
         'data-icon',
+        'aria-label',
+        'contenteditable',
+        'role',
       ],
     });
   }

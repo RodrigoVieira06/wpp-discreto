@@ -19,6 +19,7 @@ Run `make build` before invoking browser tests directly. `make test` builds firs
 | `browser-content.ts` | Scrolling, arrival, nested blocks, aliases, and DOM recycling |
 | `browser-media.ts` | Grouped messages, mixed albums, loading, repeated scrolling, per-type blur, migration, and captions |
 | `browser-screen.ts` | Physical boundaries, history, minimum readable area, full blur, resizing, and navigation |
+| `browser-compose.ts` | Outgoing previews, thumbnails, caption/edit controls, hidden/reopened drafts, send/cancel recovery, and ordinary composer/viewer exclusions |
 | `browser-surfaces.ts` | First background thumbnails, info-card aliases, carousels, galleries/viewers, audio, preferences, and switch recovery |
 | `screen-render.test.ts` | Pixel comparisons across the screen boundary, fullscreen viewers, media panels, backgrounds, and audio UI |
 | `browser-popup.ts` | Saved controls and aliases, safe text, and failed writes |
@@ -29,7 +30,7 @@ Run `make build` before invoking browser tests directly. `make test` builds firs
 
 Popup scenarios check master/alias switches, language overrides, ten-name suggestions, original-name editing, missing-name warnings versus unavailable tabs, reset confirmation/cancellation, and alias retention. They also cover the footer, author credit, media choices, advanced shortcut, tooltip navigation, and percentage retention in full-blur mode. Locale variants cover Portuguese, English, fallback languages, dynamic errors, placeholders, and accessible labels.
 
-The viewer pixel fixture uses a generic fullscreen shell where only the main image has a known marker. A sibling footer contains selected, regular, background, and video thumbnails. Assertions check independent type choices, lazy arrivals, and restoring allowed photos. Other pixel checks cover a tall photo across the screen boundary at maximum stacking index, selected media below it, and sharp audio controls in full/advanced modes.
+The viewer pixel fixture uses a generic fullscreen shell where only the main image has a known marker. A sibling footer contains selected, regular, background, and video thumbnails. Assertions check independent type choices, lazy arrivals, and restoring allowed photos. Other pixel checks cover a tall photo across the screen boundary at maximum stacking index, selected media below it, sharp audio controls in full/advanced modes, and clear outgoing-editor pixels with protection restored after closing.
 
 Lifecycle regressions cover viewer open/close, hidden attributes, `aria-hidden`, visibility changes, fullscreen media dialogs, and standalone viewer images. The obsolete always-blur field stays absent from the popup/model. Nested alias titles and unread counters also have regression coverage.
 

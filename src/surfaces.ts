@@ -57,6 +57,70 @@ export function hasOpenMediaViewer(document: Document): boolean {
   });
 }
 
+const mediaComposerSelector =
+  '[data-testid="media-editor"], [data-testid="media-composer"], [data-testid="media-attachment-preview"]';
+const sendControlSelector =
+  '[data-icon="send"], [data-icon="wds-ic-send-filled"], [data-testid="send"], button[aria-label="Enviar"], button[aria-label="Send"], [role="button"][aria-label="Enviar"], [role="button"][aria-label="Send"]';
+const editorControlSelector =
+  '[data-testid="media-editor-toolbar"], [data-icon="crop"], [data-icon="draw"], [data-icon="rotate"]';
+const conversationMessageSelector =
+  '.message-in, .message-out, [data-testid="msg-container"], [data-id^="true_"], [data-id^="false_"]';
+const composerBoundarySelector = `body, html, #app, #main, #pane-side, #side, ${conversationMessageSelector}`;
+
+function visibleComposer(node: HTMLElement): boolean {
+  if (node.closest('[hidden], [aria-hidden="true"]')) return false;
+  const box = node.getBoundingClientRect();
+  const style = getComputedStyle(node);
+  return (
+    box.width > 0 &&
+    box.height > 0 &&
+    style.display !== 'none' &&
+    style.visibility !== 'hidden' &&
+    style.opacity !== '0'
+  );
+}
+
+/** Identify outgoing drafts without exempting ordinary chat composers or received viewers. */
+export function mediaComposerRoots(document: Document): HTMLElement[] {
+  const roots = new Set<HTMLElement>();
+  const enclosingEditor = (anchor: HTMLElement): HTMLElement | undefined => {
+    for (let node: HTMLElement | null = anchor; node; node = node.parentElement) {
+      if (
+        node.matches(composerBoundarySelector) ||
+        node.querySelector(`#main, #pane-side, #side, ${conversationMessageSelector}`)
+      )
+        break;
+      if (node.matches('header, footer')) continue;
+      const preview = node.querySelector(
+        'img:not(.emoji):not([data-testid="emoji"] *):not([contenteditable="true"] *), video, canvas, [data-testid="media-preview"]',
+      );
+      if (
+        preview &&
+        node.querySelector(sendControlSelector) &&
+        node.querySelector(`[contenteditable="true"], ${editorControlSelector}`) &&
+        visibleComposer(node)
+      )
+        return node;
+    }
+    return undefined;
+  };
+  for (const marker of document.querySelectorAll<HTMLElement>(mediaComposerSelector)) {
+    if (
+      !visibleComposer(marker) ||
+      marker.matches(composerBoundarySelector) ||
+      marker.closest(conversationMessageSelector)
+    )
+      continue;
+    roots.add(enclosingEditor(marker) ?? marker);
+  }
+  for (const send of document.querySelectorAll<HTMLElement>(sendControlSelector)) {
+    if (!visibleComposer(send.closest<HTMLElement>('button, [role="button"]') ?? send)) continue;
+    const editor = enclosingEditor(send);
+    if (editor) roots.add(editor);
+  }
+  return [...roots];
+}
+
 export function audioElements(main: Element): HTMLElement[] {
   const elements = [...main.querySelectorAll<HTMLElement>(audioSelector)];
   for (const control of main.querySelectorAll<HTMLElement>(

@@ -8,7 +8,7 @@ DESFOQUE DE CONVERSAS
 Escolha a intensidade do desfoque e mantenha de 20% a 100% da área inferior da conversa legível. Para ler mensagens antigas, role até que elas cheguem à área visível. A opção de desfoque completo cobre toda a área das mensagens.
 
 FOTOS, VÍDEOS E FIGURINHAS
-Escolha quais tipos de mídia devem permanecer embaçados, inclusive na área legível, nas galerias e no visualizador. O desfoque avançado seleciona os três tipos de uma vez, sem ativar o desfoque do texto. Os controles de áudio continuam visíveis.
+Escolha quais tipos de mídia devem permanecer embaçados, inclusive na área legível, nas galerias e no visualizador. O desfoque avançado seleciona os três tipos de uma vez, sem ativar o desfoque do texto. A prévia da mídia que você está preparando para enviar fica visível durante a edição. Os controles de áudio continuam visíveis.
 
 APELIDOS PARA GRUPOS E CONTATOS
 Defina nomes que aparecem para você neste navegador. Busque até dez conversas já carregadas na lista para preencher o nome original. Conversas com o mesmo nome compartilham o apelido.

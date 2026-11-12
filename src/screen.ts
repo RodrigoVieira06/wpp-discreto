@@ -1,6 +1,6 @@
 import { messageSelector } from './messages';
 import type { Settings } from './settings';
-import { audioElements, hasOpenMediaViewer } from './surfaces';
+import { audioElements, hasOpenMediaViewer, mediaComposerRoots } from './surfaces';
 
 const namespace = 'http://www.w3.org/2000/svg';
 const maskId = 'wppd-screen-audio-mask';
@@ -18,7 +18,13 @@ export class ScreenProtection {
   update(config: Settings) {
     this.config = config;
     const main = document.querySelector<HTMLElement>('#main');
-    if (!main || !config.enabled || !config.blurChat || hasOpenMediaViewer(document)) {
+    if (
+      !main ||
+      !config.enabled ||
+      !config.blurChat ||
+      hasOpenMediaViewer(document) ||
+      mediaComposerRoots(document).length > 0
+    ) {
       this.resize.disconnect();
       this.viewport = undefined;
       this.main = undefined;

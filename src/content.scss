@@ -17,18 +17,18 @@ html:not([data-wppd-ready]) #main .selectable-text {
 }
 
 @each $kind in images, videos, stickers {
-  #{$media-active}[data-wppd-#{$kind}="true"] [data-wppd-media="#{$kind}"] {
+  #{$media-active}[data-wppd-#{$kind}="true"] [data-wppd-media="#{$kind}"]:not([data-wppd-composer]):not([data-wppd-composer] *) {
     filter: blur(var(--wppd-blur, 8px)) !important;
   }
 }
-#{$media-active}[data-wppd-media-any="true"] [data-wppd-media="unknown"] {
+#{$media-active}[data-wppd-media-any="true"] [data-wppd-media="unknown"]:not([data-wppd-composer]):not([data-wppd-composer] *) {
   filter: blur(var(--wppd-blur, 8px)) !important;
 }
 
 // New or recycled assets are masked before the observer can classify them.
-html:not([data-wppd-ready]) :is(#main, [data-wppd-surface]) #{$media}:not([data-wppd-media-ignore]):not(header *):not(footer *):not([data-wppd-audio]):not([data-wppd-audio] *),
-html[data-wppd-enabled="true"][data-wppd-media-any="true"] [data-wppd-surface="viewer"] #{$media}:not([data-wppd-media]):not([data-wppd-media-ignore]):not([data-wppd-media] *):not([data-wppd-audio]):not([data-wppd-audio] *),
-html[data-wppd-enabled="true"][data-wppd-media-any="true"] :is(#main, [data-wppd-surface]) #{$media}:not([data-wppd-media]):not([data-wppd-media-ignore]):not([data-wppd-media] *):not(header *):not(footer *):not([data-wppd-audio]):not([data-wppd-audio] *) {
+html:not([data-wppd-ready]) :is(#main, [data-wppd-surface]) #{$media}:not([data-wppd-composer]):not([data-wppd-composer] *):not([data-wppd-media-ignore]):not(header *):not(footer *):not([data-wppd-audio]):not([data-wppd-audio] *),
+html[data-wppd-enabled="true"][data-wppd-media-any="true"] [data-wppd-surface="viewer"] #{$media}:not([data-wppd-composer]):not([data-wppd-composer] *):not([data-wppd-media]):not([data-wppd-media-ignore]):not([data-wppd-media] *):not([data-wppd-audio]):not([data-wppd-audio] *),
+html[data-wppd-enabled="true"][data-wppd-media-any="true"] :is(#main, [data-wppd-surface]) #{$media}:not([data-wppd-composer]):not([data-wppd-composer] *):not([data-wppd-media]):not([data-wppd-media-ignore]):not([data-wppd-media] *):not(header *):not(footer *):not([data-wppd-audio]):not([data-wppd-audio] *) {
   filter: blur(var(--wppd-blur, 8px)) !important;
 }
 
