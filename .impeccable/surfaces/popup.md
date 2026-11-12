@@ -57,3 +57,7 @@ Place only a question-mark icon inside the lookup button, with the explanation's
 The owner approved both visual and UX review rounds. Main and settings are separate views; Back restores main scroll/focus, and settings navigation preserves alias drafts. Display saved aliases before Add/Lookup; hide creation fields until requested. Show mixed media state with a checkbox and selected-type summary. Group settings into Conversation, Media, Conversation list, General. Preserve the lookup question mark within its button and existing help motion.
 
 Support light/dark/automatic system themes locally, with a named header action and General select. Follow `popup/themes.scss` for all UI surfaces, native controls, warnings, dialogs and tooltips. Preserve the approved logo and popup dimensions. Verify both themes, keyboard access, live system changes, draft/error recovery, and existing content protection regressions.
+
+## Readability correction
+
+Remove the schematic chat-area preview. Default text to 15 px and expose 14–18 px customization in General; scale helper text, fields, dialogs, help and credits together. Preserve header navigation at maximum size. Theme changes use one short palette transition plus a small icon turn, with no spatial motion under reduced-motion preferences. Verify short viewports and long text through normal scrolling.

@@ -14,6 +14,7 @@ test('invalid persisted settings cannot inject CSS or enable options accidentall
     aliasesEnabled: true,
     language: 'auto',
     theme: 'auto',
+    fontSize: 15,
     blurPreviews: false,
     blurUnreadCounts: false,
     blurChat: false,
@@ -38,6 +39,7 @@ test('invalid persisted settings cannot inject CSS or enable options accidentall
       aliasesEnabled: true,
       language: 'auto',
       theme: 'auto',
+      fontSize: 15,
       blurPreviews: false,
       blurUnreadCounts: false,
       blurChat: true,
@@ -60,6 +62,7 @@ test('new preferences migrate existing settings and reject unsupported language 
     aliasesEnabled: false,
     language: 'en',
     theme: 'auto',
+    fontSize: 15,
     blurPreviews: false,
     blurUnreadCounts: false,
     blurChat: false,
@@ -137,4 +140,12 @@ test('theme defaults to system preference and accepts only supported overrides',
   assert.equal(model.settings({ theme: 'light' }).theme, 'light');
   assert.equal(model.settings({ theme: 'dark' }).theme, 'dark');
   assert.equal(model.settings({ theme: 'unknown' }).theme, 'auto');
+});
+
+test('popup text size migrates safely and is bounded independently of protection settings', () => {
+  assert.equal(model.settings().fontSize, 15);
+  assert.equal(model.settings({ fontSize: 18 }).fontSize, 18);
+  assert.equal(model.settings({ fontSize: 100 }).fontSize, 18);
+  assert.equal(model.settings({ fontSize: 8 }).fontSize, 14);
+  assert.equal(model.settings({ fontSize: 'large' }).fontSize, 15);
 });

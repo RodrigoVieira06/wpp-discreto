@@ -60,3 +60,34 @@
 }
 :root[data-theme="light"] { @include light; }
 @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) { @include light; } }
+
+// Interpolate inherited palette colors together without moving or covering controls.
+@property --surface { syntax: "<color>"; inherits: true; initial-value: #111a19; }
+@property --surface-raised { syntax: "<color>"; inherits: true; initial-value: #17231f; }
+@property --accent { syntax: "<color>"; inherits: true; initial-value: #a8efc5; }
+@property --accent-hover { syntax: "<color>"; inherits: true; initial-value: #baf5d3; }
+@property --muted { syntax: "<color>"; inherits: true; initial-value: #aebfb6; }
+@property --border { syntax: "<color>"; inherits: true; initial-value: #607c6b; }
+@property --warning { syntax: "<color>"; inherits: true; initial-value: #f5c875; }
+@property --text { syntax: "<color>"; inherits: true; initial-value: #e8eeec; }
+@property --primary-text { syntax: "<color>"; inherits: true; initial-value: #153b2a; }
+@property --icon-hover { syntax: "<color>"; inherits: true; initial-value: #24372d; }
+@property --icon-active { syntax: "<color>"; inherits: true; initial-value: #2c4437; }
+@property --switch-off { syntax: "<color>"; inherits: true; initial-value: #42554b; }
+@property --switch-thumb { syntax: "<color>"; inherits: true; initial-value: #eef6f1; }
+@property --switch-on { syntax: "<color>"; inherits: true; initial-value: #43b87a; }
+@property --label { syntax: "<color>"; inherits: true; initial-value: #c7d3cd; }
+@property --border-hover { syntax: "<color>"; inherits: true; initial-value: #597664; }
+@property --placeholder { syntax: "<color>"; inherits: true; initial-value: #a3b6aa; }
+@property --accent-active { syntax: "<color>"; inherits: true; initial-value: #8fe2b2; }
+@property --secondary { syntax: "<color>"; inherits: true; initial-value: #1c2b23; }
+@property --secondary-text { syntax: "<color>"; inherits: true; initial-value: #dce8e1; }
+@property --secondary-hover { syntax: "<color>"; inherits: true; initial-value: #293d30; }
+@property --secondary-active { syntax: "<color>"; inherits: true; initial-value: #324c3c; }
+@property --count { syntax: "<color>"; inherits: true; initial-value: #283b31; }
+@property --action-text { syntax: "<color>"; inherits: true; initial-value: #c9d6cf; }
+@property --warning-surface { syntax: "<color>"; inherits: true; initial-value: #27261b; }
+@property --error { syntax: "<color>"; inherits: true; initial-value: #ffb5a6; }
+@property --tooltip { syntax: "<color>"; inherits: true; initial-value: #22342a; }
+:root[data-theme-motion] { transition: --surface 240ms cubic-bezier(.2,.8,.2,1), --surface-raised 240ms cubic-bezier(.2,.8,.2,1), --accent 240ms cubic-bezier(.2,.8,.2,1), --accent-hover 240ms cubic-bezier(.2,.8,.2,1), --muted 240ms cubic-bezier(.2,.8,.2,1), --border 240ms cubic-bezier(.2,.8,.2,1), --warning 240ms cubic-bezier(.2,.8,.2,1), --text 240ms cubic-bezier(.2,.8,.2,1), --primary-text 240ms cubic-bezier(.2,.8,.2,1), --icon-hover 240ms cubic-bezier(.2,.8,.2,1), --icon-active 240ms cubic-bezier(.2,.8,.2,1), --switch-off 240ms cubic-bezier(.2,.8,.2,1), --switch-thumb 240ms cubic-bezier(.2,.8,.2,1), --switch-on 240ms cubic-bezier(.2,.8,.2,1), --label 240ms cubic-bezier(.2,.8,.2,1), --border-hover 240ms cubic-bezier(.2,.8,.2,1), --placeholder 240ms cubic-bezier(.2,.8,.2,1), --accent-active 240ms cubic-bezier(.2,.8,.2,1), --secondary 240ms cubic-bezier(.2,.8,.2,1), --secondary-text 240ms cubic-bezier(.2,.8,.2,1), --secondary-hover 240ms cubic-bezier(.2,.8,.2,1), --secondary-active 240ms cubic-bezier(.2,.8,.2,1), --count 240ms cubic-bezier(.2,.8,.2,1), --action-text 240ms cubic-bezier(.2,.8,.2,1), --warning-surface 240ms cubic-bezier(.2,.8,.2,1), --error 240ms cubic-bezier(.2,.8,.2,1), --tooltip 240ms cubic-bezier(.2,.8,.2,1); }
+@media (prefers-reduced-motion: reduce) { :root[data-theme-motion] { transition: none; } }

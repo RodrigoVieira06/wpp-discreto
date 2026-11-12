@@ -38,20 +38,20 @@ typography:
     lineHeight: 1.35
   body:
     fontFamily: "system-ui, sans-serif"
-    fontSize: "13px"
+    fontSize: "15px"
     lineHeight: 1.5
   label:
     fontFamily: "system-ui, sans-serif"
-    fontSize: "12px"
+    fontSize: "14px"
     lineHeight: 1.5
   alias:
-    fontSize: "14px"
+    fontSize: "16px"
     fontWeight: 600
   dialog-title:
-    fontSize: "16px"
+    fontSize: "18px"
     fontWeight: 650
   annotation:
-    fontSize: "11px"
+    fontSize: "13px"
 rounded:
   compact-action: "6px"
   circle: "50%"
@@ -96,7 +96,7 @@ Use the surface color for the page and the raised surface for fields and setting
 
 ## Typography
 
-Use the platform's system UI font. The product title is 18 px; section headings and controls are 13 px. Field labels, helper text, and the footer are 12 px. Saved aliases use 14 px semibold with the original name below. The alias count uses 11 px. The developer credit uses muted text, an 11 px localized label, and a 12 px medium-weight name, separated from data notices by a divider and 12 px spacing. Range values use tabular numerals.
+Use the platform's system UI font. Base text defaults to 15 px and users can choose 14–18 px in General settings. Controls scale at 1 rem, section headings/aliases at about 1.067 rem, helper text at about .933 rem, and compact annotations at .867 rem. Keep the header title between 18 and 20 px to preserve navigation. All text, including dialogs, tooltips and footer, follows the preference. Range values retain tabular numerals.
 
 ## Layout
 
@@ -142,6 +142,12 @@ Informational layers have a 200 ms pop entrance: 96% scale, a slight 101.2% over
 
 The popup supports automatic system appearance, light and dark themes through `popup/themes.scss`. Keep the approved logo and 380 px width in both modes. The header includes a named sun/moon action and settings gear; settings replace the gear with Back. All controls have visible keyboard focus. Do not change WhatsApp's theme.
 
-Dark mode retains the charcoal-green/mint palette with strengthened `#607c6b` borders. Light mode uses `#f7faf8` ground, white fields, `#182c22` text, `#176c43` action color, and `#778e7e` borders. Warning and error tones adapt to each theme. Section titles/legends are 14 px; routine labels are regular-weight 13 px. Save uses the primary fill only inside the open alias editor. Edit is quiet; Remove uses the error text token while retaining confirmation.
+Dark mode retains the charcoal-green/mint palette with strengthened `#607c6b` borders. Light mode uses `#f7faf8` ground, white fields, `#182c22` text, `#176c43` action color, and `#778e7e` borders. Warning and error tones adapt to each theme. Section titles/legends default to 16 px; routine labels are regular-weight 15 px. Save uses the primary fill only inside the open alias editor. Edit is quiet; Remove uses the error text token while retaining confirmation.
 
-Main view: master, message protection, media checkbox with mixed state and localized type summary, then saved aliases and Add/Lookup actions. The editor opens only when requested. Settings view: Conversation (including a schematic readable-area preview and descriptive intensity), Media, Conversation list, General (language/theme/reset). Keep critical data-handling notices visible in the normal footer; secondary details use shared question-mark help.
+Main view: master, message protection, media checkbox with mixed state and localized type summary, then saved aliases and Add/Lookup actions. The editor opens only when requested. Settings view: Conversation (including readable-area controls and descriptive intensity), Media, Conversation list, General (language/theme/text size/reset). Keep critical data-handling notices visible in the normal footer; secondary details use shared question-mark help.
+
+## Theme transitions and readable text
+
+Palette colors interpolate together over 240 ms using registered CSS color properties. The sun/moon icon turns and settles over 220 ms. Keep controls usable throughout; do not add theme overlays, initial-load animation or artificial waiting. Reduced motion removes palette interpolation and icon travel. Preserve the shared help entrance separately.
+
+Do not restore the removed chat-area schematic: the user evaluates the effect directly in WhatsApp. Test the entire popup at 15 px and 18 px, with natural scrolling at 160 px and 600 px viewport heights. Long footer paragraphs must remain readable through scrolling even when one paragraph is taller than the available viewport.

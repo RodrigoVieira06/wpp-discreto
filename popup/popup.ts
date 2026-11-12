@@ -11,6 +11,8 @@ import { InfoPopover } from './info-popover';
   };
   const info = new InfoPopover(byId('info-popover'));
   for (const trigger of document.querySelectorAll<HTMLElement>('[data-info]')) info.bind(trigger);
+  let themeTimer: ReturnType<typeof setTimeout> | undefined;
+  let themeAnimation: Animation | undefined;
   let config = model.settings();
   let entries: model.Alias[] = [];
   let context: ChatContext = unavailableContext();
@@ -60,7 +62,29 @@ import { InfoPopover } from './info-popover';
 
   function applyTheme() {
     const dark = config.theme === 'auto' ? systemTheme.matches : config.theme === 'dark';
-    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    const root = document.documentElement;
+    const nextTheme = dark ? 'dark' : 'light';
+    if (
+      root.dataset.theme &&
+      root.dataset.theme !== nextTheme &&
+      !matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      root.dataset.themeMotion = '';
+      clearTimeout(themeTimer);
+      themeTimer = setTimeout(() => delete root.dataset.themeMotion, 360);
+      themeAnimation?.cancel();
+      themeAnimation = byId('theme-toggle')
+        .querySelector('svg')
+        ?.animate(
+          [
+            { transform: 'rotate(-18deg) scale(.85)' },
+            { transform: 'rotate(6deg) scale(1.06)', offset: 0.7 },
+            { transform: 'rotate(0) scale(1)' },
+          ],
+          { duration: 220, easing: 'cubic-bezier(.2,.8,.3,1)' },
+        );
+    }
+    root.dataset.theme = nextTheme;
     const key = dark ? 'switchToLight' : 'switchToDark';
     byId('theme-toggle').setAttribute('aria-label', message(key));
     byId('theme-toggle').dataset.info = key;
@@ -143,6 +167,9 @@ import { InfoPopover } from './info-popover';
     setLanguage(config.language);
     translateDocument(document);
     applyTheme();
+    document.documentElement.style.setProperty('--popup-font-size', `${config.fontSize}px`);
+    byId<HTMLInputElement>('font-size').value = String(config.fontSize);
+    byId<HTMLOutputElement>('font-size-label').value = `${config.fontSize} px`;
     byId<HTMLButtonElement>('theme-toggle').disabled = loading || saving;
     byId('settings-toggle').hidden = settingsOpen;
     byId('settings-back').hidden = !settingsOpen;
@@ -191,16 +218,6 @@ import { InfoPopover } from './info-popover';
     byId<HTMLSelectElement>('theme').value = config.theme;
     byId<HTMLOutputElement>('visible-label').value = `${config.visibleArea}%`;
     byId<HTMLOutputElement>('strength-label').value = strengthDescription(config.blurStrength);
-    byId('area-preview').style.setProperty(
-      '--covered-area',
-      `${config.fullBlur ? 100 : 100 - config.visibleArea}%`,
-    );
-    byId('area-preview').setAttribute(
-      'aria-label',
-      config.fullBlur
-        ? message('fullAreaPreview')
-        : `${message('visibleArea')}: ${config.visibleArea}%`,
-    );
     byId<HTMLInputElement>('blur-strength').setAttribute(
       'aria-valuetext',
       strengthDescription(config.blurStrength),
@@ -374,6 +391,7 @@ import { InfoPopover } from './info-popover';
   for (const [id, key] of [
     ['visible-area', 'visibleArea'],
     ['blur-strength', 'blurStrength'],
+    ['font-size', 'fontSize'],
   ] as const) {
     byId(id).addEventListener('change', () => {
       void save({
@@ -384,14 +402,6 @@ import { InfoPopover } from './info-popover';
   byId('visible-area').addEventListener('input', () => {
     byId<HTMLOutputElement>('visible-label').value =
       `${byId<HTMLInputElement>('visible-area').value}%`;
-    byId('area-preview').style.setProperty(
-      '--covered-area',
-      `${100 - Number(byId<HTMLInputElement>('visible-area').value)}%`,
-    );
-    byId('area-preview').setAttribute(
-      'aria-label',
-      `${message('visibleArea')}: ${byId<HTMLInputElement>('visible-area').value}%`,
-    );
   });
   byId('blur-strength').addEventListener('input', () => {
     byId<HTMLOutputElement>('strength-label').value = strengthDescription(
@@ -401,6 +411,11 @@ import { InfoPopover } from './info-popover';
       'aria-valuetext',
       byId<HTMLOutputElement>('strength-label').value,
     );
+  });
+  byId('font-size').addEventListener('input', () => {
+    const value = byId<HTMLInputElement>('font-size').value;
+    document.documentElement.style.setProperty('--popup-font-size', `${value}px`);
+    byId<HTMLOutputElement>('font-size-label').value = `${value} px`;
   });
   byId('language').addEventListener('change', () => {
     void save({

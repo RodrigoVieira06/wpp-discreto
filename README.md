@@ -10,7 +10,7 @@ The project is at version 0.2.1. The owner reported submitting the first Chrome 
 
 - **Local aliases:** give groups or contacts a display name for this browser. Read names already loaded in the sidebar, filter the discovered names, or enter the original name. An amber warning identifies names absent from discovered conversations.
 - **Conversation protection:** blur the upper chat area and keep the lower 20–100% readable (default: 40%). Scroll older messages into that area to read them, or enable full blur. Choose a blur strength from 4 to 16 px.
-- **Appearance:** light, dark, or automatic system theme. Switch themes from the header or choose automatic in settings. Preferences stay in this browser.
+- **Appearance:** light, dark, or automatic system theme. Switch themes from the header or choose automatic in settings. Choose a popup text size from 14–18 px (default 15 px). Preferences stay in this browser.
 - **Media protection:** select photos, videos, or stickers to keep them blurred in full, including albums, info-card carousels, galleries, opened media, and viewer history thumbnails. Media protection works with conversation blur off. The media control selects all three types without changing conversation blur and shows partial selections. Outgoing media previews stay clear while you edit and send them; protection resumes after closing the preview. Audio controls stay visible.
 - **Sidebar protection:** blur message previews while keeping unread counts visible by default. An independent settings option can blur the unread counters.
 - **Controls:** pause the extension or aliases without deleting saved choices. Choose automatic language, Portuguese, or English. Restoring defaults asks for confirmation and keeps aliases.

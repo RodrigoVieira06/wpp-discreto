@@ -76,6 +76,10 @@ The header theme button switches to the opposite resolved theme and saves an ove
 
 `popup/themes.scss` defines both palettes through shared CSS variables. Keep native controls, dialogs, tooltips, focus states, errors and warning surfaces readable in both modes. System-theme CSS also handles the initial render before persisted preferences load. Main text and input text require at least 4.5:1 contrast; input borders require at least 3:1 against their fill.
 
-## Readable-area preview
+## Typography and theme feedback
 
-The settings diagram illustrates the upper covered area using abstract conversation bars; it never reads actual chats. The readable percentage and full-blur preference drive its boundary and localized accessible description. Intensity output includes a plain-language level (Light, Moderate, Strong) and the exact pixel value, also exposed as `aria-valuetext`.
+`settings.fontSize` sets the popup's base text size from 14–18 px, default 15 px. Missing, nonnumeric, and invalid stored values fall back safely; numeric values are rounded and bounded. All popup text uses relative sizes, including fields, helper text, dialogs, tooltips and credits. The app title is capped at 20 px to preserve header navigation. Changing the General slider previews the size immediately and saves on change through existing local storage. Failed saves restore the previous size; default restoration returns to 15 px. This preference never changes WhatsApp's text size.
+
+The readable-area setting has no schematic preview. Users see its effect in WhatsApp; retain the percentage, full-blur choice and concise scrolling instruction. Intensity still includes its descriptive level and exact pixel value.
+
+Theme changes interpolate registered palette colors together for 240 ms. The header icon makes one small 220 ms turn/settle; repeated changes cancel the previous icon animation. No overlay intercepts controls and no action waits for the animation. The initial theme is applied directly. Reduced-motion mode skips the palette interpolation and icon movement while retaining readable states. Existing help and hover feedback remain independent.

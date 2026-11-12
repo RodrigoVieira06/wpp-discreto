@@ -29,7 +29,7 @@
         <label class="range-label" for="visible-area"><span data-i18n="visibleArea">Área visível da conversa</span><output id="visible-label" for="visible-area">40%</output></label>
         <input id="visible-area" type="range" min="20" max="100" value="40" step="1">
         <label class="switch-row" for="full-blur"><span data-i18n="fullBlur">Desfoque completo</span><input id="full-blur" type="checkbox" role="switch"></label>
-        <div id="area-preview" class="area-preview" role="img" aria-label="Área legível: 40%"><div class="preview-lines" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="preview-mask" aria-hidden="true"></div></div><p class="hint" data-i18n="historyShortHint">A parte inferior fica legível. Role a conversa para ler mensagens antigas nessa área.</p>
+        <p class="hint" data-i18n="historyShortHint">A parte inferior fica legível. Role a conversa para ler mensagens antigas nessa área.</p>
         </fieldset>
         <fieldset class="settings-group media-options">
           <legend><span data-i18n="mediaGroup">Mídias</span><button id="media-fallback-help" type="button" class="help-button" data-info="mediaFallbackHint" data-i18n-aria-label="mediaFallbackHelpLabel" aria-label="Sobre mídias não identificadas"><svg class="control-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .2c0 1.8-2.5 2.2-2.5 4.1M12 16.5h.01"/></svg></button></legend>
@@ -46,7 +46,11 @@
         <fieldset class="settings-group"><legend data-i18n="generalGroup">Geral</legend>
         <label class="field-label" for="language" data-i18n="language">Idioma</label>
         <select id="language"><option value="auto" data-i18n="languageAuto">Automático (navegador)</option><option value="pt_BR" lang="pt-BR">Português (Brasil)</option><option value="en" lang="en">English</option></select>
-<label class="field-label" for="theme" data-i18n="theme">Tema</label><select id="theme"><option value="auto" data-i18n="themeAuto">Automático (sistema)</option><option value="light" data-i18n="themeLight">Claro</option><option value="dark" data-i18n="themeDark">Escuro</option></select>        <label class="switch-row" for="confirm-alias-removal"><span data-i18n="confirmAliasRemoval">Confirmar exclusão de apelidos</span><input id="confirm-alias-removal" type="checkbox" role="switch"></label>
+<label class="field-label" for="theme" data-i18n="theme">Tema</label><select id="theme"><option value="auto" data-i18n="themeAuto">Automático (sistema)</option><option value="light" data-i18n="themeLight">Claro</option><option value="dark" data-i18n="themeDark">Escuro</option></select>
+        <label class="range-label" for="font-size"><span data-i18n="fontSize">Tamanho do texto</span><output id="font-size-label" for="font-size">15 px</output></label>
+        <input id="font-size" type="range" min="14" max="18" value="15" step="1" aria-describedby="font-size-hint">
+        <p id="font-size-hint" class="hint" data-i18n="fontSizeHint">Altera apenas o texto da extensão.</p>
+        <label class="switch-row" for="confirm-alias-removal"><span data-i18n="confirmAliasRemoval">Confirmar exclusão de apelidos</span><input id="confirm-alias-removal" type="checkbox" role="switch"></label>
         <div class="reset-row"><button id="restore-defaults" type="button" class="secondary" data-i18n="restoreDefaults">Restaurar padrão</button>
         <button id="reset-help" type="button" class="help-button" data-info="restoreDefaultsHint" data-i18n-aria-label="restoreHelpLabel" aria-label="O que será restaurado?"><svg class="control-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .2c0 1.8-2.5 2.2-2.5 4.1M12 16.5h.01"/></svg></button></div>
         </fieldset>

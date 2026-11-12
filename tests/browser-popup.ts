@@ -48,6 +48,12 @@ export {};
         document.querySelector('footer .author-credit strong')?.textContent === 'Rodrigo Lima',
     );
     check('settings hidden initially', byId('settings-panel').hidden);
+    check(
+      'popup text starts larger and the schematic preview is removed',
+      parseFloat(getComputedStyle(document.documentElement).fontSize) === 15 &&
+        !document.getElementById('area-preview'),
+    );
+
     const contrast = (foreground: string, background: string) => {
       const luminance = (color: string) => {
         const channels = (color.match(/[\d.]+/g) ?? [])
@@ -84,6 +90,14 @@ export {};
     await wait();
     const override = wasDark ? 'light' : 'dark';
     check(
+      'theme motion is brief and respects reduced motion',
+      matchMedia('(prefers-reduced-motion: reduce)').matches
+        ? !document.documentElement.hasAttribute('data-theme-motion')
+        : getComputedStyle(document.documentElement).transitionProperty.includes('--surface') &&
+            !!byId('theme-toggle').querySelector('svg')?.getAnimations().length,
+    );
+
+    check(
       'header theme control saves an override with an accessible next action',
       stored.settings.theme === override &&
         document.documentElement.dataset.theme === override &&
@@ -96,6 +110,17 @@ export {};
       document.documentElement.dataset.theme === override,
     );
     byId('settings-toggle').click();
+    change('font-size', '18');
+    await wait();
+    check(
+      'text size persists and scales secondary text without horizontal overflow',
+      stored.settings.fontSize === 18 &&
+        parseFloat(getComputedStyle(document.documentElement).fontSize) === 18 &&
+        parseFloat(getComputedStyle(byId('media-summary')).fontSize) >= 16 &&
+        document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+    );
+    change('font-size', '15');
+    await wait();
     change('theme', 'auto');
     await wait();
     window.setSystemTheme(true);
@@ -105,6 +130,7 @@ export {};
         document.documentElement.dataset.theme === 'dark' &&
         getComputedStyle(document.documentElement).colorScheme === 'dark',
     );
+    await new Promise((resolve) => setTimeout(resolve, 280));
     checkThemeContrast('dark theme');
     window.setSystemTheme(false);
     check(
@@ -112,6 +138,7 @@ export {};
       document.documentElement.dataset.theme === 'light' &&
         getComputedStyle(document.documentElement).colorScheme === 'light',
     );
+    await new Promise((resolve) => setTimeout(resolve, 280));
     checkThemeContrast('light theme');
     byId('settings-back').click();
 
@@ -419,17 +446,18 @@ export {};
         help.getAttribute('aria-describedby') === 'info-popover',
     );
     check(
-      'help has a brief pop entrance',
-      byId('info-popover')
-        .getAnimations()
-        .some(
-          (animation) =>
-            animation.effect instanceof KeyframeEffect &&
-            animation.effect.getTiming().duration === 200 &&
-            animation.effect
-              .getKeyframes()
-              .some((frame) => String(frame.transform).includes('scale')),
-        ),
+      'help has a brief pop entrance or respects reduced motion',
+      matchMedia('(prefers-reduced-motion: reduce)').matches ||
+        byId('info-popover')
+          .getAnimations()
+          .some(
+            (animation) =>
+              animation.effect instanceof KeyframeEffect &&
+              animation.effect.getTiming().duration === 200 &&
+              animation.effect
+                .getKeyframes()
+                .some((frame) => String(frame.transform).includes('scale')),
+          ),
     );
     const motion = getComputedStyle(byId('info-popover'));
     check(
@@ -651,6 +679,7 @@ export {};
         !stored.settings.blurUnreadCounts &&
         stored.settings.language === 'auto' &&
         stored.settings.theme === 'auto' &&
+        stored.settings.fontSize === 15 &&
         stored.settings.visibleArea === 40 &&
         stored.settings.blurStrength === 8 &&
         !stored.settings.blurImages &&

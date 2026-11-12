@@ -25,7 +25,7 @@ function runBrowser(fixture: string, minimumChecks: number, browserArguments: st
         '--disable-dev-shm-usage',
         '--run-all-compositor-stages-before-draw',
         '--disable-renderer-backgrounding',
-        '--virtual-time-budget=4000',
+        '--virtual-time-budget=6000',
         `--user-data-dir=${temp}/profile`,
         '--dump-dom',
         pathToFileURL(entry).href,
@@ -134,6 +134,7 @@ test.each([
   ['pt-BR', 'pt_BR', 'pt-BR', 'Salvar apelido'],
   ['pt-PT', 'pt_BR', 'pt-BR', 'Salvar apelido'],
   ['en-US', 'en', 'en', 'Save alias'],
+  ['en-GB', 'en', 'en', 'Save alias'],
   ['es-ES', 'pt_BR', 'pt-BR', 'Salvar apelido'],
 ])(
   'Chrome popup in %s: localization, controls, aliases and storage failures',
@@ -186,7 +187,7 @@ test.each([
         '</head>',
         `<script src="${pathToFileURL(path.join(root, 'dist/test-runtime/browser-popup.js')).href}" defer></script></head>`,
       );
-    runBrowser(fixture, 14);
+    runBrowser(fixture, 14, browserLanguage === 'en-GB' ? ['--force-prefers-reduced-motion'] : []);
   },
 );
 

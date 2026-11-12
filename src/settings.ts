@@ -8,6 +8,7 @@ export interface Settings {
   confirmAliasRemoval: boolean;
   language: LanguagePreference;
   theme: ThemePreference;
+  fontSize: number;
   blurPreviews: boolean;
   blurUnreadCounts: boolean;
   blurChat: boolean;
@@ -30,6 +31,7 @@ export const defaults: Readonly<Settings> = Object.freeze({
   confirmAliasRemoval: true,
   language: 'auto',
   theme: 'auto',
+  fontSize: 15,
   blurPreviews: false,
   blurUnreadCounts: false,
   blurChat: false,
@@ -57,6 +59,7 @@ export function settings(value: unknown = {}): Settings {
     confirmAliasRemoval: input.confirmAliasRemoval !== false,
     language: input.language === 'pt_BR' || input.language === 'en' ? input.language : 'auto',
     theme: input.theme === 'light' || input.theme === 'dark' ? input.theme : 'auto',
+    fontSize: bounded(input.fontSize, defaults.fontSize, 14, 18),
     blurPreviews: input.blurPreviews === true,
     blurUnreadCounts: input.blurUnreadCounts === true,
     blurChat: input.blurChat === true,

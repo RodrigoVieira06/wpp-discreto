@@ -273,9 +273,6 @@
   "historyShortHint": {
     "message": "A parte inferior fica legível. Role a conversa para ler mensagens antigas nessa área."
   },
-  "fullAreaPreview": {
-    "message": "Toda a conversa embaçada"
-  },
   "mediaFallbackHelpLabel": {
     "message": "Sobre mídias não identificadas"
   },
@@ -296,5 +293,11 @@
   },
   "switchToDark": {
     "message": "Ativar tema escuro"
+  },
+  "fontSize": {
+    "message": "Tamanho do texto"
+  },
+  "fontSizeHint": {
+    "message": "Altera apenas o texto da extensão."
   }
 }

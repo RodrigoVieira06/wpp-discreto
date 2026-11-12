@@ -273,9 +273,6 @@
   "historyShortHint": {
     "message": "The lower area stays readable. Scroll the conversation to read older messages there."
   },
-  "fullAreaPreview": {
-    "message": "Entire conversation blurred"
-  },
   "mediaFallbackHelpLabel": {
     "message": "About unidentified media"
   },
@@ -296,5 +293,11 @@
   },
   "switchToDark": {
     "message": "Switch to dark theme"
+  },
+  "fontSize": {
+    "message": "Text size"
+  },
+  "fontSizeHint": {
+    "message": "Changes text in the extension only."
   }
 }

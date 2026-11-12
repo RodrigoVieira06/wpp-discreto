@@ -23,8 +23,14 @@ test('Chrome loads the actual extension and initializes its popup', () => {
   expect(report.extensionId).toMatch(/^[a-p]{32}$/);
   expect(report.popupReady).toBe(true);
   expect(report.popupLayout).toEqual(
-    [160, 600].map((height) => ({
+    [
+      [160, 15],
+      [600, 15],
+      [160, 18],
+      [600, 18],
+    ].map(([height, fontSize]) => ({
       height,
+      fontSize,
       controlsExpanded: true,
       widthPreserved: true,
       noHorizontalOverflow: true,

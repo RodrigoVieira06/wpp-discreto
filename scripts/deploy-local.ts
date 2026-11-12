@@ -96,7 +96,21 @@ async function main() {
       }
       if (!popupReady) throw new Error('Extension popup failed to initialize.');
       const popupLayout = [];
-      for (const height of [160, 600]) {
+      for (const [height, fontSize] of [
+        [160, 15],
+        [600, 15],
+        [160, 18],
+        [600, 18],
+      ]) {
+        await protocol.send(
+          'Runtime.evaluate',
+          {
+            expression: `(async () => { const { settings } = await chrome.storage.local.get('settings'); await chrome.storage.local.set({ settings: { ...settings, fontSize: ${fontSize} } }); })()`,
+            awaitPromise: true,
+          },
+          sessionId,
+        );
+        await delay(40);
         await protocol.send(
           'Emulation.setDeviceMetricsOverride',
           {
@@ -116,7 +130,16 @@ async function main() {
                 const element = typeof selector === 'string' ? document.querySelector(selector) : selector;
                 element.scrollIntoView({ block: 'center' });
                 const rect = element.getBoundingClientRect();
-                return rect.height > 0 && rect.top >= document.querySelector('header').getBoundingClientRect().bottom && rect.bottom <= innerHeight;
+                const headerBottom = document.querySelector('header').getBoundingClientRect().bottom;
+                const visibleTop = Math.max(headerBottom, parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop));
+                if (rect.height <= innerHeight - visibleTop) return rect.height > 0 && rect.top >= headerBottom && rect.bottom <= innerHeight;
+                // A long paragraph can exceed a short viewport; both ends must remain reachable.
+                // Fractional font metrics can round integer scroll offsets by less than one pixel.
+                element.scrollIntoView({ block: 'start' });
+                const start = element.getBoundingClientRect().top;
+                element.scrollIntoView({ block: 'end' });
+                const end = element.getBoundingClientRect().bottom;
+                return start >= headerBottom && start < innerHeight && end <= innerHeight + 1 && end > headerBottom;
               };
               const controlsExpanded = main.getBoundingClientRect().height > 300;
               const widthPreserved = innerWidth === 380 && document.body.getBoundingClientRect().width <= 380;
@@ -141,7 +164,7 @@ async function main() {
               const helpContained = help.width > 0 && help.top >= 0 && help.bottom <= innerHeight && help.left >= 0 && help.right <= innerWidth;
               document.getElementById('media-help').blur();
               window.scrollTo(0, 0);
-              return { height: innerHeight, controlsExpanded, widthPreserved,
+              return { height: innerHeight, fontSize: parseFloat(getComputedStyle(document.documentElement).fontSize), controlsExpanded, widthPreserved,
                 masterReachable, saveReachable, footerReachable, settingsReachable,
                 noHorizontalOverflow, helpContained, switchTargetsAccessible, switchesAligned, headerPinned, settingsScrolled };
             })()`,
