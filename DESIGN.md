@@ -100,7 +100,7 @@ Use the platform's system UI font. The product title is 18 px; section headings 
 
 ## Layout
 
-The popup viewport remains 380 px wide, with a maximum height of 600 px and normal vertical document scrolling. Fit the body inside the scrollbar gutter. Header, main, and footer use 18 px horizontal padding. Sections use 20 px vertical padding; the settings panel uses 16 px internal padding.
+The popup viewport remains 380 px wide, with a maximum height of 600 px and normal vertical document scrolling. Fit the body inside the scrollbar gutter. The 73 px header stays pinned with an opaque surface while content scrolls. Root scroll padding reserves 81 px so controls and the settings panel appear below it. Opening settings scrolls to the panel. Header, main, and footer use 18 px horizontal padding. Sections use 20 px vertical padding; the settings panel uses 16 px internal padding.
 
 Keep switches aligned to a shared right edge. Place advanced-blur help beside its label. Saved-alias actions occupy a separate row so long names can wrap. Keep the footer in document flow. Settings must remain usable at short viewport heights.
 

@@ -16,7 +16,7 @@ Use factual copy that explains actions, failures, or limits. Omit slogans, promo
 
 ## Layout and footer
 
-Keep the popup 380 px wide, with intrinsic control heights and normal document scrolling. Place the footer in document flow so you can reach it by scrolling. A fixed footer or `100vh` height constraint must not compress the controls.
+Keep the popup 380 px wide, with intrinsic control heights and normal document scrolling. The title header stays at the top with `position: sticky`; its opaque background covers scrolled content. Root scroll padding leaves room for the 73 px header plus an 8 px gap, keeping focused and scrolled-to controls clear of it. Opening settings with the header button scrolls the settings panel into view below the header; closing it does not request another scroll. Place the footer in document flow so you can reach it by scrolling. A fixed footer or `100vh` height constraint must not compress the controls.
 
 Retain the footer's data-handling explanation: changes affect this browser, original WhatsApp names/messages remain unchanged, and the extension does not send or save conversation contents. Place the developer credit in its own footer area, separated from the data notices by a divider and spacing. Show the localized label “Desenvolvido por” or “Developed by” above “Rodrigo Lima”, using muted text, an 11 px label, and a 12 px medium-weight name. Keep the credit in normal document flow.
 

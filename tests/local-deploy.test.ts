@@ -35,6 +35,8 @@ test('Chrome loads the actual extension and initializes its popup', () => {
       saveReachable: true,
       footerReachable: true,
       settingsReachable: true,
+      headerPinned: true,
+      settingsScrolled: true,
     })),
   );
 });

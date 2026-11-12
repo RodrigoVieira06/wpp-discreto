@@ -18,7 +18,7 @@ Refine the existing dark green interface. Preserve the approved logo, factual co
 
 ## Layout constraints
 
-Keep the 380 px popup viewport and normal document scrolling. Content must fit the space left by a vertical scrollbar without horizontal scrolling. Never shrink the main controls to fit a fixed footer. Settings and aliases remain reachable in short viewports.
+Keep the 380 px popup viewport and normal document scrolling. Keep the title header sticky at the top with an opaque background. Reserve header space for scroll targets and move to the settings panel when opening it from the header button. Content must fit the space left by a vertical scrollbar without horizontal scrolling. Never shrink the main controls to fit a fixed footer. Settings and aliases remain reachable in short viewports.
 
 ## States to inspect
 

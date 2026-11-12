@@ -116,7 +116,7 @@ async function main() {
                 const element = typeof selector === 'string' ? document.querySelector(selector) : selector;
                 element.scrollIntoView({ block: 'center' });
                 const rect = element.getBoundingClientRect();
-                return rect.height > 0 && rect.top >= 0 && rect.bottom <= innerHeight;
+                return rect.height > 0 && rect.top >= document.querySelector('header').getBoundingClientRect().bottom && rect.bottom <= innerHeight;
               };
               const controlsExpanded = main.getBoundingClientRect().height > 300;
               const widthPreserved = innerWidth === 380 && document.body.getBoundingClientRect().width <= 380;
@@ -126,7 +126,12 @@ async function main() {
               const masterReachable = reachable('#extension-enabled');
               const saveReachable = reachable('#alias-form button');
               const footerReachable = [...document.querySelector('footer').children].every(reachable);
+              const header = document.querySelector('header').getBoundingClientRect();
+              const headerPinned = Math.abs(header.top) < 1 && header.bottom <= innerHeight;
               document.getElementById('settings-toggle').click();
+              const panelTop = document.getElementById('settings-panel').getBoundingClientRect().top;
+              const headerBottom = document.querySelector('header').getBoundingClientRect().bottom;
+              const settingsScrolled = panelTop >= headerBottom && panelTop <= headerBottom + 16;
               const settingsReachable = reachable('#visible-area');
               document.getElementById('settings-toggle').click();
               document.getElementById('media-help').focus();
@@ -136,7 +141,7 @@ async function main() {
               window.scrollTo(0, 0);
               return { height: innerHeight, controlsExpanded, widthPreserved,
                 masterReachable, saveReachable, footerReachable, settingsReachable,
-                noHorizontalOverflow, helpContained, switchTargetsAccessible, switchesAligned };
+                noHorizontalOverflow, helpContained, switchTargetsAccessible, switchesAligned, headerPinned, settingsScrolled };
             })()`,
             returnByValue: true,
           },

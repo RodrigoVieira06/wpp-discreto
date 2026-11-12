@@ -8,6 +8,9 @@ $warning: #f5c875;
 $text: #e8eeec;
 
 :root {
+  max-height: 600px;
+  overflow-y: auto;
+  scroll-padding-top: 81px;
   color-scheme: dark;
   font: 13px/1.5 system-ui, sans-serif;
   color: $text;
@@ -16,9 +19,9 @@ $text: #e8eeec;
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
-body { width: 380px; max-width: 100%; margin: 0; max-height: 600px; overflow-y: auto; }
+body { width: 380px; max-width: 100%; margin: 0; }
 ::selection { background: $accent; color: #153b2a; }
-header { display: flex; align-items: center; gap: 12px; padding: 16px 18px; border-bottom: 1px solid $border; }
+header { position: sticky; top: 0; z-index: 2; background: $surface; display: flex; align-items: center; gap: 12px; padding: 16px 18px; border-bottom: 1px solid $border; }
 .brand-icon { display: block; width: 40px; height: 40px; flex-shrink: 0; object-fit: contain; }
 h1 { margin: 0; font-size: 18px; line-height: 1.35; font-weight: 650; }
 h2 { margin: 0 0 8px; font-size: 13px; line-height: 1.5; font-weight: 650; }

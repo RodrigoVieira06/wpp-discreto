@@ -268,6 +268,7 @@ import * as model from '../src/settings';
   byId('settings-toggle').addEventListener('click', () => {
     settingsOpen = !settingsOpen;
     draw();
+    if (settingsOpen) byId('settings-panel').scrollIntoView({ block: 'start' });
   });
   document.addEventListener('keydown', (event) => {
     if (byId<HTMLDialogElement>('reset-dialog').open) return;
