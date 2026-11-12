@@ -168,7 +168,7 @@
     "message": "Full blur"
   },
   "advancedBlur": {
-    "message": "Advanced blur"
+    "message": "Blur media"
   },
   "mediaSettings": {
     "message": "Configure media blur"
@@ -239,5 +239,62 @@
   },
   "restoreHelpLabel": {
     "message": "What will be reset?"
+  },
+  "back": {
+    "message": "Back"
+  },
+  "conversationGroup": {
+    "message": "Conversation"
+  },
+  "mediaGroup": {
+    "message": "Media"
+  },
+  "generalGroup": {
+    "message": "General"
+  },
+  "addAlias": {
+    "message": "Add alias"
+  },
+  "editAliasTitle": {
+    "message": "Edit alias"
+  },
+  "noMediaSelected": {
+    "message": "No media selected"
+  },
+  "strengthLight": {
+    "message": "Light"
+  },
+  "strengthModerate": {
+    "message": "Moderate"
+  },
+  "strengthStrong": {
+    "message": "Strong"
+  },
+  "historyShortHint": {
+    "message": "The lower area stays readable. Scroll the conversation to read older messages there."
+  },
+  "fullAreaPreview": {
+    "message": "Entire conversation blurred"
+  },
+  "mediaFallbackHelpLabel": {
+    "message": "About unidentified media"
+  },
+  "theme": {
+    "message": "Theme"
+  },
+  "themeAuto": {
+    "message": "Automatic (system)"
+  },
+  "themeLight": {
+    "message": "Light"
+  },
+  "themeDark": {
+    "message": "Dark"
+  },
+  "switchToLight": {
+    "message": "Switch to light theme"
+  },
+  "switchToDark": {
+    "message": "Switch to dark theme"
   }
 }

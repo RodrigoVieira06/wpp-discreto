@@ -51,3 +51,9 @@ Use one styled, nonmodal popover for all informational hints, including lookup s
 ## Help discoverability and feedback
 
 Place only a question-mark icon inside the lookup button, with the explanation's title inside the popover. Hover and keyboard focus on the entire lookup button reveal help; clicking still runs lookup. Do not add a separate lookup-help text button. Use a quick 200 ms scale entrance with a small overshoot, retaining short opacity and control-color transitions. Skip spatial motion for reduced-motion preferences and cancel/restart safely when closing/reopening.
+
+## Version 0.2.1 refinement
+
+The owner approved both visual and UX review rounds. Main and settings are separate views; Back restores main scroll/focus, and settings navigation preserves alias drafts. Display saved aliases before Add/Lookup; hide creation fields until requested. Show mixed media state with a checkbox and selected-type summary. Group settings into Conversation, Media, Conversation list, General. Preserve the lookup question mark within its button and existing help motion.
+
+Support light/dark/automatic system themes locally, with a named header action and General select. Follow `popup/themes.scss` for all UI surfaces, native controls, warnings, dialogs and tooltips. Preserve the approved logo and popup dimensions. Verify both themes, keyboard access, live system changes, draft/error recovery, and existing content protection regressions.

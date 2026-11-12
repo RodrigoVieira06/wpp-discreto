@@ -16,6 +16,7 @@ export {};
     element.dispatchEvent(new Event('change', { bubbles: true }));
   };
   const submit = (original: string, alias: string) => {
+    if (byId('alias-editor').hidden) byId('add-alias').click();
     byId('original-name').value = original;
     byId('alias-name').value = alias;
     byId('alias-form').dispatchEvent(new Event('submit', { cancelable: true }));
@@ -47,6 +48,137 @@ export {};
         document.querySelector('footer .author-credit strong')?.textContent === 'Rodrigo Lima',
     );
     check('settings hidden initially', byId('settings-panel').hidden);
+    const contrast = (foreground: string, background: string) => {
+      const luminance = (color: string) => {
+        const channels = (color.match(/[\d.]+/g) ?? [])
+          .slice(0, 3)
+          .map(Number)
+          .map((value) => value / 255)
+          .map((value) => (value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4));
+        return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
+      };
+      const a = luminance(foreground),
+        b = luminance(background);
+      return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+    };
+    const checkThemeContrast = (name: string) => {
+      const rootStyle = getComputedStyle(document.documentElement);
+      const fieldStyle = getComputedStyle(byId('original-name'));
+      check(
+        `${name} has readable text and visible field borders`,
+        contrast(rootStyle.color, rootStyle.backgroundColor) >= 4.5 &&
+          contrast(fieldStyle.color, fieldStyle.backgroundColor) >= 4.5 &&
+          contrast(fieldStyle.borderTopColor, fieldStyle.backgroundColor) >= 3,
+      );
+    };
+
+    check(
+      'theme follows the system by default',
+      byId('theme').value === 'auto' &&
+        document.documentElement.dataset.theme ===
+          (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'),
+    );
+    const wasDark = document.documentElement.dataset.theme === 'dark';
+    byId('theme-toggle').focus();
+    byId('theme-toggle').click();
+    await wait();
+    const override = wasDark ? 'light' : 'dark';
+    check(
+      'header theme control saves an override with an accessible next action',
+      stored.settings.theme === override &&
+        document.documentElement.dataset.theme === override &&
+        byId('theme-toggle').getAttribute('aria-label') ===
+          window.expectedMessages[wasDark ? 'switchToDark' : 'switchToLight'],
+    );
+    window.setSystemTheme(wasDark);
+    check(
+      'explicit theme ignores system changes',
+      document.documentElement.dataset.theme === override,
+    );
+    byId('settings-toggle').click();
+    change('theme', 'auto');
+    await wait();
+    window.setSystemTheme(true);
+    check(
+      'automatic theme responds to system dark mode',
+      stored.settings.theme === 'auto' &&
+        document.documentElement.dataset.theme === 'dark' &&
+        getComputedStyle(document.documentElement).colorScheme === 'dark',
+    );
+    checkThemeContrast('dark theme');
+    window.setSystemTheme(false);
+    check(
+      'automatic theme responds to system light mode',
+      document.documentElement.dataset.theme === 'light' &&
+        getComputedStyle(document.documentElement).colorScheme === 'light',
+    );
+    checkThemeContrast('light theme');
+    byId('settings-back').click();
+
+    check(
+      'alias editor starts collapsed with saved aliases first',
+      byId('alias-editor').hidden &&
+        !!(
+          byId('alias-list').compareDocumentPosition(byId('alias-editor')) &
+          Node.DOCUMENT_POSITION_FOLLOWING
+        ),
+    );
+    byId('add-alias').click();
+    check(
+      'adding an alias opens a focused editor',
+      !byId('alias-editor').hidden && document.activeElement?.id === 'original-name',
+    );
+    byId('original-name').value = 'Unsaved name';
+    byId('alias-name').value = 'Draft';
+    byId('settings-toggle').click();
+    byId('settings-back').click();
+    check(
+      'settings navigation retains an unsaved alias draft',
+      !byId('alias-editor').hidden &&
+        byId('original-name').value === 'Unsaved name' &&
+        byId('alias-name').value === 'Draft',
+    );
+    window.failNextSave = true;
+    byId('alias-form').dispatchEvent(new Event('submit', { cancelable: true }));
+    await wait();
+    check(
+      'failed alias save retains the editable draft',
+      !byId('alias-editor').hidden &&
+        byId('alias-name').value === 'Draft' &&
+        stored.aliases.length === 1,
+    );
+
+    byId('cancel-alias').click();
+    check(
+      'canceling clears the draft without changing saved aliases',
+      byId('alias-editor').hidden &&
+        !byId('original-name').value &&
+        stored.aliases.length === 1 &&
+        document.activeElement?.id === 'add-alias',
+    );
+    window.scrollTo(0, 100);
+    const homeScroll = window.scrollY;
+    byId('settings-toggle').click();
+    check(
+      'settings is a separate view with a visible back action',
+      byId('feature-controls').hidden &&
+        byId('master-control').hidden &&
+        !byId('settings-back').hidden &&
+        !byId('settings-panel').hidden,
+    );
+    check(
+      'settings has four named groups',
+      byId('settings-panel').querySelectorAll('.settings-group').length === 4,
+    );
+    byId('settings-back').click();
+    check(
+      'back restores main scroll and focus',
+      byId('settings-panel').hidden &&
+        !byId('feature-controls').hidden &&
+        Math.abs(window.scrollY - homeScroll) <= 1 &&
+        document.activeElement?.id === 'settings-toggle',
+    );
+
     check(
       'lookup help is an icon inside the lookup button',
       byId('fetch-chats').contains(byId('chat-lookup-help')) &&
@@ -123,7 +255,7 @@ export {};
       'media help opens settings and focuses individual choices',
       !byId('settings-panel').hidden && document.activeElement?.id === 'blur-images',
     );
-    byId('settings-toggle').click();
+    byId('settings-back').click();
     byId('settings-toggle').click();
     check('visible area has an explicit twenty percent minimum', byId('visible-area').min === '20');
     change('full-blur', true);
@@ -181,7 +313,8 @@ export {};
       'settings sliders persist',
       stored.settings.visibleArea === 60 &&
         stored.settings.blurStrength === 14 &&
-        byId('strength-label').value === '14 px',
+        byId('strength-label').value.includes('14 px') &&
+        byId('strength-label').value.includes(window.expectedMessages.strengthStrong),
     );
     change('blur-images', false);
     await wait();
@@ -190,8 +323,34 @@ export {};
       !stored.settings.blurImages &&
         stored.settings.blurVideos &&
         stored.settings.blurStickers &&
-        !byId('advanced-blur').checked,
+        !byId('advanced-blur').checked &&
+        byId('advanced-blur').indeterminate &&
+        byId('advanced-blur').getAttribute('aria-checked') === 'mixed' &&
+        byId('media-summary').textContent.includes(window.expectedMessages.mediaVideos),
     );
+    byId('settings-back').click();
+    byId('advanced-blur').click();
+    await wait();
+    check(
+      'activating mixed media selects all without changing chat blur',
+      byId('advanced-blur').checked &&
+        !byId('advanced-blur').indeterminate &&
+        stored.settings.blurImages &&
+        stored.settings.blurVideos &&
+        stored.settings.blurStickers &&
+        stored.settings.blurChat,
+    );
+    byId('advanced-blur').click();
+    await wait();
+    check(
+      'activating selected media clears all types',
+      !byId('advanced-blur').checked &&
+        !byId('advanced-blur').indeterminate &&
+        !stored.settings.blurImages &&
+        !stored.settings.blurVideos &&
+        !stored.settings.blurStickers,
+    );
+    byId('settings-toggle').click();
     change('extension-enabled', false);
     await wait();
     check(
@@ -219,6 +378,7 @@ export {};
     change('aliases-enabled', true);
     await wait();
 
+    byId('settings-back').click();
     const originalSend = chrome.tabs.sendMessage;
     let finishLookup: (value: unknown) => void = () => {};
     const pendingLookup = new Promise<unknown>((resolve) => {
@@ -320,7 +480,12 @@ export {};
         byId('chat-suggestions').textContent.includes('Contato 12'),
     );
     byId('chat-suggestions').querySelector<HTMLButtonElement>('button')?.click();
-    check('filtered names can be selected', byId('original-name').value === 'Contato 12');
+    check(
+      'filtered names open the alias editor',
+      byId('original-name').value === 'Contato 12' &&
+        !byId('alias-editor').hidden &&
+        document.activeElement?.id === 'alias-name',
+    );
     search.value = 'familia';
     search.dispatchEvent(new Event('input', { bubbles: true }));
     check(
@@ -345,6 +510,10 @@ export {};
       stored.aliases.length === 2 &&
         !byId('alias-list').querySelector('script') &&
         byId('alias-list').textContent.includes('<script>alert(1)</script>'),
+    );
+    check(
+      'successful save closes and clears the editor',
+      byId('alias-editor').hidden && !byId('original-name').value,
     );
     check(
       'known name is not marked missing',
@@ -453,6 +622,7 @@ export {};
     window.rejectChats = false;
     const aliasCount = stored.aliases.length;
     const beforeReset = JSON.stringify(stored.settings);
+    byId('settings-toggle').click();
     byId('restore-defaults').click();
     await wait();
     check(
@@ -480,6 +650,7 @@ export {};
         !stored.settings.blurPreviews &&
         !stored.settings.blurUnreadCounts &&
         stored.settings.language === 'auto' &&
+        stored.settings.theme === 'auto' &&
         stored.settings.visibleArea === 40 &&
         stored.settings.blurStrength === 8 &&
         !stored.settings.blurImages &&
@@ -513,7 +684,7 @@ export {};
       'external settings updates refresh controls',
       byId('visible-area').value === '70' && byId('blur-previews').checked,
     );
-    byId('settings-toggle').click();
+    byId('settings-back').click();
     check('settings panel closes', byId('settings-panel').hidden);
   } catch (error) {
     results.push({

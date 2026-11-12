@@ -14,7 +14,8 @@ The Manifest V3 extension runs on `https://web.whatsapp.com/*` with the `storage
 | `src/sidebar.ts` | Preview/counter annotation without modifying sidebar text or ordering |
 | `src/chats.ts` | Passive sidebar discovery, visual ordering, and alias validation |
 | `src/i18n.ts` | Typed locale lookup and saved language selection |
-| `popup/popup.ts` | Controls, aliases, settings persistence, and write-error recovery |
+| `popup/popup.ts` | Main/settings navigation, theme resolution, progressive aliases, mixed media state, persistence and error recovery |
+| `popup/themes.scss` | Shared dark/light palette tokens and initial system appearance |
 
 `src/content.ts` disconnects its observer while applying its own DOM changes to prevent update loops. Storage changes refresh both content-script preferences and popup controls.
 

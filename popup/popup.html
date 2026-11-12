@@ -11,6 +11,8 @@
   <header>
     <img class="brand-icon" src="../assets/icon-128.png" width="40" height="40" alt="">
     <h1>Wpp Discreto</h1>
+    <button id="theme-toggle" type="button" class="icon-button" data-info-action="theme" aria-label="Ativar tema escuro"><svg class="control-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path id="theme-icon" d="M20 15a8 8 0 0 1-11-11A8 8 0 1 0 20 15Z"/></svg></button>
+    <button id="settings-back" type="button" class="back-button" hidden><svg class="control-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg><span data-i18n="back">Voltar</span></button>
     <button id="settings-toggle" type="button" class="icon-button" aria-expanded="false" aria-controls="settings-panel">
       <svg class="control-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12.00 4.50 L13.76 3.17 L15.44 3.69 L16.17 5.76 L17.30 6.70 L19.48 7.00 L20.31 8.56 L19.36 10.54 L19.50 12.00 L20.83 13.76 L20.31 15.44 L18.24 16.17 L17.30 17.30 L17.00 19.48 L15.44 20.31 L13.46 19.36 L12.00 19.50 L10.24 20.83 L8.56 20.31 L7.83 18.24 L6.70 17.30 L4.52 17.00 L3.69 15.44 L4.64 13.46 L4.50 12.00 L3.17 10.24 L3.69 8.56 L5.76 7.83 L6.70 6.70 L7.00 4.52 L8.56 3.69 L10.54 4.64Z"/><circle cx="12" cy="12" r="3"/></svg><span class="sr-only" data-i18n="extensionSettings">Configurações</span>
     </button>
@@ -18,49 +20,56 @@
   <main>
     <fieldset id="controls" disabled>
       <legend class="sr-only" data-i18n="extensionSettings">Configurações</legend>
-      <label class="switch-row master" for="extension-enabled"><strong data-i18n="enableExtension">Ativar extensão</strong><input id="extension-enabled" type="checkbox" role="switch"></label>
+      <label id="master-control" class="switch-row master" for="extension-enabled"><strong data-i18n="enableExtension">Ativar extensão</strong><input id="extension-enabled" type="checkbox" role="switch"></label>
       <section id="settings-panel" hidden aria-labelledby="settings-title">
         <h2 id="settings-title" data-i18n="extensionSettings">Configurações</h2>
-        <label class="field-label" for="language" data-i18n="language">Idioma</label>
-        <select id="language"><option value="auto" data-i18n="languageAuto">Automático (navegador)</option><option value="pt_BR" lang="pt-BR">Português (Brasil)</option><option value="en" lang="en">English</option></select>
+        <fieldset class="settings-group"><legend data-i18n="conversationGroup">Conversa</legend>
         <label class="range-label" for="blur-strength"><span data-i18n="blurStrength">Intensidade do desfoque</span><output id="strength-label" for="blur-strength">8 px</output></label>
         <input id="blur-strength" type="range" min="4" max="16" value="8" step="1">
         <label class="range-label" for="visible-area"><span data-i18n="visibleArea">Área visível da conversa</span><output id="visible-label" for="visible-area">40%</output></label>
         <input id="visible-area" type="range" min="20" max="100" value="40" step="1">
         <label class="switch-row" for="full-blur"><span data-i18n="fullBlur">Desfoque completo</span><input id="full-blur" type="checkbox" role="switch"></label>
-        <p class="hint" data-i18n="historyHint">A parte inferior fica legível. Role para ler mensagens antigas nessa área (20% a 100%). Desfoque completo cobre toda a conversa.</p>
-        <fieldset class="media-options">
-          <legend data-i18n="mediaTypes">Mídias para embaçar</legend>
+        <div id="area-preview" class="area-preview" role="img" aria-label="Área legível: 40%"><div class="preview-lines" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="preview-mask" aria-hidden="true"></div></div><p class="hint" data-i18n="historyShortHint">A parte inferior fica legível. Role a conversa para ler mensagens antigas nessa área.</p>
+        </fieldset>
+        <fieldset class="settings-group media-options">
+          <legend><span data-i18n="mediaGroup">Mídias</span><button id="media-fallback-help" type="button" class="help-button" data-info="mediaFallbackHint" data-i18n-aria-label="mediaFallbackHelpLabel" aria-label="Sobre mídias não identificadas"><svg class="control-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .2c0 1.8-2.5 2.2-2.5 4.1M12 16.5h.01"/></svg></button></legend>
           <label class="switch-row" for="blur-images"><span data-i18n="mediaImages">Fotos</span><input id="blur-images" type="checkbox" role="switch"></label>
           <label class="switch-row" for="blur-videos"><span data-i18n="mediaVideos">Vídeos</span><input id="blur-videos" type="checkbox" role="switch"></label>
           <label class="switch-row" for="blur-stickers"><span data-i18n="mediaStickers">Figurinhas</span><input id="blur-stickers" type="checkbox" role="switch"></label>
           <p class="hint" data-i18n="mediaOptionsHint">Os tipos marcados ficam embaçados por inteiro, inclusive ao abrir, mesmo com o desfoque da conversa desligado.</p>
-          <p class="hint" data-i18n="mediaFallbackHint">Se algum tipo estiver marcado, mídias não identificadas também serão embaçadas.</p>
         </fieldset>
-        <fieldset class="sidebar-options">
+        <fieldset class="settings-group sidebar-options">
           <legend data-i18n="sidebarSettings">Lista de conversas</legend>
           <label class="switch-row" for="blur-unread-counts"><span data-i18n="blurUnreadCounts">Embaçar contador de não lidas</span><input id="blur-unread-counts" type="checkbox" role="switch" aria-describedby="unread-counts-hint"></label>
           <p id="unread-counts-hint" class="hint" data-i18n="unreadCountsHint">Desfoca o número no indicador verde da lista. As notificações do WhatsApp continuam iguais.</p>
         </fieldset>
-        <label class="switch-row" for="confirm-alias-removal"><span data-i18n="confirmAliasRemoval">Confirmar exclusão de apelidos</span><input id="confirm-alias-removal" type="checkbox" role="switch"></label>
-        <button id="restore-defaults" type="button" class="secondary" data-i18n="restoreDefaults">Restaurar padrão</button>
-        <button id="reset-help" type="button" class="help-button help-link" data-info="restoreDefaultsHint" data-i18n-aria-label="restoreHelpLabel" aria-label="O que será restaurado?"><svg class="control-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .2c0 1.8-2.5 2.2-2.5 4.1M12 16.5h.01"/></svg><span data-i18n="restoreHelpLabel">O que será restaurado?</span></button>
+        <fieldset class="settings-group"><legend data-i18n="generalGroup">Geral</legend>
+        <label class="field-label" for="language" data-i18n="language">Idioma</label>
+        <select id="language"><option value="auto" data-i18n="languageAuto">Automático (navegador)</option><option value="pt_BR" lang="pt-BR">Português (Brasil)</option><option value="en" lang="en">English</option></select>
+<label class="field-label" for="theme" data-i18n="theme">Tema</label><select id="theme"><option value="auto" data-i18n="themeAuto">Automático (sistema)</option><option value="light" data-i18n="themeLight">Claro</option><option value="dark" data-i18n="themeDark">Escuro</option></select>        <label class="switch-row" for="confirm-alias-removal"><span data-i18n="confirmAliasRemoval">Confirmar exclusão de apelidos</span><input id="confirm-alias-removal" type="checkbox" role="switch"></label>
+        <div class="reset-row"><button id="restore-defaults" type="button" class="secondary" data-i18n="restoreDefaults">Restaurar padrão</button>
+        <button id="reset-help" type="button" class="help-button" data-info="restoreDefaultsHint" data-i18n-aria-label="restoreHelpLabel" aria-label="O que será restaurado?"><svg class="control-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .2c0 1.8-2.5 2.2-2.5 4.1M12 16.5h.01"/></svg></button></div>
+        </fieldset>
       </section>
       <fieldset id="feature-controls">
         <legend class="sr-only" data-i18n="protectionTitle">Proteção de mensagens</legend>
         <section aria-labelledby="protection-title">
           <h2 id="protection-title" data-i18n="protectionTitle">Proteção de mensagens</h2>
-          <label class="switch-row" for="blur-previews"><strong data-i18n="blurPreviews">Embaçar prévias na lista</strong><input id="blur-previews" type="checkbox" role="switch"></label>
-          <label class="switch-row" for="blur-chat"><strong data-i18n="protectChat">Embaçar conversa aberta</strong><input id="blur-chat" type="checkbox" role="switch"></label>
+          <label class="switch-row" for="blur-previews"><span data-i18n="blurPreviews">Embaçar prévias na lista</span><input id="blur-previews" type="checkbox" role="switch"></label>
+          <label class="switch-row" for="blur-chat"><span data-i18n="protectChat">Embaçar conversa aberta</span><input id="blur-chat" type="checkbox" role="switch"></label>
           <div class="advanced-row">
-            <div class="advanced-label"><label for="advanced-blur"><strong data-i18n="advancedBlur">Desfoque avançado</strong></label><div class="help-container"><button id="media-help" type="button" class="help-button" data-info="advancedBlurHelp" data-info-action="settings" data-i18n-aria-label="mediaSettings" aria-label="Configurar desfoque de mídias"><svg class="control-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .2c0 1.8-2.5 2.2-2.5 4.1M12 16.5h.01"/></svg></button></div></div>
-            <input id="advanced-blur" type="checkbox" role="switch">
+            <div class="media-control-label"><div class="advanced-label"><label for="advanced-blur"><span data-i18n="advancedBlur">Embaçar mídias</span></label><div class="help-container"><button id="media-help" type="button" class="help-button" data-info="advancedBlurHelp" data-info-action="settings" data-i18n-aria-label="mediaSettings" aria-label="Configurar desfoque de mídias"><svg class="control-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .2c0 1.8-2.5 2.2-2.5 4.1M12 16.5h.01"/></svg></button></div></div>
+            <p id="media-summary" class="hint"></p></div>
+            <input id="advanced-blur" type="checkbox" role="checkbox" aria-describedby="media-summary">
           </div>
         </section>
         <section aria-labelledby="aliases-title">
-          <label class="switch-row" for="aliases-enabled"><span class="section-heading"><strong id="aliases-title" data-i18n="groupAliases">Apelidos</strong><span id="alias-count" class="count">0</span></span><input id="aliases-enabled" type="checkbox" role="switch"></label>
+          <label class="switch-row" for="aliases-enabled"><span class="section-heading"><strong role="heading" aria-level="2" id="aliases-title" data-i18n="groupAliases">Apelidos</strong><span id="alias-count" class="count">0</span></span><input id="aliases-enabled" type="checkbox" role="switch"></label>
           <fieldset id="alias-controls">
             <legend class="sr-only" data-i18n="savedAliases">Apelidos salvos</legend>
+            <ul id="alias-list" data-i18n-aria-label="savedAliases" aria-label="Apelidos salvos"></ul>
+            <p id="empty-state" class="hint" data-i18n="aliasesEmpty">Nenhum apelido salvo.</p>
+            <button id="add-alias" type="button" class="secondary" data-i18n="addAlias" aria-controls="alias-editor" aria-expanded="false">Adicionar apelido</button>
             <button id="fetch-chats" type="button" class="secondary" data-info="chatLookupHelp" data-info-title="chatLookupHelpLabel" data-info-action="lookup"><span id="chat-loading" class="loading-spinner" hidden aria-hidden="true"></span><span id="fetch-chats-label" data-i18n="fetchChats">Buscar grupos e contatos</span><span id="chat-lookup-help" class="lookup-help-icon" aria-hidden="true"><svg class="control-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .2c0 1.8-2.5 2.2-2.5 4.1M12 16.5h.01"/></svg></span></button>
             <p id="chat-status" class="hint" role="status" aria-live="polite"></p>
             <div id="chat-search-panel" hidden>
@@ -71,16 +80,16 @@
               <p id="chat-search-empty" class="hint" hidden data-i18n="chatSearchEmpty">Nenhuma conversa corresponde à busca.</p>
             </div>
             <ul id="chat-suggestions" class="suggestions" hidden data-i18n-aria-label="chatSuggestions" aria-label="Conversas encontradas"></ul>
-            <form id="alias-form">
+            <div id="alias-editor" hidden><h3 id="alias-editor-title" data-i18n="addAlias">Adicionar apelido</h3><form id="alias-form">
               <label class="field-label" for="original-name" data-i18n="originalName">Nome original do grupo ou contato</label>
               <input id="original-name" type="text" maxlength="200" data-i18n-placeholder="originalPlaceholder" placeholder="Nome exato no WhatsApp" required autocomplete="off">
               <label class="field-label" for="alias-name" data-i18n="preferredName">Apelido</label>
               <input id="alias-name" type="text" maxlength="100" data-i18n-placeholder="aliasPlaceholder" placeholder="Nome para exibir neste navegador" required autocomplete="off">
               <button class="primary" type="submit" data-i18n="saveAlias">Salvar apelido</button>
+              <button id="cancel-alias" type="button" class="secondary" data-i18n="cancel">Cancelar</button>
             </form>
             <p class="hint" data-i18n="aliasMatchingHint">Conversas com nomes iguais compartilham o apelido. A busca usa o nome original.</p>
-            <ul id="alias-list" data-i18n-aria-label="savedAliases" aria-label="Apelidos salvos"></ul>
-            <p id="empty-state" class="hint" data-i18n="aliasesEmpty">Nenhum apelido salvo.</p>
+</div>
           </fieldset>
         </section>
       </fieldset>

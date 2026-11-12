@@ -149,6 +149,13 @@ test.each([
     );
     const localizationMock = `
     const catalog = ${JSON.stringify(catalog)};
+    const nativeMatchMedia = window.matchMedia.bind(window);
+    const themeListeners = new Set();
+    const themeMedia = { matches: nativeMatchMedia('(prefers-color-scheme: dark)').matches,
+      addEventListener: (_, listener) => themeListeners.add(listener) };
+    window.matchMedia = query => query === '(prefers-color-scheme: dark)' ? themeMedia : nativeMatchMedia(query);
+    window.setSystemTheme = dark => { themeMedia.matches = dark; themeListeners.forEach(listener => listener({matches:dark})); };
+
     window.expectedMessages = Object.fromEntries(Object.entries(catalog).map(([key, entry]) => [key, entry.message]));
     window.expectedLanguage = ${JSON.stringify(documentLanguage)};
     window.expectedSaveLabel = ${JSON.stringify(saveLabel)};

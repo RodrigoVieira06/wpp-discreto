@@ -124,7 +124,9 @@ async function main() {
               const switchTargetsAccessible = [...document.querySelectorAll('input[role="switch"]')].filter(node => node.getBoundingClientRect().width > 0).every(node => node.getBoundingClientRect().height >= 24);
               const switchesAligned = Math.abs(document.getElementById('advanced-blur').getBoundingClientRect().right - document.getElementById('blur-chat').getBoundingClientRect().right) < 1;
               const masterReachable = reachable('#extension-enabled');
+              document.getElementById('add-alias').click();
               const saveReachable = reachable('#alias-form button');
+              document.getElementById('cancel-alias').click();
               const footerReachable = [...document.querySelector('footer').children].every(reachable);
               const header = document.querySelector('header').getBoundingClientRect();
               const headerPinned = Math.abs(header.top) < 1 && header.bottom <= innerHeight;
@@ -133,7 +135,7 @@ async function main() {
               const headerBottom = document.querySelector('header').getBoundingClientRect().bottom;
               const settingsScrolled = panelTop >= headerBottom && panelTop <= headerBottom + 16;
               const settingsReachable = reachable('#visible-area');
-              document.getElementById('settings-toggle').click();
+              document.getElementById('settings-back').click();
               document.getElementById('media-help').focus();
               const help = document.getElementById('info-popover').getBoundingClientRect();
               const helpContained = help.width > 0 && help.top >= 0 && help.bottom <= innerHeight && help.left >= 0 && help.right <= innerWidth;

@@ -8,7 +8,7 @@ colors:
   accent-hover: "#baf5d3"
   text: "#e8eeec"
   muted: "#aebfb6"
-  border: "#33453b"
+  border: "#607c6b"
   warning: "#f5c875"
   primary-text: "#153b2a"
   icon-hover: "#24372d"
@@ -100,17 +100,17 @@ Use the platform's system UI font. The product title is 18 px; section headings 
 
 ## Layout
 
-The popup viewport remains 380 px wide, with a maximum height of 600 px and normal vertical document scrolling. Fit the body inside the scrollbar gutter. The 73 px header stays pinned with an opaque surface while content scrolls. Root scroll padding reserves 81 px so controls and the settings panel appear below it. Opening settings scrolls to the panel. Header, main, and footer use 18 px horizontal padding. Sections use 20 px vertical padding; the settings panel uses 16 px internal padding.
+The popup viewport remains 380 px wide, with a maximum height of 600 px and normal vertical document scrolling. Fit the body inside the scrollbar gutter. The 73 px header stays pinned with an opaque surface while content scrolls. Root scroll padding reserves 81 px so controls and the settings panel appear below it. Opening settings scrolls to the panel. Header, main, and footer use 18 px horizontal padding. Sections use 20 px vertical padding; the settings view uses the same main content edges, flat groups, and 14 px legends.
 
-Keep switches aligned to a shared right edge. Place advanced-blur help beside its label. Saved-alias actions occupy a separate row so long names can wrap. Keep the footer in document flow. Settings must remain usable at short viewport heights.
+Keep switches aligned to a shared right edge. Place media help beside its label, with a selection summary below it. Saved-alias actions occupy a separate row so long names can wrap. Keep the footer in document flow. Settings replace the main controls until Back is activated, preserving main scroll and draft state. Settings must remain usable at short viewport heights.
 
 ## Elevation & Depth
 
-Use flat sections with one-pixel dividers and tonal separation for the settings panel. There are no drop shadows. The reset dialog uses the native modal layer with a 65% black backdrop. Informational hints share a bordered tonal popover in the browser top layer, positioned inside the viewport. All hints use the same hover, focus, dismissal, and click-pinning behavior; action buttons retain their action.
+Use flat sections with one-pixel dividers and tonal separation for inputs and help surfaces. There are no drop shadows. The reset dialog uses the native modal layer with a 65% black backdrop. Informational hints share a bordered tonal popover in the browser top layer, positioned inside the viewport. All hints use the same hover, focus, dismissal, and click-pinning behavior; action buttons retain their action.
 
 ## Shapes
 
-Fields and primary/secondary buttons have 8 px corners. The settings panel and dialog have 12 px corners. Switches measure 38 × 24 px with a 16 px circular thumb. Icon buttons measure 40 × 40 px; help and warning targets measure 28 × 28 px. Main switch rows are at least 44 px high.
+Fields and primary/secondary buttons have 8 px corners. Dialogs have 12 px corners; settings groups use flat dividers. Switches measure 38 × 24 px with a 16 px circular thumb. Icon buttons measure 40 × 40 px; help and warning targets measure 28 × 28 px. Main switch rows are at least 44 px high.
 
 ## Components
 
@@ -137,3 +137,11 @@ Fields and primary/secondary buttons have 8 px corners. The settings panel and d
 Lookup includes a right-aligned question-mark icon within its existing button. Hover/focus on the button opens the explanation with a short title inside the help surface; clicking runs lookup. Avoid a separate help row for this action. Keep icon-only help bordered and preserve the existing advanced-blur layout.
 
 Informational layers have a 200 ms pop entrance: 96% scale, a slight 101.2% overshoot, and a settle at 100%. Anchor the transform toward the trigger, retain the 140 ms opacity entrance and 90 ms exit, and never animate layout or delay actions. Existing 120 ms control-color feedback remains. Reduced motion removes spatial movement and retains brief 40 ms feedback.
+
+## Themes and operational hierarchy
+
+The popup supports automatic system appearance, light and dark themes through `popup/themes.scss`. Keep the approved logo and 380 px width in both modes. The header includes a named sun/moon action and settings gear; settings replace the gear with Back. All controls have visible keyboard focus. Do not change WhatsApp's theme.
+
+Dark mode retains the charcoal-green/mint palette with strengthened `#607c6b` borders. Light mode uses `#f7faf8` ground, white fields, `#182c22` text, `#176c43` action color, and `#778e7e` borders. Warning and error tones adapt to each theme. Section titles/legends are 14 px; routine labels are regular-weight 13 px. Save uses the primary fill only inside the open alias editor. Edit is quiet; Remove uses the error text token while retaining confirmation.
+
+Main view: master, message protection, media checkbox with mixed state and localized type summary, then saved aliases and Add/Lookup actions. The editor opens only when requested. Settings view: Conversation (including a schematic readable-area preview and descriptive intensity), Media, Conversation list, General (language/theme/reset). Keep critical data-handling notices visible in the normal footer; secondary details use shared question-mark help.

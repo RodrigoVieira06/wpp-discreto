@@ -13,6 +13,7 @@ test('invalid persisted settings cannot inject CSS or enable options accidentall
     confirmAliasRemoval: true,
     aliasesEnabled: true,
     language: 'auto',
+    theme: 'auto',
     blurPreviews: false,
     blurUnreadCounts: false,
     blurChat: false,
@@ -36,6 +37,7 @@ test('invalid persisted settings cannot inject CSS or enable options accidentall
       confirmAliasRemoval: true,
       aliasesEnabled: true,
       language: 'auto',
+      theme: 'auto',
       blurPreviews: false,
       blurUnreadCounts: false,
       blurChat: true,
@@ -57,6 +59,7 @@ test('new preferences migrate existing settings and reject unsupported language 
     confirmAliasRemoval: true,
     aliasesEnabled: false,
     language: 'en',
+    theme: 'auto',
     blurPreviews: false,
     blurUnreadCounts: false,
     blurChat: false,
@@ -127,4 +130,11 @@ test('unread counter blur is opt-in and independent of preview blur', () => {
   assert.equal(model.settings({ blurPreviews: true }).blurUnreadCounts, false);
   assert.equal(model.settings({ blurUnreadCounts: true }).blurUnreadCounts, true);
   assert.equal(model.settings({ blurUnreadCounts: 'true' }).blurUnreadCounts, false);
+});
+
+test('theme defaults to system preference and accepts only supported overrides', () => {
+  assert.equal(model.settings().theme, 'auto');
+  assert.equal(model.settings({ theme: 'light' }).theme, 'light');
+  assert.equal(model.settings({ theme: 'dark' }).theme, 'dark');
+  assert.equal(model.settings({ theme: 'unknown' }).theme, 'auto');
 });

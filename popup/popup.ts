@@ -19,6 +19,9 @@ import { InfoPopover } from './info-popover';
   let fetching = false;
   let pendingRemoval: model.Alias | null = null;
   let settingsOpen = false;
+  let homeScroll = 0;
+  let editorOpen = false;
+  const systemTheme = matchMedia('(prefers-color-scheme: dark)');
   let suggestionsOpen = false;
   let editingOriginal: string | null = null;
   let contextGeneration = 0;
@@ -27,10 +30,46 @@ import { InfoPopover } from './info-popover';
   let chatStatusKey: MessageKey | null = null;
 
   function edit(entry: model.Alias) {
-    editingOriginal = entry.original;
+    editorOpen = true;
+    editingOriginal = entries.some((value) => value.original === entry.original)
+      ? entry.original
+      : null;
+    draw();
     byId<HTMLInputElement>('original-name').value = entry.original;
     byId<HTMLInputElement>('alias-name').value = entry.alias;
     byId('alias-name').focus();
+  }
+
+  function setSettingsView(open: boolean, focusId?: string) {
+    if (open && !settingsOpen) homeScroll = window.scrollY;
+    settingsOpen = open;
+    draw();
+    window.scrollTo(0, open ? 0 : homeScroll);
+    byId(focusId ?? (open ? 'settings-back' : 'settings-toggle')).focus({ preventScroll: true });
+  }
+
+  function clearEditor() {
+    editorOpen = false;
+    editingOriginal = null;
+    byId<HTMLFormElement>('alias-form').reset();
+  }
+
+  function strengthDescription(value: number) {
+    return `${message(value < 8 ? 'strengthLight' : value < 12 ? 'strengthModerate' : 'strengthStrong')} · ${value} px`;
+  }
+
+  function applyTheme() {
+    const dark = config.theme === 'auto' ? systemTheme.matches : config.theme === 'dark';
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    const key = dark ? 'switchToLight' : 'switchToDark';
+    byId('theme-toggle').setAttribute('aria-label', message(key));
+    byId('theme-toggle').dataset.info = key;
+    byId('theme-icon').setAttribute(
+      'd',
+      dark
+        ? 'M12 3v2m0 14v2M3 12h2m14 0h2M5.6 5.6 7 7m10 10 1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0'
+        : 'M20 15a8 8 0 0 1-11-11A8 8 0 1 0 20 15Z',
+    );
   }
 
   function drawAliases() {
@@ -103,6 +142,18 @@ import { InfoPopover } from './info-popover';
     info.close();
     setLanguage(config.language);
     translateDocument(document);
+    applyTheme();
+    byId<HTMLButtonElement>('theme-toggle').disabled = loading || saving;
+    byId('settings-toggle').hidden = settingsOpen;
+    byId('settings-back').hidden = !settingsOpen;
+    byId<HTMLButtonElement>('settings-back').disabled = loading || saving;
+    byId('master-control').hidden = settingsOpen;
+    byId('feature-controls').hidden = settingsOpen;
+    byId('alias-editor').hidden = !editorOpen;
+    byId('add-alias').setAttribute('aria-expanded', String(editorOpen));
+    byId('alias-editor-title').textContent = message(
+      editingOriginal ? 'editAliasTitle' : 'addAlias',
+    );
     byId<HTMLFieldSetElement>('controls').disabled = loading || saving;
     byId<HTMLButtonElement>('settings-toggle').disabled = loading || saving;
     byId('settings-toggle').setAttribute('aria-expanded', String(settingsOpen));
@@ -114,16 +165,46 @@ import { InfoPopover } from './info-popover';
     byId<HTMLInputElement>('blur-chat').checked = config.blurChat;
     byId<HTMLInputElement>('full-blur').checked = config.fullBlur;
     byId<HTMLInputElement>('visible-area').disabled = config.fullBlur;
-    byId<HTMLInputElement>('advanced-blur').checked =
-      config.blurImages && config.blurVideos && config.blurStickers;
+    const selectedMedia = [
+      config.blurImages ? message('mediaImages') : '',
+      config.blurVideos ? message('mediaVideos') : '',
+      config.blurStickers ? message('mediaStickers') : '',
+    ].filter(Boolean);
+    const mediaControl = byId<HTMLInputElement>('advanced-blur');
+    mediaControl.checked = selectedMedia.length === 3;
+    mediaControl.indeterminate = selectedMedia.length > 0 && selectedMedia.length < 3;
+    mediaControl.setAttribute(
+      'aria-checked',
+      mediaControl.indeterminate ? 'mixed' : String(mediaControl.checked),
+    );
+    byId('media-summary').textContent = selectedMedia.length
+      ? new Intl.ListFormat(document.documentElement.lang, { type: 'conjunction' }).format(
+          selectedMedia,
+        )
+      : message('noMediaSelected');
     byId<HTMLInputElement>('blur-images').checked = config.blurImages;
     byId<HTMLInputElement>('blur-videos').checked = config.blurVideos;
     byId<HTMLInputElement>('blur-stickers').checked = config.blurStickers;
     byId<HTMLInputElement>('visible-area').value = String(config.visibleArea);
     byId<HTMLInputElement>('blur-strength').value = String(config.blurStrength);
     byId<HTMLSelectElement>('language').value = config.language;
+    byId<HTMLSelectElement>('theme').value = config.theme;
     byId<HTMLOutputElement>('visible-label').value = `${config.visibleArea}%`;
-    byId<HTMLOutputElement>('strength-label').value = `${config.blurStrength} px`;
+    byId<HTMLOutputElement>('strength-label').value = strengthDescription(config.blurStrength);
+    byId('area-preview').style.setProperty(
+      '--covered-area',
+      `${config.fullBlur ? 100 : 100 - config.visibleArea}%`,
+    );
+    byId('area-preview').setAttribute(
+      'aria-label',
+      config.fullBlur
+        ? message('fullAreaPreview')
+        : `${message('visibleArea')}: ${config.visibleArea}%`,
+    );
+    byId<HTMLInputElement>('blur-strength').setAttribute(
+      'aria-valuetext',
+      strengthDescription(config.blurStrength),
+    );
     byId<HTMLFieldSetElement>('feature-controls').disabled = !config.enabled;
     byId<HTMLFieldSetElement>('alias-controls').disabled =
       !config.enabled || !config.aliasesEnabled;
@@ -189,7 +270,7 @@ import { InfoPopover } from './info-popover';
       if (pendingRemoval) byId('delete-error').textContent = message('statusSaveFailed');
       return;
     }
-    if (editingOriginal === entry.original) editingOriginal = null;
+    if (editingOriginal === entry.original) clearEditor();
     pendingRemoval = null;
     byId<HTMLDialogElement>('delete-dialog').close();
     byId('alias-list').querySelector<HTMLButtonElement>('button')?.focus({ preventScroll: true });
@@ -287,10 +368,8 @@ import { InfoPopover } from './info-popover';
     });
   });
   byId('media-help').addEventListener('click', () => {
-    settingsOpen = true;
-    draw();
-    byId('settings-panel').scrollIntoView({ block: 'start' });
-    byId('blur-images').focus({ preventScroll: true });
+    setSettingsView(true, 'blur-images');
+    byId('blur-images').scrollIntoView({ block: 'center' });
   });
   for (const [id, key] of [
     ['visible-area', 'visibleArea'],
@@ -305,10 +384,23 @@ import { InfoPopover } from './info-popover';
   byId('visible-area').addEventListener('input', () => {
     byId<HTMLOutputElement>('visible-label').value =
       `${byId<HTMLInputElement>('visible-area').value}%`;
+    byId('area-preview').style.setProperty(
+      '--covered-area',
+      `${100 - Number(byId<HTMLInputElement>('visible-area').value)}%`,
+    );
+    byId('area-preview').setAttribute(
+      'aria-label',
+      `${message('visibleArea')}: ${byId<HTMLInputElement>('visible-area').value}%`,
+    );
   });
   byId('blur-strength').addEventListener('input', () => {
-    byId<HTMLOutputElement>('strength-label').value =
-      `${byId<HTMLInputElement>('blur-strength').value} px`;
+    byId<HTMLOutputElement>('strength-label').value = strengthDescription(
+      Number(byId<HTMLInputElement>('blur-strength').value),
+    );
+    byId('blur-strength').setAttribute(
+      'aria-valuetext',
+      byId<HTMLOutputElement>('strength-label').value,
+    );
   });
   byId('language').addEventListener('change', () => {
     void save({
@@ -316,9 +408,7 @@ import { InfoPopover } from './info-popover';
     });
   });
   byId('settings-toggle').addEventListener('click', () => {
-    settingsOpen = !settingsOpen;
-    draw();
-    if (settingsOpen) byId('settings-panel').scrollIntoView({ block: 'start' });
+    setSettingsView(!settingsOpen);
   });
   document.addEventListener('keydown', (event) => {
     if (
@@ -327,9 +417,7 @@ import { InfoPopover } from './info-popover';
     )
       return;
     if (event.key === 'Escape' && settingsOpen) {
-      settingsOpen = false;
-      draw();
-      byId('settings-toggle').focus();
+      setSettingsView(false);
     }
   });
   byId('restore-defaults').addEventListener('click', () => {
@@ -341,6 +429,35 @@ import { InfoPopover } from './info-popover';
   byId('reset-confirm').addEventListener('click', async () => {
     byId<HTMLDialogElement>('reset-dialog').close();
     if (await save({ settings: { ...model.defaults } })) await refreshContext();
+  });
+  byId('settings-back').addEventListener('click', () => setSettingsView(false));
+  byId('add-alias').addEventListener('click', () => {
+    clearEditor();
+    editorOpen = true;
+    draw();
+    byId('original-name').focus();
+  });
+  byId('cancel-alias').addEventListener('click', () => {
+    clearEditor();
+    draw();
+    byId('add-alias').focus({ preventScroll: true });
+  });
+  byId('theme-toggle').addEventListener('click', () => {
+    void save({
+      settings: model.settings({
+        ...config,
+        theme: document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark',
+      }),
+    });
+  });
+  info.bind(byId('theme-toggle'));
+  byId('theme').addEventListener('change', () => {
+    void save({
+      settings: model.settings({ ...config, theme: byId<HTMLSelectElement>('theme').value }),
+    });
+  });
+  systemTheme.addEventListener('change', () => {
+    if (config.theme === 'auto') applyTheme();
   });
   byId('chat-search').addEventListener('input', drawSuggestions);
   const deleteDialog = byId<HTMLDialogElement>('delete-dialog');
@@ -374,7 +491,9 @@ import { InfoPopover } from './info-popover';
       { original, alias },
     ];
     if (await save({ aliases: updated })) {
-      editingOriginal = null;
+      clearEditor();
+      draw();
+      byId('add-alias').focus({ preventScroll: true });
       await refreshContext();
     }
   });

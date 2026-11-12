@@ -7,6 +7,7 @@ declare global {
   const stored: { settings: Settings; aliases: Alias[] };
   interface Window {
     failNextSave: boolean;
+    setSystemTheme: (dark: boolean) => void;
     expectedMessages: Record<string, string>;
     expectedLanguage: string;
     expectedSaveLabel: string;

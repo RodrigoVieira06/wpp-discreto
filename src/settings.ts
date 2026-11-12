@@ -1,3 +1,5 @@
+export type ThemePreference = 'auto' | 'light' | 'dark';
+
 export type LanguagePreference = 'auto' | 'pt_BR' | 'en';
 
 export interface Settings {
@@ -5,6 +7,7 @@ export interface Settings {
   aliasesEnabled: boolean;
   confirmAliasRemoval: boolean;
   language: LanguagePreference;
+  theme: ThemePreference;
   blurPreviews: boolean;
   blurUnreadCounts: boolean;
   blurChat: boolean;
@@ -26,6 +29,7 @@ export const defaults: Readonly<Settings> = Object.freeze({
   aliasesEnabled: true,
   confirmAliasRemoval: true,
   language: 'auto',
+  theme: 'auto',
   blurPreviews: false,
   blurUnreadCounts: false,
   blurChat: false,
@@ -52,6 +56,7 @@ export function settings(value: unknown = {}): Settings {
     aliasesEnabled: input.aliasesEnabled !== false,
     confirmAliasRemoval: input.confirmAliasRemoval !== false,
     language: input.language === 'pt_BR' || input.language === 'en' ? input.language : 'auto',
+    theme: input.theme === 'light' || input.theme === 'dark' ? input.theme : 'auto',
     blurPreviews: input.blurPreviews === true,
     blurUnreadCounts: input.blurUnreadCounts === true,
     blurChat: input.blurChat === true,

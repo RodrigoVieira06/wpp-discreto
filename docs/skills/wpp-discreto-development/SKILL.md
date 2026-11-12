@@ -44,3 +44,7 @@ Use Conventional Commits and allow Lefthook to run. Do not bypass failing hooks.
 ## Release versions
 
 Keep the current version during routine fixes and local builds. Increment the manifest and package versions together only when preparing an agreed release; update the README package path at that point. Commits track intermediate changes. Do not create a new release version for each UI adjustment.
+
+## Popup interaction and appearance
+
+Preserve separate main/settings views with Back/Escape restoring main scroll and focus. Preserve drafts across view switches, keep the alias editor collapsed until Add/Edit/selection, and retain drafts after failed writes. The media checkbox supports an explicit mixed state and names selected types; it never changes conversation blur. Keep theme preferences local (`auto`, `light`, `dark`), follow live system changes only in automatic mode, and retain the accessible header action plus General select. Apply all palette changes through `popup/themes.scss`, including dialogs, errors and tooltips. Validate light/dark contrast, language variants and the real extension's short-viewport navigation before release.

@@ -168,7 +168,7 @@
     "message": "Desfoque completo"
   },
   "advancedBlur": {
-    "message": "Desfoque avançado"
+    "message": "Embaçar mídias"
   },
   "mediaSettings": {
     "message": "Configurar desfoque de mídias"
@@ -239,5 +239,62 @@
   },
   "restoreHelpLabel": {
     "message": "O que será restaurado?"
+  },
+  "back": {
+    "message": "Voltar"
+  },
+  "conversationGroup": {
+    "message": "Conversa"
+  },
+  "mediaGroup": {
+    "message": "Mídias"
+  },
+  "generalGroup": {
+    "message": "Geral"
+  },
+  "addAlias": {
+    "message": "Adicionar apelido"
+  },
+  "editAliasTitle": {
+    "message": "Editar apelido"
+  },
+  "noMediaSelected": {
+    "message": "Nenhuma mídia selecionada"
+  },
+  "strengthLight": {
+    "message": "Leve"
+  },
+  "strengthModerate": {
+    "message": "Moderado"
+  },
+  "strengthStrong": {
+    "message": "Forte"
+  },
+  "historyShortHint": {
+    "message": "A parte inferior fica legível. Role a conversa para ler mensagens antigas nessa área."
+  },
+  "fullAreaPreview": {
+    "message": "Toda a conversa embaçada"
+  },
+  "mediaFallbackHelpLabel": {
+    "message": "Sobre mídias não identificadas"
+  },
+  "theme": {
+    "message": "Tema"
+  },
+  "themeAuto": {
+    "message": "Automático (sistema)"
+  },
+  "themeLight": {
+    "message": "Claro"
+  },
+  "themeDark": {
+    "message": "Escuro"
+  },
+  "switchToLight": {
+    "message": "Ativar tema claro"
+  },
+  "switchToDark": {
+    "message": "Ativar tema escuro"
   }
 }
