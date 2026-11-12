@@ -80,9 +80,96 @@ function visibleComposer(node: HTMLElement): boolean {
   );
 }
 
+const draftAssetSelector =
+  'img:not(.emoji):not([data-testid="emoji"] *), video, canvas, [style*="background-image"]';
+const draftEditableSelector = '[contenteditable="true"], textarea';
+const draftControlSelector = 'button, [role="button"], [data-icon]';
+interface MediaPasteState {
+  previousAssets: WeakSet<Element>;
+  previousEditors: WeakMap<Element, Element | null>;
+  previousControls: WeakSet<Element>;
+  expires: number;
+  bound: boolean;
+}
+const mediaPastes = new WeakMap<Document, MediaPasteState>();
+
+/** Remember DOM references, never clipboard bytes, while WhatsApp mounts a pasted-media draft. */
+export function noteMediaPaste(document: Document) {
+  if (mediaPastes.get(document)?.bound && clipboardComposerRoots(document).length) return;
+  mediaPastes.set(document, {
+    previousAssets: new WeakSet(document.querySelectorAll(draftAssetSelector)),
+    previousEditors: new WeakMap(
+      [...document.querySelectorAll(draftEditableSelector)].map((node) => [
+        node,
+        node.parentElement,
+      ]),
+    ),
+    previousControls: new WeakSet(document.querySelectorAll(draftControlSelector)),
+    expires: Date.now() + 5000,
+    bound: false,
+  });
+}
+
+function clipboardComposerRoots(document: Document): HTMLElement[] {
+  const state = mediaPastes.get(document);
+  if (!state) return [];
+  if (!state.bound && Date.now() > state.expires) {
+    mediaPastes.delete(document);
+    return [];
+  }
+  const excluded = `#pane-side, #side, header, ${conversationMessageSelector}`;
+  const assets = [...document.querySelectorAll<HTMLElement>(draftAssetSelector)].filter(
+    (node) => !state.previousAssets.has(node) && !node.closest(excluded) && visibleComposer(node),
+  );
+  const editors = [...document.querySelectorAll<HTMLElement>(draftEditableSelector)].filter(
+    (node) =>
+      !node.closest(`#pane-side, #side, ${conversationMessageSelector}`) && visibleComposer(node),
+  );
+  const controls = [...document.querySelectorAll<HTMLElement>(draftControlSelector)].filter(
+    (node) => !state.previousControls.has(node) && !node.closest(excluded) && visibleComposer(node),
+  );
+  const primary = state.bound
+    ? assets[0]
+    : assets.find((node) => {
+        const box = node.getBoundingClientRect();
+        return box.width >= 96 && box.height >= 64;
+      });
+  if (primary) {
+    for (const editor of editors) {
+      for (
+        let scope = primary.parentElement;
+        scope && !scope.matches('body, html');
+        scope = scope.parentElement
+      ) {
+        if (!scope.contains(editor)) continue;
+        const unchangedCaption =
+          state.previousEditors.has(editor) &&
+          state.previousEditors.get(editor) === editor.parentElement;
+        if (unchangedCaption) {
+          const viewer = primary.closest(
+            `${infoPanelSelector}, ${mediaViewerSelector}, [role="dialog"]`,
+          );
+          if (viewer && !viewer.contains(editor)) continue;
+          if (!state.bound && !controls.some((control) => scope.contains(control))) continue;
+        }
+        // Some paste editors share only #main with their caption and thumbnail footer.
+        // Exempt the new draft assets themselves, not the enclosing chat or received messages.
+        const roots = [
+          ...assets.filter((node) => scope.contains(node)),
+          ...editors.filter((node) => scope.contains(node)),
+        ];
+        state.bound = true;
+        return roots;
+      }
+    }
+  }
+  if (state.bound) mediaPastes.delete(document);
+  return [];
+}
+
 /** Identify outgoing drafts without exempting ordinary chat composers or received viewers. */
 export function mediaComposerRoots(document: Document): HTMLElement[] {
-  const roots = new Set<HTMLElement>();
+  const roots = new Set<HTMLElement>(clipboardComposerRoots(document));
   const enclosingEditor = (anchor: HTMLElement): HTMLElement | undefined => {
     for (let node: HTMLElement | null = anchor; node; node = node.parentElement) {
       if (

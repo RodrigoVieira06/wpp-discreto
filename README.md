@@ -4,11 +4,11 @@
 
 Customize conversation names and blur messages in WhatsApp Web without changing the original WhatsApp data.
 
-The project is at version 0.1.4. The owner reported submitting the first Chrome Web Store release on 2026-11-09. The user confirmed manual WhatsApp Web validation on 2026-11-08. Automated tests use simulated markup.
+The project is at version 0.1.5. The owner reported submitting the first Chrome Web Store release on 2026-11-09. The user confirmed manual WhatsApp Web validation on 2026-11-08. Automated tests use simulated markup.
 
 ## Features
 
-- **Local aliases:** give groups or contacts a display name for this browser. Scan the sidebar, filter the discovered names, or enter the original name. An amber warning identifies names absent from discovered conversations.
+- **Local aliases:** give groups or contacts a display name for this browser. Read names already loaded in the sidebar, filter the discovered names, or enter the original name. An amber warning identifies names absent from discovered conversations.
 - **Conversation protection:** blur the upper chat area and keep the lower 20–100% readable (default: 40%). Scroll older messages into that area to read them, or enable full blur. Choose a blur strength from 4 to 16 px.
 - **Media protection:** select photos, videos, or stickers to keep them blurred in full, including albums, info-card carousels, galleries, opened media, and viewer history thumbnails. Media protection works with conversation blur off. The advanced-blur switch selects all three types without changing conversation blur. Outgoing media previews stay clear while you edit and send them; protection resumes after closing the preview. Audio controls stay visible.
 - **Sidebar protection:** blur message previews in the conversation list.
@@ -48,7 +48,7 @@ Run `make` or `make help` for the full command list.
 | `make check` | Run Biome and strict TypeScript checks |
 | `make test` | Build and run Jest, including Chrome integration tests |
 | `make test-watch` | Run Jest in watch mode |
-| `make package` | Build `dist/extension/` and `dist/wpp-discreto-0.1.4.zip` |
+| `make package` | Build `dist/extension/` and `dist/wpp-discreto-0.1.5.zip` |
 | `make deploy` | Run checks, tests, and packaging for manual store submission |
 | `make clean` | Remove build and coverage output |
 
@@ -81,7 +81,7 @@ Product copy belongs in Chrome locale catalogs. Keep source identifiers and deve
 
 Aliases match exact names rather than group IDs. Same-name conversations share an alias, including contacts; update the mapping if an original name changes. The extension does not identify groups automatically. Supported info cards show the active conversation alias, while search, member lists, descriptions, and accessibility text retain original names.
 
-Lookup scans the current sidebar and collects the unique names it finds, including virtualized rows below the current view. Filter the discovered list by original name or saved alias. Validation uses names discovered in this page session and the open header, but an absent name may exist elsewhere in your account. The popup distinguishes an unavailable WhatsApp tab from a missing loaded name.
+Lookup reads sidebar names without scrolling, opening chats, or changing WhatsApp ordering. Names loaded as you navigate the sidebar stay in page memory; conversations not yet loaded cannot be searched by the extension. Filter the discovered list by original name or saved alias. A spinner and loading label appear while lookup is pending. Validation uses names discovered in this page session and the open header, but an absent name may exist elsewhere in your account. The popup distinguishes an unavailable WhatsApp tab from a missing loaded name.
 
 Unidentified media follows the selected media rules. Protection excludes system notifications, search results, and conversation titles. Blur provides visual protection; it does not encrypt content or prevent technical access to it. WhatsApp updates can break selectors, and simulated tests cannot establish compatibility with the live application.
 

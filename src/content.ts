@@ -1,7 +1,7 @@
 import {
-  collectSidebarNames,
   headerTitles,
   infoTitles,
+  mergeSidebarOrder,
   readChatContext,
   sidebarTitles,
   unavailableContext,
@@ -9,6 +9,7 @@ import {
 import { annotateMessages } from './messages';
 import { ScreenProtection } from './screen';
 import * as model from './settings';
+import { noteMediaPaste } from './surfaces';
 
 (() => {
   let config = model.settings();
@@ -18,20 +19,17 @@ import * as model from './settings';
   let storageFailed = false;
   let stopped = false;
   let directoryPane: HTMLElement | null = null;
-  const discoveredChats = new Set<string>();
-  let scan: Promise<{ names: string[]; complete: boolean }> | undefined;
-  let scanController: AbortController | undefined;
-  let scanPane: HTMLElement | null = null;
+  let discoveredChats: string[] = [];
   function rememberChats() {
     const pane = document.getElementById('pane-side');
     if (directoryPane !== pane) {
-      discoveredChats.clear();
+      discoveredChats = [];
       directoryPane = pane;
     }
-    for (const title of sidebarTitles(document)) {
-      const name = model.normalizeName(title.getAttribute('title') || title.textContent);
-      if (name) discoveredChats.add(name);
-    }
+    const visible = sidebarTitles(document)
+      .map((title) => model.normalizeName(title.getAttribute('title') || title.textContent))
+      .filter(Boolean);
+    discoveredChats = mergeSidebarOrder(discoveredChats, visible);
   }
   const screen = new ScreenProtection();
   const decorated = new Set<HTMLElement>();
@@ -175,49 +173,11 @@ import * as model from './settings';
   chrome.runtime.onMessage.addListener((request: unknown, sender, respond) => {
     if (sender.id !== chrome.runtime.id || !request || typeof request !== 'object') return false;
     const input = request as Record<string, unknown>;
-    if (input.type === 'wpp-discreto:cancel-chat-scan') {
-      scanController?.abort();
-      respond({ canceled: true });
-      return false;
-    }
     if (input.type !== 'wpp-discreto:chat-context') return false;
     rememberChats();
     if (!loaded || !config.enabled) {
       respond(unavailableContext());
       return false;
-    }
-    if (input.scan === true) {
-      if (!scan) {
-        discoveredChats.clear();
-        rememberChats();
-        scanPane = document.getElementById('pane-side');
-        scanController = new AbortController();
-        scan = collectSidebarNames(document, {
-          signal: scanController.signal,
-          shouldContinue: () => config.enabled && config.aliasesEnabled && !stopped,
-        }).finally(() => {
-          scan = undefined;
-          scanController = undefined;
-        });
-      }
-      const scannedPane = scanPane;
-      void scan
-        .then((result) => {
-          if (
-            !config.enabled ||
-            !config.aliasesEnabled ||
-            document.getElementById('pane-side') !== scannedPane
-          ) {
-            respond(unavailableContext());
-            return;
-          }
-          rememberChats();
-          for (const name of result.names) discoveredChats.add(name);
-          const context = readChatContext(document, input.names, discoveredChats);
-          respond({ ...context, scanComplete: result.complete });
-        })
-        .catch(() => respond(unavailableContext()));
-      return true;
     }
     respond(readChatContext(document, input.names, discoveredChats));
     return false;
@@ -236,6 +196,28 @@ import * as model from './settings';
       console.warn('Wpp Discreto: could not load settings. Reload the extension and this page.');
       render();
     });
+
+  document.addEventListener(
+    'paste',
+    (event) => {
+      if (!config.enabled || !event.clipboardData) return;
+      const main = document.getElementById('main');
+      if (!main || !(event.target instanceof Node)) return;
+      if (event.target instanceof Element && event.target.closest('#pane-side, #side')) return;
+      if (
+        !main.contains(event.target) &&
+        event.target !== document.body &&
+        event.target !== document.documentElement &&
+        !main.contains(document.activeElement)
+      )
+        return;
+      const media = [...event.clipboardData.items].some(
+        (item) => item.kind === 'file' && /^(image|video)\//.test(item.type),
+      );
+      if (media) noteMediaPaste(document);
+    },
+    true,
+  );
 
   document.addEventListener(
     'scroll',
@@ -257,7 +239,6 @@ import * as model from './settings';
 
   window.addEventListener('pagehide', () => {
     stopped = true;
-    scanController?.abort();
     observer.disconnect();
     screen.update({ ...config, enabled: false });
   });

@@ -99,13 +99,13 @@
     "message": "Buscar grupos e contatos"
   },
   "chatLookupHint": {
-    "message": "Percorre a lista lateral para encontrar grupos e contatos."
+    "message": "Lê as conversas já carregadas, sem mover a lista."
   },
   "chatSuggestions": {
     "message": "Conversas encontradas"
   },
   "chatsLoading": {
-    "message": "Percorrendo a lista de conversas…"
+    "message": "Buscando conversas…"
   },
   "chatsUnavailable": {
     "message": "Abra ou recarregue o WhatsApp Web nesta aba para conferir os nomes."
@@ -199,12 +199,6 @@
       }
     }
   },
-  "chatsPartial": {
-    "message": "Busca interrompida ou incompleta. Você pode pesquisar os nomes encontrados ou buscar novamente."
-  },
-  "cancelChatScan": {
-    "message": "Cancelar busca"
-  },
   "confirmAliasRemoval": {
     "message": "Confirmar exclusão de apelidos"
   },
@@ -224,5 +218,8 @@
   },
   "confirmDelete": {
     "message": "Remover"
+  },
+  "chatLookupScope": {
+    "message": "A busca inclui as conversas que você já carregou nesta aba."
   }
 }

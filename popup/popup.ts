@@ -14,8 +14,6 @@ import * as model from '../src/settings';
   let loading = true;
   let saving = false;
   let fetching = false;
-  let scanning = false;
-  let scanTabId: number | undefined;
   let pendingRemoval: model.Alias | null = null;
   let settingsOpen = false;
   let suggestionsOpen = false;
@@ -130,7 +128,10 @@ import * as model from '../src/settings';
     const suggestionsVisible = suggestionsOpen && config.enabled && config.aliasesEnabled;
     byId('chat-search-panel').hidden = !suggestionsVisible;
     byId('chat-suggestions').hidden = !suggestionsVisible;
-    byId('cancel-chat-scan').hidden = !scanning;
+    byId('fetch-chats').setAttribute('aria-busy', String(fetching));
+    byId('fetch-chats-label').textContent = message(fetching ? 'chatsLoading' : 'fetchChats');
+    byId('chat-loading').hidden = !fetching;
+    byId('chat-search-panel').setAttribute('aria-busy', String(fetching));
     byId<HTMLInputElement>('confirm-alias-removal').checked = config.confirmAliasRemoval;
     byId<HTMLButtonElement>('delete-confirm').disabled = saving;
     byId<HTMLButtonElement>('delete-cancel').disabled = saving;
@@ -188,14 +189,6 @@ import * as model from '../src/settings';
     byId('alias-list').querySelector<HTMLButtonElement>('button')?.focus({ preventScroll: true });
     await refreshContext();
   }
-  async function cancelScan() {
-    if (scanTabId === undefined) return;
-    try {
-      await chrome.tabs.sendMessage(scanTabId, { type: 'wpp-discreto:cancel-chat-scan' });
-    } catch {
-      /* A closed tab already stops its scan. */
-    }
-  }
 
   async function save(data: {
     settings?: model.Settings;
@@ -223,11 +216,8 @@ import * as model from '../src/settings';
   }
 
   async function refreshContext(showSuggestions = false) {
-    if (scanning && !showSuggestions && config.enabled && config.aliasesEnabled) return;
     const generation = ++contextGeneration;
     if (!config.enabled || !config.aliasesEnabled) {
-      void cancelScan();
-      scanning = false;
       context = unavailableContext();
       fetching = false;
       chatStatusKey = null;
@@ -236,7 +226,6 @@ import * as model from '../src/settings';
     }
     if (showSuggestions) {
       suggestionsOpen = true;
-      scanning = true;
     }
     fetching = true;
     chatStatusKey = showSuggestions ? 'chatsLoading' : null;
@@ -245,11 +234,9 @@ import * as model from '../src/settings';
     try {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
       if (tab?.id !== undefined) {
-        if (showSuggestions) scanTabId = tab.id;
         next = parseChatContext(
           await chrome.tabs.sendMessage(tab.id, {
             type: 'wpp-discreto:chat-context',
-            scan: showSuggestions,
             names: entries.map((entry) => entry.original),
           }),
         );
@@ -260,13 +247,7 @@ import * as model from '../src/settings';
     if (generation !== contextGeneration) return;
     context = next;
     fetching = false;
-    scanning = false;
-    scanTabId = undefined;
-    chatStatusKey = !next.available
-      ? 'chatsUnavailable'
-      : next.scanComplete === false
-        ? 'chatsPartial'
-        : null;
+    chatStatusKey = next.available ? null : 'chatsUnavailable';
     draw();
   }
 
@@ -366,9 +347,6 @@ import * as model from '../src/settings';
     if (await save({ settings: { ...model.defaults } })) await refreshContext();
   });
   byId('chat-search').addEventListener('input', drawSuggestions);
-  byId('cancel-chat-scan').addEventListener('click', () => {
-    void cancelScan();
-  });
   const deleteDialog = byId<HTMLDialogElement>('delete-dialog');
   deleteDialog.addEventListener('close', () => {
     if (!deleteDialog.open) pendingRemoval = null;

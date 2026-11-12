@@ -55,12 +55,12 @@
           <label class="switch-row" for="aliases-enabled"><span class="section-heading"><strong id="aliases-title" data-i18n="groupAliases">Apelidos</strong><span id="alias-count" class="count">0</span></span><input id="aliases-enabled" type="checkbox" role="switch"></label>
           <fieldset id="alias-controls">
             <legend class="sr-only" data-i18n="savedAliases">Apelidos salvos</legend>
-            <button id="fetch-chats" type="button" class="secondary" data-i18n="fetchChats" data-i18n-title="chatLookupHint" title="Percorre a lista lateral para encontrar grupos e contatos.">Buscar grupos e contatos</button>
-            <button id="cancel-chat-scan" type="button" class="secondary" hidden data-i18n="cancelChatScan">Cancelar busca</button>
+            <button id="fetch-chats" type="button" class="secondary" data-i18n-title="chatLookupHint" title="Lê as conversas já carregadas, sem mover a lista."><span id="chat-loading" class="loading-spinner" hidden aria-hidden="true"></span><span id="fetch-chats-label" data-i18n="fetchChats">Buscar grupos e contatos</span></button>
             <p id="chat-status" class="hint" role="status" aria-live="polite"></p>
             <div id="chat-search-panel" hidden>
               <label class="field-label" for="chat-search" data-i18n="chatSearchLabel">Buscar nas conversas encontradas</label>
               <input id="chat-search" type="search" data-i18n-placeholder="chatSearchPlaceholder" placeholder="Nome do grupo, contato ou apelido" aria-controls="chat-suggestions" autocomplete="off">
+              <p class="hint" data-i18n="chatLookupScope">A busca inclui as conversas que você já carregou nesta aba.</p>
               <p id="chat-result-count" class="hint" role="status" aria-live="polite"></p>
               <p id="chat-search-empty" class="hint" hidden data-i18n="chatSearchEmpty">Nenhuma conversa corresponde à busca.</p>
             </div>

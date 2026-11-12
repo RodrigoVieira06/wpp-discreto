@@ -109,6 +109,93 @@ export {};
       'ordinary text composer does not suspend chat protection',
       overlay() && filtered(received),
     );
+    const input = footer.querySelector('[contenteditable]') as HTMLElement;
+    const clipboard = new DataTransfer();
+    clipboard.items.add(new File(['synthetic image'], 'pasted.png', { type: 'image/png' }));
+    input.dispatchEvent(new ClipboardEvent('paste', { bubbles: true, clipboardData: clipboard }));
+    const pastedPreview = document.createElement('div');
+    pastedPreview.innerHTML = `<img style="width:180px;height:180px" src='${pixel}'>`;
+    const pastedCaption = document.createElement('div');
+    pastedCaption.innerHTML =
+      '<div contenteditable="true" role="textbox">Caption of pasted image</div>';
+    const pastedActions = document.createElement('div');
+    pastedActions.innerHTML = `<img style="width:64px;height:64px" src='${pixel}'><button aria-label="Send media"><span data-icon="send-new-version"></span></button>`;
+    main.append(pastedPreview, pastedCaption, pastedActions);
+    await wait();
+    check('clipboard image preview under separate main children suspends the overlay', !overlay());
+    check(
+      'clipboard preview and strip stay clear with unfamiliar send icons',
+      !filtered(pastedPreview.firstElementChild as Element) &&
+        !filtered(pastedActions.firstElementChild as Element),
+    );
+    check('received images outside the pasted draft retain protection', filtered(received));
+    const anotherThumbnail = document.createElement('img');
+    anotherThumbnail.src = pixel;
+    pastedActions.append(anotherThumbnail);
+    await wait();
+    check('new pasted-draft thumbnails stay clear', !filtered(anotherThumbnail));
+    pastedPreview.remove();
+    pastedCaption.remove();
+    pastedActions.remove();
+    await wait();
+    check('closing the pasted draft restores chat protection', overlay() && filtered(received));
+    const textClipboard = new DataTransfer();
+    textClipboard.setData('text/plain', 'ordinary text');
+    input.dispatchEvent(
+      new ClipboardEvent('paste', { bubbles: true, clipboardData: textClipboard }),
+    );
+    await wait();
+    check('pasting ordinary text does not suspend protection', overlay());
+    document.body.dispatchEvent(
+      new ClipboardEvent('paste', { bubbles: true, clipboardData: clipboard }),
+    );
+    main.append(pastedPreview, pastedCaption, pastedActions);
+    await wait();
+    check(
+      'global clipboard paste also recognizes the outgoing draft',
+      !overlay() && !filtered(pastedPreview.firstElementChild as Element),
+    );
+    pastedPreview.remove();
+    pastedCaption.remove();
+    pastedActions.remove();
+    await wait();
+    input.dispatchEvent(new ClipboardEvent('paste', { bubbles: true, clipboardData: clipboard }));
+    pastedCaption.replaceChildren(input);
+    main.append(pastedPreview, pastedCaption, pastedActions);
+    await wait();
+    check(
+      'a reused caption moved into the pasted editor is recognized',
+      !overlay() && !filtered(pastedPreview.firstElementChild as Element),
+    );
+    footer.append(input);
+    pastedPreview.remove();
+    pastedCaption.remove();
+    pastedActions.remove();
+    await wait();
+    check('leaving a reused clipboard editor restores protection', overlay());
+    input.dispatchEvent(new ClipboardEvent('paste', { bubbles: true, clipboardData: clipboard }));
+    main.append(pastedPreview, pastedActions);
+    await wait();
+    check(
+      'an unchanged caption field with newly mounted draft controls is recognized',
+      !overlay() && !filtered(pastedPreview.firstElementChild as Element),
+    );
+    pastedPreview.remove();
+    pastedActions.remove();
+    await wait();
+    check('closing a draft with an unchanged caption restores protection', overlay());
+    input.dispatchEvent(new ClipboardEvent('paste', { bubbles: true, clipboardData: clipboard }));
+    const receivedViewer = document.createElement('div');
+    receivedViewer.setAttribute('role', 'dialog');
+    receivedViewer.dataset.testid = 'media-viewer';
+    receivedViewer.innerHTML = `<img data-testid="image-thumb" style="width:180px;height:180px" src='${pixel}'><button>Close</button>`;
+    main.append(receivedViewer);
+    await wait();
+    check(
+      'a paste hint cannot exempt a received viewer beside the existing caption',
+      filtered(receivedViewer.firstElementChild as Element),
+    );
+    receivedViewer.remove();
   } catch (error) {
     check(error instanceof Error ? (error.stack ?? error.message) : String(error), false);
   }

@@ -5,7 +5,6 @@ export interface ChatContext {
   available: boolean;
   chats: string[];
   found: string[];
-  scanComplete?: boolean;
 }
 
 export const unavailableContext = (): ChatContext => ({ available: false, chats: [], found: [] });
@@ -33,7 +32,9 @@ export function sidebarTitles(document: Document): HTMLElement[] {
       [...row.querySelectorAll<HTMLElement>('[data-testid="cell-frame-title"]')].find(valid);
     if (title) titles.push(title);
   }
-  return [...new Set(titles)];
+  return [...new Set(titles)].sort(
+    (left, right) => left.getBoundingClientRect().top - right.getBoundingClientRect().top,
+  );
 }
 
 export function headerTitles(document: Document): HTMLElement[] {
@@ -102,7 +103,7 @@ export function readChatContext(
   ]);
   return {
     available: true,
-    chats: [...new Set([...sidebar, ...cached])],
+    chats: mergeSidebarOrder(cached, sidebar),
     found: namesFrom(requestedNames).filter((name) => known.has(name)),
   };
 }
@@ -116,108 +117,24 @@ export function parseChatContext(value: unknown): ChatContext {
     available: true,
     chats: namesFrom(input.chats),
     found: namesFrom(input.found),
-    ...(typeof input.scanComplete === 'boolean' ? { scanComplete: input.scanComplete } : {}),
   };
 }
 
-export interface SidebarScanOptions {
-  signal?: AbortSignal;
-  shouldContinue?: () => boolean;
-  timeoutMs?: number;
-}
-
-/** Traverse the rendered sidebar, including recycled rows, without opening conversations. */
-export async function collectSidebarNames(
-  document: Document,
-  options: SidebarScanOptions = {},
-): Promise<{ names: string[]; complete: boolean }> {
-  const pane = document.getElementById('pane-side');
-  const names = new Set<string>();
-  const collect = () => {
-    for (const title of sidebarTitles(document)) names.add(titleName(title));
-  };
-  collect();
-  if (!pane) return { names: [], complete: false };
-  let viewport: HTMLElement | undefined;
-  const rowParent = sidebarTitles(document)[0]?.closest<HTMLElement>(
-    '[role="row"], [role="listitem"]',
-  )?.parentElement;
-  for (const candidate of [
-    ...(rowParent ? [rowParent] : []),
-    pane,
-    ...pane.querySelectorAll<HTMLElement>(
-      '[role="grid"], [role="list"], [data-testid="chat-list"]',
-    ),
-  ]) {
-    for (
-      let node: HTMLElement | null = candidate;
-      node && !node.matches('body, html');
-      node = node.parentElement
-    ) {
-      if (node.clientHeight > 0 && /auto|scroll/.test(getComputedStyle(node).overflowY)) {
-        viewport = node;
-        break;
-      }
-    }
-    if (viewport) break;
+/** Keep known relative order, replacing each observed block with its current visual order. */
+export function mergeSidebarOrder(
+  previous: readonly string[],
+  visible: readonly string[],
+): string[] {
+  const current = [...new Set(visible)];
+  const observed = new Set(current);
+  let index = previous.length;
+  for (const name of current) {
+    const position = previous.indexOf(name);
+    if (position >= 0) index = Math.min(index, position);
   }
-  if (!viewport) return { names: [...names], complete: true };
-  const originalTop = viewport.scrollTop;
-  let interrupted = false;
-  let complete = false;
-  const interrupt = () => {
-    interrupted = true;
-  };
-  const events = ['wheel', 'pointerdown', 'keydown'] as const;
-  for (const event of events) viewport.addEventListener(event, interrupt, { passive: true });
-  const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-  const active = () =>
-    !interrupted &&
-    !options.signal?.aborted &&
-    pane.isConnected &&
-    document.getElementById('pane-side') === pane &&
-    (options.shouldContinue?.() ?? true);
-  const move = (top: number) => {
-    viewport.scrollTop = top;
-    viewport.dispatchEvent(new Event('scroll'));
-  };
-  const deadline = Date.now() + (options.timeoutMs ?? 45000);
-  let stable = 0;
-  try {
-    move(0);
-    while (active() && Date.now() < deadline) {
-      await wait(120);
-      if (!active()) break;
-      collect();
-      const bottom = Math.max(0, viewport.scrollHeight - viewport.clientHeight);
-      if (viewport.scrollTop >= bottom - 1) {
-        const height = viewport.scrollHeight;
-        const count = names.size;
-        await wait(350);
-        if (!active()) break;
-        collect();
-        const busy =
-          viewport.matches('[aria-busy="true"]') || !!viewport.querySelector('[aria-busy="true"]');
-        stable = !busy && height === viewport.scrollHeight && count === names.size ? stable + 1 : 0;
-        if (stable >= 3) {
-          complete = true;
-          break;
-        }
-      } else {
-        stable = 0;
-        const next = Math.min(
-          bottom,
-          viewport.scrollTop + Math.max(1, viewport.clientHeight * 0.8),
-        );
-        const previous = viewport.scrollTop;
-        move(next);
-        if (viewport.scrollTop === previous) break;
-      }
-    }
-  } finally {
-    for (const event of events) viewport.removeEventListener(event, interrupt);
-    if (!interrupted && pane.isConnected && document.getElementById('pane-side') === pane)
-      move(originalTop);
-  }
-  return { names: [...names], complete };
+  return [
+    ...previous.slice(0, index).filter((name) => !observed.has(name)),
+    ...current,
+    ...previous.slice(index).filter((name) => !observed.has(name)),
+  ];
 }

@@ -197,8 +197,32 @@ export {};
     change('aliases-enabled', true);
     await wait();
 
+    const originalSend = chrome.tabs.sendMessage;
+    let finishLookup: (value: unknown) => void = () => {};
+    const pendingLookup = new Promise<unknown>((resolve) => {
+      finishLookup = resolve;
+    });
+    chrome.tabs.sendMessage = (() => pendingLookup) as typeof chrome.tabs.sendMessage;
     byId('fetch-chats').click();
+    await Promise.resolve();
+    await Promise.resolve();
+    check(
+      'lookup visibly reports loading while its request is pending',
+      byId('fetch-chats').getAttribute('aria-busy') === 'true' &&
+        byId('fetch-chats').textContent.includes(window.expectedMessages.chatsLoading) &&
+        !byId('chat-loading').hidden,
+    );
+    finishLookup({
+      available: true,
+      chats: window.availableChats,
+      found: stored.aliases.map((entry) => entry.original),
+    });
     await wait();
+    chrome.tabs.sendMessage = originalSend;
+    check(
+      'lookup clears its loading state when finished',
+      byId('fetch-chats').getAttribute('aria-busy') === 'false' && byId('chat-loading').hidden,
+    );
     const suggestions = byId('chat-suggestions').querySelectorAll('button');
     check('fetch shows all discovered names', suggestions.length === window.availableChats.length);
     const search = byId('chat-search');
@@ -327,7 +351,9 @@ export {};
     await wait();
     check(
       'unavailable WhatsApp is not treated as invalid aliases',
-      !byId('alias-list').querySelector('.alias-invalid') &&
+      byId('chat-loading').hidden &&
+        byId('fetch-chats').getAttribute('aria-busy') === 'false' &&
+        !byId('alias-list').querySelector('.alias-invalid') &&
         byId('chat-status').textContent === window.expectedMessages.chatsUnavailable,
     );
     window.rejectChats = false;

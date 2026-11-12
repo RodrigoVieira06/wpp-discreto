@@ -308,13 +308,18 @@ test('rendered screen mask covers chat media and suspends behind the media viewe
       );
     }
     await evaluate(`(async () => {
-      await chrome.storage.local.set({ settings: { enabled: false } });
+      const input = document.createElement('div');
+      input.id = 'pixel-paste-input'; input.contentEditable = 'true';
+      document.getElementById('main').append(input);
+      const clipboard = new DataTransfer();
+      clipboard.items.add(new File(['synthetic'], 'clipboard.png', { type: 'image/png' }));
+      input.dispatchEvent(new ClipboardEvent('paste', { bubbles: true, clipboardData: clipboard }));
       const draft = document.createElement('section');
       draft.id = 'pixel-draft';
-      draft.dataset.testid = 'media-editor';
       draft.style.cssText = 'position:fixed;left:400px;top:100px;width:220px;height:220px;background:#111;z-index:1000';
-      draft.innerHTML = '<canvas width="180" height="180" style="background:repeating-linear-gradient(black 0px 2px,white 2px 4px)"></canvas><div contenteditable="true">Draft caption</div><button><span data-icon="send"></span></button>';
+      draft.innerHTML = '<canvas width="180" height="180" style="background:repeating-linear-gradient(black 0px 2px,white 2px 4px)"></canvas><button aria-label="Send media">Send</button>';
       document.getElementById('main').append(draft);
+      await chrome.storage.local.set({ settings: { enabled: false } });
     })()`);
     const draftOriginal = await screenshot();
     await evaluate(
@@ -324,11 +329,11 @@ test('rendered screen mask covers chat media and suspends behind the media viewe
     assert.deepEqual(
       await extract(draftProtected, { left: 415, top: 115 }).raw().toBuffer(),
       await extract(draftOriginal, { left: 415, top: 115 }).raw().toBuffer(),
-      'Outgoing media editing pixels must stay sharp under full protection',
+      'Ctrl+V preview pixels must stay sharp with an unchanged caption and unfamiliar send controls',
     );
     assert.equal(await evaluate("!!document.querySelector('[data-wppd-screen]')"), false);
     await evaluate(
-      `(async () => {document.getElementById('pixel-draft').remove();await new Promise(resolve=>setTimeout(resolve,30));})()`,
+      `(async () => {document.getElementById('pixel-draft').remove();document.getElementById('pixel-paste-input').remove();await new Promise(resolve=>setTimeout(resolve,30));})()`,
     );
     assert.equal(await evaluate("!!document.querySelector('[data-wppd-screen]')"), true);
   } finally {

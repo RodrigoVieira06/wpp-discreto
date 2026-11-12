@@ -24,7 +24,7 @@ Retain the footer's data-handling explanation: changes affect this browser, orig
 
 The popup gets the active tab ID through `chrome.tabs.query` and sends `wpp-discreto:chat-context` to the installed content script. It reads no sensitive tab properties, injects into no other site, and requests no extra permission.
 
-`src/chats.ts` reads original DOM names. An explicit lookup traverses the sidebar and collects every unique name encountered, including recycled rows. It returns to the previous scroll position after completion or cancellation. Wheel, pointer, or keyboard interaction in the sidebar interrupts traversal without moving it back against the user's action. Validation compares requested saved names against current and cached sidebar names, the open header, and supported active info-card title. It returns matches for those requests.
+`src/chats.ts` reads original DOM names without programmatic scrolling or clicks. It collects names rendered as the user navigates WhatsApp. Titles are read in visual row order, including recycled DOM rows. Cached blocks follow the observed relative order; no alphabetical sorting or native-list mutation occurs. Validation compares requested saved names against current and cached sidebar names, the open header, and supported active info-card title.
 
 Prefer an inner title over an aggregate container. Exclude unread indicators and accessibility counters. Alias CSS clips nested original spans without deleting or replacing React text, preventing the original and alias from appearing together.
 
@@ -40,7 +40,9 @@ Selecting a suggestion fills the original-name field. Editing fills both fields;
 
 An absent discovered name does not establish that the group or contact was deleted. Unavailable includes a missing receiver, signed-out or empty list, and connection failures.
 
-Passive lookup runs on popup opening and relevant edits. The explicit lookup button scans the current sidebar for up to 45 seconds, waiting for stable list boundaries. Concurrent requests share a scan. Canceling or reaching the time limit reports partial results. A new explicit scan refreshes the in-memory directory; replacing the sidebar clears it. The popup filters original names and saved aliases without case or accent distinctions and reports result counts and empty matches. Lists filtered in WhatsApp or archived conversations outside the current sidebar are outside the scan. Discovered names stay in page memory and may become stale until a new scan or page reload. The extension persists a mapping only when you save it; lookup reads no messages and uses no account-wide contact API.
+Lookup runs on popup opening, relevant edits, and explicit refresh. The button displays a spinner and localized loading label while its request is pending; `aria-busy` marks the button and result area. The popup filters all discovered names and saved aliases without case or accent distinctions, with result counts and empty-match guidance.
+
+Lookup never scrolls or changes WhatsApp's order. It cannot discover conversations the page has never rendered. Names loaded through user navigation stay in memory, and replacing the sidebar or reloading clears that directory. Filtered and archived conversations outside the rendered list remain outside its scope. The extension persists a mapping only when saved; lookup reads no messages and uses no account-wide contact API.
 
 After updating the extension, reload it and refresh WhatsApp so the content script can receive lookup requests. Automated lookup tests use simulated markup; check changes against WhatsApp before distribution.
 

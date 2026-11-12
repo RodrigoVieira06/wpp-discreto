@@ -112,3 +112,8 @@ dialog::backdrop { background: rgb(0 0 0 / 65%); }
 .confirmation-option input { flex-shrink: 0; width: 18px; height: 18px; margin: 0; accent-color: $accent; }
 #delete-error { color: #ffb5a6; font-size: 12px; }
 #delete-error:empty { display: none; }
+
+#fetch-chats { display: flex; justify-content: center; align-items: center; gap: 8px; }
+.loading-spinner { flex-shrink: 0; width: 14px; height: 14px; border: 2px solid $accent; border-right-color: transparent; border-radius: 50%; animation: lookup-spin .8s linear infinite; }
+@keyframes lookup-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .loading-spinner { animation: none; } }

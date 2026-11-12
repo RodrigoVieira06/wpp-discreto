@@ -99,13 +99,13 @@
     "message": "Find groups and contacts"
   },
   "chatLookupHint": {
-    "message": "Scrolls through the sidebar to find groups and contacts."
+    "message": "Reads loaded conversations without moving the list."
   },
   "chatSuggestions": {
     "message": "Matching conversations"
   },
   "chatsLoading": {
-    "message": "Scanning the conversation list…"
+    "message": "Finding conversations…"
   },
   "chatsUnavailable": {
     "message": "Open or reload WhatsApp Web in this tab to check names."
@@ -199,12 +199,6 @@
       }
     }
   },
-  "chatsPartial": {
-    "message": "Search interrupted or incomplete. Search the names found or scan again."
-  },
-  "cancelChatScan": {
-    "message": "Cancel search"
-  },
   "confirmAliasRemoval": {
     "message": "Confirm alias deletion"
   },
@@ -224,5 +218,8 @@
   },
   "confirmDelete": {
     "message": "Remove"
+  },
+  "chatLookupScope": {
+    "message": "Search includes conversations already loaded in this tab."
   }
 }

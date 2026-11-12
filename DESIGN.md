@@ -115,6 +115,7 @@ Fields and primary/secondary buttons have 8 px corners. The settings panel and d
 ## Components
 
 - Primary actions use mint with dark green text, a lighter mint hover state, and a darker mint active state. Secondary actions use bordered green surfaces.
+- The lookup button shows a 14 px mint spinner, a localized loading label, and `aria-busy` while pending. Respect reduced-motion preferences by stopping the spinner animation.
 - Fields are at least 42 px high. Preserve visible placeholders and the mint focus border. Keyboard focus uses a 2 px mint outline with 3 px offset.
 - Switches keep native checkbox semantics with `role="switch"`; labels remain clickable. Checked state moves the thumb and changes its background.
 - Settings/help/warning icons use inline SVG with round strokes. Decorative SVGs are hidden from assistive technology; their controls retain localized accessible names.

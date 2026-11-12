@@ -215,7 +215,7 @@ test('outgoing media previews stay usable and restore protection after closing',
   runBrowser(fixture, 16);
 });
 
-test('sidebar discovery traverses recycled rows, restores scrolling, and supports cancellation', () => {
+test('sidebar lookup never scrolls or reorders the list and remembers user-loaded names', () => {
   const base = pathToFileURL(path.join(root, 'fixtures/')).href;
   const fixture = readFileSync(path.join(root, 'fixtures/whatsapp.html'), 'utf8')
     .replace('<head>', `<head><base href="${base}">`)
