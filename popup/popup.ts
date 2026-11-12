@@ -105,7 +105,7 @@ import * as model from '../src/settings';
     byId<HTMLInputElement>('full-blur').checked = config.fullBlur;
     byId<HTMLInputElement>('visible-area').disabled = config.fullBlur;
     byId<HTMLInputElement>('advanced-blur').checked =
-      config.blurChat && config.blurImages && config.blurVideos && config.blurStickers;
+      config.blurImages && config.blurVideos && config.blurStickers;
     byId<HTMLInputElement>('blur-images').checked = config.blurImages;
     byId<HTMLInputElement>('blur-videos').checked = config.blurVideos;
     byId<HTMLInputElement>('blur-stickers').checked = config.blurStickers;
@@ -218,7 +218,6 @@ import * as model from '../src/settings';
     void save({
       settings: model.settings({
         ...config,
-        blurChat: enabled || config.blurChat,
         blurImages: enabled,
         blurVideos: enabled,
         blurStickers: enabled,

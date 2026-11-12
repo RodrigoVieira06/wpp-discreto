@@ -120,6 +120,22 @@ test('rendered screen mask covers chat media and suspends behind the media viewe
       video.channels[0].stdev < baseline.channels[0].stdev * 0.3,
       'Exempt photos must not expose selected video pixels',
     );
+    await evaluate('chrome.storage.local.set({ settings: { blurChat: false, blurImages: true } })');
+    const mediaOnly = await screenshot();
+    const mediaOnlyPhoto = await sharp(await crop(mediaOnly, 20, 20).toBuffer()).stats();
+    assert.ok(
+      mediaOnlyPhoto.channels[0].stdev < originalPhoto.channels[0].stdev * 0.3,
+      'Selected photo pixels must blur with chat protection disabled',
+    );
+    assert.deepEqual(
+      await crop(mediaOnly, 220, 30).raw().toBuffer(),
+      await crop(original, 220, 30).raw().toBuffer(),
+      'Conversation pixels must stay readable in media-only mode',
+    );
+    assert.equal(await evaluate("!!document.querySelector('[data-wppd-screen]')"), false);
+    await evaluate(
+      'chrome.storage.local.set({ settings: { blurChat: true, visibleArea: 40, blurImages: false, blurVideos: true } })',
+    );
     await evaluate(`(async () => {
       document.querySelector('#history img').setAttribute('data-testid', 'video-thumb');
       await Promise.resolve();

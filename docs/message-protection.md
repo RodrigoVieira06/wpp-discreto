@@ -12,15 +12,15 @@ The extension adds a fixed overlay outside React's tree at the highest normal st
 
 ## Media choices
 
-| Setting | Effect while conversation protection is enabled |
+| Setting | Effect while the extension is enabled |
 | --- | --- |
 | `blurImages` | Blur photos in full |
 | `blurVideos` | Blur videos and recognized video thumbnails in full |
 | `blurStickers` | Blur stickers, including image/canvas assets, in full |
 
-Missing fields default to `false`; preserve explicit saved choices. Selected types stay blurred below the chat boundary and in info-card carousels, galleries, opened media, and viewer history. Allowed types follow the boundary in the conversation and stay clear in panels/viewers. Unidentified assets remain protected if any media type is selected.
+Media protection is independent of `blurChat`. Keep the text readable by leaving conversation blur off and selecting the desired media types. The master switch still disables every effect. Missing fields default to `false`; preserve explicit saved choices. Selected types stay blurred below the chat boundary and in info-card carousels, galleries, opened media, and viewer history. Allowed types follow the boundary in the conversation and stay clear in panels/viewers. Unidentified assets remain protected if any media type is selected.
 
-The advanced-blur shortcut enables chat protection and selects all three types. Turning it off clears media choices while retaining chat protection. Its tooltip explains this behavior and opens individual settings. Audio waveforms and playback UI remain visible, including in full and advanced modes.
+The advanced-blur shortcut selects all three media types without changing `blurChat`. Turning it off clears media choices and retains the current conversation-blur preference. Its tooltip explains this behavior and opens individual settings. Audio waveforms and playback UI remain visible, including in full and advanced modes.
 
 CSS masks unclassified assets until synchronous classification. Treat CSS background thumbnails as assets even if they contain an icon or child; do not filter an aggregate album wrapper as one asset. Preserve React-owned text and structures.
 
@@ -42,4 +42,4 @@ The `alwaysBlurMedia` field and control were removed. Ignore its stored value; s
 
 WhatsApp markup determines selector and viewport compatibility. Before distribution, check integration changes against real albums, opened photos/videos/stickers, thumbnail strips, zoom, dialogs, floating UI, and group histories. System notifications and search are outside scope. Blur does not encrypt content or prevent technical access to it.
 
-Headless fixtures cover geometry, history, resizing, viewer lifecycle, media choices, audio, and disabled states. Pixel comparisons cover a tall allowed image crossing the boundary at maximum stacking index, selected media below it, allowed/blocked fullscreen images, panel/background assets, independent thumbnail types, and sharp audio. These tests use synthetic markup, not an authenticated WhatsApp session.
+Headless fixtures cover geometry, history, resizing, viewer lifecycle, media choices, media-only mode on initial load and live changes, audio, and disabled states. Pixel comparisons cover a tall allowed image crossing the boundary at maximum stacking index, selected media below it, allowed/blocked fullscreen images, panel/background assets, independent thumbnail types, and sharp audio. These tests use synthetic markup, not an authenticated WhatsApp session.

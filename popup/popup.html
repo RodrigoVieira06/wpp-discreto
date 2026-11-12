@@ -34,7 +34,7 @@
           <label class="switch-row" for="blur-images"><span data-i18n="mediaImages">Fotos</span><input id="blur-images" type="checkbox" role="switch"></label>
           <label class="switch-row" for="blur-videos"><span data-i18n="mediaVideos">Vídeos</span><input id="blur-videos" type="checkbox" role="switch"></label>
           <label class="switch-row" for="blur-stickers"><span data-i18n="mediaStickers">Figurinhas</span><input id="blur-stickers" type="checkbox" role="switch"></label>
-          <p class="hint" data-i18n="mediaOptionsHint">Na conversa, a faixa protegida embaça também as mídias. Os tipos marcados ficam sempre embaçados por inteiro, inclusive ao abrir.</p>
+          <p class="hint" data-i18n="mediaOptionsHint">Os tipos marcados ficam embaçados por inteiro, inclusive ao abrir, mesmo com o desfoque da conversa desligado.</p>
           <p class="hint" data-i18n="mediaFallbackHint">Se algum tipo estiver marcado, mídias não identificadas também serão embaçadas.</p>
         </fieldset>
         <button id="restore-defaults" type="button" class="secondary" data-i18n="restoreDefaults" data-i18n-title="restoreDefaultsHint" title="Restaura as configurações sem apagar apelidos.">Restaurar padrão</button>
@@ -46,7 +46,7 @@
           <label class="switch-row" for="blur-previews"><strong data-i18n="blurPreviews">Embaçar prévias na lista</strong><input id="blur-previews" type="checkbox" role="switch"></label>
           <label class="switch-row" for="blur-chat"><strong data-i18n="protectChat">Embaçar conversa aberta</strong><input id="blur-chat" type="checkbox" role="switch"></label>
           <div class="advanced-row">
-            <div class="advanced-label"><label for="advanced-blur"><strong data-i18n="advancedBlur">Desfoque avançado</strong></label><div class="help-container"><button id="media-help" type="button" class="help-button" aria-describedby="advanced-blur-help" data-i18n-aria-label="mediaSettings" aria-label="Configurar desfoque de mídias"><svg class="control-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .2c0 1.8-2.5 2.2-2.5 4.1M12 16.5h.01"/></svg></button><span id="advanced-blur-help" role="tooltip" data-i18n="advancedBlurHelp">Marca fotos, vídeos e figurinhas para ficarem sempre embaçados. Ajuste cada tipo nas configurações (engrenagem). Áudios ficam visíveis.</span></div></div>
+            <div class="advanced-label"><label for="advanced-blur"><strong data-i18n="advancedBlur">Desfoque avançado</strong></label><div class="help-container"><button id="media-help" type="button" class="help-button" aria-describedby="advanced-blur-help" data-i18n-aria-label="mediaSettings" aria-label="Configurar desfoque de mídias"><svg class="control-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .2c0 1.8-2.5 2.2-2.5 4.1M12 16.5h.01"/></svg></button><span id="advanced-blur-help" role="tooltip" data-i18n="advancedBlurHelp">Marca fotos, vídeos e figurinhas sem alterar o desfoque da conversa. Ajuste cada tipo nas configurações. Áudios ficam visíveis.</span></div></div>
             <input id="advanced-blur" type="checkbox" role="switch">
           </div>
         </section>

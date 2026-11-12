@@ -6,7 +6,7 @@ The master switch (`settings.enabled`) and aliases switch (`settings.aliasesEnab
 
 The gear button opens language, blur strength, readable area, media choices, and default restoration. The readable percentage ranges from 20–100. Full blur covers the conversation viewport and disables the slider without changing its saved value. Audio controls stay readable.
 
-The advanced-blur switch enables chat protection and selects photos, videos, and stickers. Turning it off clears those media choices while retaining chat protection. The question-mark button displays a localized tooltip and opens individual media settings.
+The advanced-blur switch selects photos, videos, and stickers without changing conversation blur. Turning it off clears those media choices while retaining the conversation-blur preference. Individual media choices also work when conversation blur is off. The question-mark button displays a localized tooltip and opens individual media settings.
 
 Selected media types stay blurred in full, including below the chat screen boundary and in panels/viewers. Allowed media stays under the chat mask and clears below its boundary. Opening a supported media viewer suspends that mask; the media-type choice then determines its blur. The former always-blur control is removed, and legacy values are ignored. See [media protection](message-protection.md).
 

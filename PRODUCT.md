@@ -24,7 +24,7 @@ The popup is an existing 380 px desktop surface. Preserve its width, intrinsic c
 
 - Manifest V3 runs on WhatsApp Web with the storage permission. Preferences and aliases stay in local browser storage, with no extension backend, analytics, or transmission of chat contents.
 - Master and alias switches retain saved choices when disabled. Default restoration requires confirmation and keeps aliases.
-- Readable conversation area ranges from 20–100%, default 40%. Full blur is a separate setting. Selected media stays blurred throughout supported conversations and media viewers; audio controls remain readable.
+- Readable conversation area ranges from 20–100%, default 40%. Full blur is a separate setting. Media choices work independently of conversation blur. The advanced shortcut changes media choices only. Selected media stays blurred throughout supported conversations and media viewers; audio controls remain readable.
 - Aliases use exact original names. Suggestions cover up to ten loaded names; missing loaded names and an unavailable WhatsApp tab are different states.
 - Browser language selects Portuguese or English; users can save an override. Keep documentation and source identifiers in English.
 - The popup footer must explain local-only changes and unchanged WhatsApp data, and retain the Rodrigo Lima author credit.

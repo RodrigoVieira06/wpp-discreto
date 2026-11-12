@@ -40,7 +40,10 @@ import * as model from './settings';
     // Classify new/recycled media in the observer microtask, before its first paint.
     observer.disconnect();
     try {
-      if (config.enabled && config.blurChat) {
+      if (
+        config.enabled &&
+        (config.blurChat || config.blurImages || config.blurVideos || config.blurStickers)
+      ) {
         annotateMessages(document);
         screen.update(config);
       }
@@ -107,6 +110,7 @@ import * as model from './settings';
     observer.disconnect();
     try {
       // Keep masking while the initial settings are unavailable.
+      root().setAttribute('data-wppd-enabled', String(storageFailed || config.enabled));
       root().setAttribute(
         'data-wppd-chat',
         String(storageFailed || (config.enabled && config.blurChat)),

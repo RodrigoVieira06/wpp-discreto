@@ -60,11 +60,14 @@ export {};
       'media protection starts opt-in',
       !stored.settings.blurImages && !stored.settings.blurVideos && !stored.settings.blurStickers,
     );
+    change('blur-chat', false);
+    await wait();
     change('advanced-blur', true);
     await wait();
     check(
-      'advanced blur enables chat protection and all media settings',
-      stored.settings.blurChat &&
+      'advanced blur selects all media without enabling chat protection',
+      !stored.settings.blurChat &&
+        byId('advanced-blur').checked &&
         stored.settings.blurImages &&
         stored.settings.blurVideos &&
         stored.settings.blurStickers,
@@ -72,14 +75,17 @@ export {};
     change('advanced-blur', false);
     await wait();
     check(
-      'advanced blur can clear media settings without disabling text protection',
-      stored.settings.blurChat &&
+      'advanced blur clears media without changing disabled chat protection',
+      !stored.settings.blurChat &&
         !stored.settings.blurImages &&
         !stored.settings.blurVideos &&
         !stored.settings.blurStickers,
     );
+    change('blur-chat', true);
+    await wait();
     change('advanced-blur', true);
     await wait();
+    check('advanced blur retains enabled chat protection', stored.settings.blurChat);
     check(
       'advanced blur help is localized',
       byId('media-help').getAttribute('aria-describedby') === 'advanced-blur-help' &&

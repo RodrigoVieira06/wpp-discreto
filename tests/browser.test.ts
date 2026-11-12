@@ -89,6 +89,35 @@ test('master switch can recover from an initial settings read failure', () => {
   runBrowser(fixture, 2);
 });
 
+test('saved media-only preferences apply on initial load without masking conversation text', () => {
+  const base = pathToFileURL(path.join(root, 'fixtures/')).href;
+  const scenario = `<script>
+    setTimeout(() => {
+      const image = document.getElementById('saved-photo');
+      const report = document.createElement('pre');
+      report.id = 'test-results';
+      report.textContent = JSON.stringify([
+        { name: 'saved photo blur initializes', pass: getComputedStyle(image).filter !== 'none' },
+        { name: 'chat overlay stays off', pass: !document.querySelector('[data-wppd-screen]') },
+        { name: 'conversation text stays readable', pass: getComputedStyle(document.querySelector('.selectable-text')).filter === 'none' }
+      ]);
+      document.body.append(report);
+    }, 100);
+  </script>`;
+  const fixture = readFileSync(path.join(root, 'fixtures/whatsapp.html'), 'utf8')
+    .replace('<head>', `<head><base href="${base}">`)
+    .replace(
+      'blurChat: true, visibleArea: 40',
+      'blurChat: false, blurImages: true, visibleArea: 40',
+    )
+    .replace(
+      'Mensagem 1</div>',
+      '<span class="selectable-text">Mensagem 1</span><img id="saved-photo" data-testid="image-thumb" src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22/%3E"></div>',
+    )
+    .replace('</body>', `${scenario}</body>`);
+  runBrowser(fixture, 3);
+});
+
 test('albums and mixed media remain protected through grouped messages and loading', () => {
   const base = pathToFileURL(path.join(root, 'fixtures/')).href;
   const fixture = readFileSync(path.join(root, 'fixtures/whatsapp.html'), 'utf8')

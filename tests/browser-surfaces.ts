@@ -104,10 +104,19 @@ export {};
     );
     await chrome.storage.local.set({ settings: { ...selected, blurChat: false } });
     check(
-      'chat protection off restores panel media',
-      !blurred(document.getElementById('carousel-photo')) &&
-        !blurred(document.getElementById('opened-photo')),
+      'media-only protection covers panels and viewers',
+      blurred(document.getElementById('carousel-photo')) &&
+        blurred(document.getElementById('opened-photo')) &&
+        blurred(document.getElementById('opened-video')) &&
+        !document.querySelector('[data-wppd-screen]'),
     );
+    const latePreview = document.createElement('img');
+    latePreview.dataset.testid = 'image-thumb';
+    latePreview.src = pixel;
+    viewer.append(latePreview);
+    await wait();
+    check('new viewer thumbnails stay hidden in media-only mode', blurred(latePreview));
+    check('media-only mode still exempts audio', !blurred(audio.querySelector('canvas')));
     info.remove();
     gallery.remove();
     viewer.remove();

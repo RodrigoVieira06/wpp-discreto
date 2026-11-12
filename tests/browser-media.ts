@@ -152,11 +152,35 @@ export {};
     );
     await chrome.storage.local.set({ settings: { ...settings, blurChat: false } });
     check(
-      'chat protection off restores all media types',
-      !blurred(document.getElementById('photo')) &&
+      'media-only protection keeps all selected media hidden',
+      blurred(document.getElementById('photo')) &&
+        blurred(document.getElementById('video')) &&
+        blurred(document.getElementById('sticker')),
+    );
+    check(
+      'media-only mode leaves text and captions readable',
+      !document.querySelector('[data-wppd-screen]') &&
+        !blurred(group.querySelector('.selectable-text')) &&
+        !blurred(album.querySelector('.selectable-text')),
+    );
+    await chrome.storage.local.set({
+      settings: { ...settings, blurChat: false, blurVideos: false, blurStickers: false },
+    });
+    check(
+      'media-only choices remain independent',
+      blurred(document.getElementById('photo')) &&
         !blurred(document.getElementById('video')) &&
         !blurred(document.getElementById('sticker')),
     );
+    const mediaOnlyArrival = document.createElement('img');
+    mediaOnlyArrival.src = pixel;
+    mediaOnlyArrival.dataset.testid = 'image-thumb';
+    album.querySelector('[data-testid="album"]')?.append(mediaOnlyArrival);
+    check('new media-only assets are protected immediately', blurred(mediaOnlyArrival));
+    await wait();
+    check('new media-only assets remain protected after classification', blurred(mediaOnlyArrival));
+    await chrome.storage.local.set({ settings: { ...settings, blurChat: false, enabled: false } });
+    check('master switch disables media-only protection', !blurred(mediaOnlyArrival));
   } catch (error) {
     results.push({
       name: error instanceof Error ? (error.stack ?? error.message) : String(error),

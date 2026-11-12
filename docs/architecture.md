@@ -23,7 +23,7 @@ The popup requests loaded conversation names through active-tab messaging to the
 
 SCSS compiles to static CSS. The screen mask blurs the upper conversation viewport and leaves a configurable lower area readable during history scrolling. Its SVG mask excludes audio controls; media cannot create holes in it. The readable area ranges from 20–100%, with a separate full-blur switch.
 
-Media blur is opt-in. CSS protects new assets before classification and keeps selected media types blurred throughout conversations and media panels. Classification covers image, video, canvas, and CSS background assets. The observer updates classification and viewport/audio geometry before painting.
+Media blur is opt-in and independent of conversation blur. The `data-wppd-enabled` attribute gates media effects with the master switch; `data-wppd-chat` controls the viewport mask separately. CSS protects new assets before classification and keeps selected media types blurred throughout conversations and media panels. Classification covers image, video, canvas, and CSS background assets. The observer updates classification and viewport/audio geometry before painting.
 
 Viewer discovery includes the positioned fullscreen shell around a marked image, covering sibling history thumbnails without extending to the conversation list. A visible supported viewer suspends the chat overlay while individual media filters remain active. Closing or hiding it restores the overlay. Media-type choices replace the obsolete always-blur setting. See [media protection](message-protection.md).
 

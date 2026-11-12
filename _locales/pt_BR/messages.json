@@ -156,7 +156,7 @@
     "message": "Figurinhas"
   },
   "mediaOptionsHint": {
-    "message": "Na conversa, a faixa protegida embaça também as mídias. Os tipos marcados ficam sempre embaçados por inteiro, inclusive ao abrir."
+    "message": "Os tipos marcados ficam embaçados por inteiro, inclusive ao abrir, mesmo com o desfoque da conversa desligado."
   },
   "mediaFallbackHint": {
     "message": "Se algum tipo estiver marcado, mídias não identificadas também serão embaçadas."
@@ -174,7 +174,7 @@
     "message": "Configurar desfoque de mídias"
   },
   "advancedBlurHelp": {
-    "message": "Marca fotos, vídeos e figurinhas para ficarem sempre embaçados. Ajuste cada tipo nas configurações (engrenagem). Áudios ficam visíveis."
+    "message": "Marca fotos, vídeos e figurinhas sem alterar o desfoque da conversa. Ajuste cada tipo nas configurações. Áudios ficam visíveis."
   },
   "developerCredit": {
     "message": "Desenvolvido por"

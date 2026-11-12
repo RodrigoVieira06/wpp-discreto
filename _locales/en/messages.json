@@ -156,7 +156,7 @@
     "message": "Stickers"
   },
   "mediaOptionsHint": {
-    "message": "In conversations, the protected area also blurs media. Selected types always stay fully blurred, including when opened."
+    "message": "Selected types stay fully blurred, including when opened, even with conversation blur off."
   },
   "mediaFallbackHint": {
     "message": "If any type is selected, unidentified media will also be blurred."
@@ -174,7 +174,7 @@
     "message": "Configure media blur"
   },
   "advancedBlurHelp": {
-    "message": "Selects photos, videos and stickers to always stay blurred. Adjust each type in settings (gear). Audio stays visible."
+    "message": "Selects photos, videos and stickers without changing conversation blur. Adjust each type in settings. Audio stays visible."
   },
   "developerCredit": {
     "message": "Developed by"
