@@ -232,9 +232,12 @@
     "message": "Blurs the number in the green sidebar badge. WhatsApp notifications stay unchanged."
   },
   "chatLookupHelpLabel": {
-    "message": "How to find more conversations"
+    "message": "How can I find more conversations?"
   },
   "chatLookupHelp": {
     "message": "Lookup includes conversations WhatsApp has already loaded in this tab. To include more, close the extension, scroll the WhatsApp conversation list, then click “Find groups and contacts” again. The search field filters only the names found. The extension does not scroll the list for you."
+  },
+  "restoreHelpLabel": {
+    "message": "What will be reset?"
   }
 }

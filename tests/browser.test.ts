@@ -8,7 +8,7 @@ import { test } from '@jest/globals';
 
 const root = path.resolve(__dirname, '..');
 
-function runBrowser(fixture: string, minimumChecks: number) {
+function runBrowser(fixture: string, minimumChecks: number, browserArguments: string[] = []) {
   const temp = mkdtempSync(path.join(os.tmpdir(), 'wppd-browser-'));
   try {
     const entry = path.join(temp, 'test.html');
@@ -17,6 +17,7 @@ function runBrowser(fixture: string, minimumChecks: number) {
       process.env.CHROME_BIN || '/usr/bin/google-chrome',
       [
         '--headless=new',
+        ...browserArguments,
         '--no-sandbox',
         '--disable-gpu',
         '--no-first-run',
@@ -235,4 +236,30 @@ test('sidebar preview protection leaves unread counters clear unless selected se
       `<script src="${pathToFileURL(path.join(root, 'dist/test-runtime/browser-sidebar.js')).href}"></script></body>`,
     );
   runBrowser(fixture, 15);
+});
+
+test('reduced motion keeps help feedback brief without switch movement or spinner rotation', () => {
+  const css = pathToFileURL(path.join(root, 'dist/extension/popup/popup.css')).href;
+  runBrowser(
+    `<!doctype html><html><head><link rel="stylesheet" href="${css}"></head><body>
+    <button id="help" class="help-button">Help</button>
+    <input id="switch" role="switch" type="checkbox">
+    <span id="spinner" class="loading-spinner"></span>
+    <div id="info" class="info-popover" popover="manual">Explanation</div>
+    <script>
+      const info = document.getElementById('info');
+      info.showPopover();
+      const short = (style) => style.transitionDuration.split(',').every(value => parseFloat(value) <= 0.04);
+      const results = [
+        { name: 'reduced motion preference is active', pass: matchMedia('(prefers-reduced-motion: reduce)').matches },
+        { name: 'help fade is brief', pass: short(getComputedStyle(info)) },
+        { name: 'button feedback stays brief', pass: short(getComputedStyle(document.getElementById('help'))) },
+        { name: 'switch movement is immediate', pass: getComputedStyle(document.getElementById('switch'), '::before').transitionProperty === 'none' },
+        { name: 'spinner stops rotating', pass: getComputedStyle(document.getElementById('spinner')).animationName === 'none' }
+      ];
+      const report = document.createElement('pre'); report.id = 'test-results'; report.textContent = JSON.stringify(results); document.body.append(report);
+    </script></body></html>`,
+    5,
+    ['--force-prefers-reduced-motion'],
+  );
 });

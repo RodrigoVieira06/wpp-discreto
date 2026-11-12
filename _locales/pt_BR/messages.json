@@ -232,9 +232,12 @@
     "message": "Desfoca o número no indicador verde da lista. As notificações do WhatsApp continuam iguais."
   },
   "chatLookupHelpLabel": {
-    "message": "Como encontrar mais conversas"
+    "message": "Como encontrar mais conversas?"
   },
   "chatLookupHelp": {
     "message": "A busca reúne as conversas que o WhatsApp já carregou nesta aba. Para incluir outras, feche a extensão, role a lista de conversas do WhatsApp e clique em “Buscar grupos e contatos” novamente. O campo de busca filtra somente os nomes encontrados. A extensão não rola a lista por você."
+  },
+  "restoreHelpLabel": {
+    "message": "O que será restaurado?"
   }
 }

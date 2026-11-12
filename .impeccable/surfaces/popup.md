@@ -47,3 +47,7 @@ Keep unread badges readable when preview blur is enabled. Add an independent opt
 ## Informational help
 
 Use one styled, nonmodal popover for all informational hints, including lookup scope and missing-alias warnings. Keep the existing action paths and confirmation dialogs. The lookup help explains passive collection and manual scrolling; place its question-mark trigger alongside the scope text. Support hover, focus, click, Escape, and outside dismissal, with viewport-contained placement and no native title tooltips.
+
+## Help discoverability and feedback
+
+Make lookup help visible before results using a question-mark icon plus a short label. Reset help has its own explicit trigger. Fade help in at 140 ms and out at 90 ms, with 120 ms control-color feedback. Keep actions immediate, avoid moving the popup or its content, and shorten feedback to 40 ms with reduced motion while disabling switch travel and spinner rotation.

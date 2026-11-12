@@ -47,6 +47,16 @@ export {};
         document.querySelector('footer .author-credit strong')?.textContent === 'Rodrigo Lima',
     );
     check('settings hidden initially', byId('settings-panel').hidden);
+    check(
+      'lookup help is explicit before fetching any conversations',
+      !byId('chat-lookup-help').closest('[hidden]') &&
+        byId('chat-lookup-help').textContent.includes(
+          window.expectedMessages.chatLookupHelpLabel,
+        ) &&
+        !!byId('chat-lookup-help').querySelector('svg') &&
+        !byId('fetch-chats').hasAttribute('data-info'),
+    );
+
     document.querySelector('footer')?.scrollIntoView({ block: 'end' });
     check(
       'local-only notice is translated and visible',
@@ -246,6 +256,18 @@ export {};
       byId('info-popover').matches(':popover-open') &&
         byId('info-popover').textContent === window.expectedMessages.chatLookupHelp &&
         help.getAttribute('aria-describedby') === 'info-popover',
+    );
+    const motion = getComputedStyle(byId('info-popover'));
+    check(
+      'help entrance uses a fast opacity transition',
+      motion.transitionProperty.includes('opacity') &&
+        motion.transitionDuration
+          .split(',')
+          .some((duration) => parseFloat(duration) > 0 && parseFloat(duration) <= 0.15),
+    );
+    check(
+      'interactive colors have a short transition',
+      getComputedStyle(byId('fetch-chats')).transitionProperty.includes('background-color'),
     );
     const box = byId('info-popover').getBoundingClientRect();
     check(

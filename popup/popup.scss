@@ -116,8 +116,29 @@ dialog::backdrop { background: rgb(0 0 0 / 65%); }
 @keyframes lookup-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .loading-spinner { animation: none; } }
 
-.lookup-help-row { display: flex; align-items: center; gap: 8px; }
-.lookup-help-row .hint { flex: 1; }
 .help-button { flex-shrink: 0; }
 .info-popover { position: fixed; inset: auto; margin: 0; width: max-content; max-width: calc(100vw - 24px); max-height: calc(100vh - 24px); overflow-y: auto; padding: 12px; border: 1px solid $border; border-radius: 8px; background: #22342a; color: $text; font: inherit; font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
 button.alias-warning { padding: 0; border: 0; background: transparent; }
+
+// Keep feedback immediate while softening color changes and help-layer visibility.
+button, input, select {
+  transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out;
+}
+input[role="switch"]::before { transition: transform 120ms ease-out; }
+.help-button { border: 1px solid $border; background: $surface-raised; }
+.help-link { display: inline-flex; align-items: center; justify-content: flex-start; gap: 8px; width: auto; height: auto; min-height: 32px; padding: 4px 8px; margin-top: 8px; color: #c7d3cd; font-size: 12px; text-align: left; }
+.info-popover {
+  opacity: 0;
+  transition: opacity 90ms ease-out, display 90ms allow-discrete, overlay 90ms allow-discrete;
+}
+.info-popover:popover-open {
+  opacity: 1;
+  transition-duration: 140ms;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+@starting-style { .info-popover:popover-open { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  button, input, select { transition-duration: 40ms; }
+  input[role="switch"]::before { transition: none; }
+  .info-popover, .info-popover:popover-open { transition-duration: 40ms; }
+}

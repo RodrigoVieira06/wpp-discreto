@@ -131,3 +131,9 @@ Fields and primary/secondary buttons have 8 px corners. The settings panel and d
 - Don't introduce fixed footers, horizontal scrolling, or controls compressed to fit the viewport.
 - Don't add slogans, new claims, remote fonts, or decorative artwork during refinement.
 - Don't change chat masking or storage behavior as part of visual styling.
+
+## Help affordances and motion
+
+Help for lookup and default restoration uses a visible question-mark icon with a short text label. Lookup help stays available before results load. Icon-only help uses a bordered tonal target. Do not attach hidden explanations to the entire lookup or settings action.
+
+Informational layers use a 140 ms opacity entrance and 90 ms exit, without translation, scaling, or layout animation. Control color/border feedback and switch travel take 120 ms. Use 40 ms feedback with reduced motion, and remove switch travel/spinner loops. Actions remain immediate.
