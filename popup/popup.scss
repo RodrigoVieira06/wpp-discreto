@@ -142,3 +142,9 @@ input[role="switch"]::before { transition: transform 120ms ease-out; }
   input[role="switch"]::before { transition: none; }
   .info-popover, .info-popover:popover-open { transition-duration: 40ms; }
 }
+
+#fetch-chats { position: relative; padding-inline: 34px; }
+.lookup-help-icon { position: absolute; right: 10px; display: grid; place-items: center; width: 20px; height: 20px; color: $muted; }
+#fetch-chats:hover:not(:disabled) .lookup-help-icon { color: $text; }
+.info-popover strong { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; }
+.info-popover p { margin: 0; }

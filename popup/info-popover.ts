@@ -4,6 +4,7 @@ import { type MessageKey, message } from '../src/i18n';
 export class InfoPopover {
   private trigger: HTMLElement | null = null;
   private pinned = false;
+  private entrance: Animation | null = null;
   private timer: ReturnType<typeof setTimeout> | undefined;
 
   constructor(private readonly panel: HTMLElement) {
@@ -70,17 +71,37 @@ export class InfoPopover {
     if (trigger.matches(':disabled')) return;
     if (this.trigger !== trigger) this.close();
     this.trigger = trigger;
-    this.panel.textContent = message(trigger.dataset.info as MessageKey);
+    const opening = !this.panel.matches(':popover-open');
+    const text = message(trigger.dataset.info as MessageKey);
+    if (trigger.dataset.infoTitle) {
+      const title = document.createElement('strong');
+      title.textContent = message(trigger.dataset.infoTitle as MessageKey);
+      const body = document.createElement('p');
+      body.textContent = text;
+      this.panel.replaceChildren(title, body);
+    } else this.panel.textContent = text;
     trigger.setAttribute('aria-describedby', this.panel.id);
     if (!this.panel.matches(':popover-open')) this.panel.showPopover();
     const anchor = trigger.getBoundingClientRect();
-    const box = this.panel.getBoundingClientRect();
+    const box = { width: this.panel.offsetWidth, height: this.panel.offsetHeight };
     const left = Math.max(12, Math.min(anchor.left, innerWidth - box.width - 12));
     const below = anchor.bottom + 8;
     const top =
       below + box.height <= innerHeight - 12 ? below : Math.max(12, anchor.top - box.height - 8);
     this.panel.style.left = `${left}px`;
     this.panel.style.top = `${top}px`;
+    this.panel.style.transformOrigin = below === top ? 'center top' : 'center bottom';
+    if (opening && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      this.entrance?.cancel();
+      this.entrance = this.panel.animate(
+        [
+          { transform: 'scale(.96) translateY(3px)', offset: 0 },
+          { transform: 'scale(1.012) translateY(0)', offset: 0.7 },
+          { transform: 'scale(1)', offset: 1 },
+        ],
+        { duration: 200, easing: 'cubic-bezier(.2,.8,.3,1)' },
+      );
+    }
   }
 
   private deferClose() {
@@ -89,6 +110,8 @@ export class InfoPopover {
   }
 
   close() {
+    this.entrance?.cancel();
+    this.entrance = null;
     clearTimeout(this.timer);
     this.trigger?.removeAttribute('aria-describedby');
     this.trigger = null;

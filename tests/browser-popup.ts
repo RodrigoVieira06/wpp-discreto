@@ -48,15 +48,13 @@ export {};
     );
     check('settings hidden initially', byId('settings-panel').hidden);
     check(
-      'lookup help is explicit before fetching any conversations',
-      !byId('chat-lookup-help').closest('[hidden]') &&
-        byId('chat-lookup-help').textContent.includes(
-          window.expectedMessages.chatLookupHelpLabel,
-        ) &&
+      'lookup help is an icon inside the lookup button',
+      byId('fetch-chats').contains(byId('chat-lookup-help')) &&
+        !byId('chat-lookup-help').textContent.trim() &&
         !!byId('chat-lookup-help').querySelector('svg') &&
-        !byId('fetch-chats').hasAttribute('data-info'),
+        !byId('chat-lookup-help').matches('button') &&
+        byId('fetch-chats').dataset.info === 'chatLookupHelp',
     );
-
     document.querySelector('footer')?.scrollIntoView({ block: 'end' });
     check(
       'local-only notice is translated and visible',
@@ -247,15 +245,31 @@ export {};
       'lookup clears its loading state when finished',
       byId('fetch-chats').getAttribute('aria-busy') === 'false' && byId('chat-loading').hidden,
     );
-    const help = byId('chat-lookup-help');
+    const help = byId('fetch-chats');
     help.scrollIntoView({ block: 'center' });
     help.focus();
     await wait();
     check(
       'lookup scope uses the shared localized informational popover',
       byId('info-popover').matches(':popover-open') &&
-        byId('info-popover').textContent === window.expectedMessages.chatLookupHelp &&
+        byId('info-popover').querySelector('strong')?.textContent ===
+          window.expectedMessages.chatLookupHelpLabel &&
+        byId('info-popover').querySelector('p')?.textContent ===
+          window.expectedMessages.chatLookupHelp &&
         help.getAttribute('aria-describedby') === 'info-popover',
+    );
+    check(
+      'help has a brief pop entrance',
+      byId('info-popover')
+        .getAnimations()
+        .some(
+          (animation) =>
+            animation.effect instanceof KeyframeEffect &&
+            animation.effect.getTiming().duration === 200 &&
+            animation.effect
+              .getKeyframes()
+              .some((frame) => String(frame.transform).includes('scale')),
+        ),
     );
     const motion = getComputedStyle(byId('info-popover'));
     check(
@@ -279,8 +293,8 @@ export {};
       'Escape closes help and retains trigger focus',
       !byId('info-popover').matches(':popover-open') && document.activeElement === help,
     );
-    help.click();
-    check('click reopens help', byId('info-popover').matches(':popover-open'));
+    help.dispatchEvent(new MouseEvent('mouseenter'));
+    check('hover reopens help', byId('info-popover').matches(':popover-open'));
     document.body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
     check('outside click dismisses help', !byId('info-popover').matches(':popover-open'));
     help.blur();

@@ -134,6 +134,6 @@ Fields and primary/secondary buttons have 8 px corners. The settings panel and d
 
 ## Help affordances and motion
 
-Help for lookup and default restoration uses a visible question-mark icon with a short text label. Lookup help stays available before results load. Icon-only help uses a bordered tonal target. Do not attach hidden explanations to the entire lookup or settings action.
+Lookup includes a right-aligned question-mark icon within its existing button. Hover/focus on the button opens the explanation with a short title inside the help surface; clicking runs lookup. Avoid a separate help row for this action. Keep icon-only help bordered and preserve the existing advanced-blur layout.
 
-Informational layers use a 140 ms opacity entrance and 90 ms exit, without translation, scaling, or layout animation. Control color/border feedback and switch travel take 120 ms. Use 40 ms feedback with reduced motion, and remove switch travel/spinner loops. Actions remain immediate.
+Informational layers have a 200 ms pop entrance: 96% scale, a slight 101.2% overshoot, and a settle at 100%. Anchor the transform toward the trigger, retain the 140 ms opacity entrance and 90 ms exit, and never animate layout or delay actions. Existing 120 ms control-color feedback remains. Reduced motion removes spatial movement and retains brief 40 ms feedback.

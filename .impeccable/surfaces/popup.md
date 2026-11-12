@@ -50,4 +50,4 @@ Use one styled, nonmodal popover for all informational hints, including lookup s
 
 ## Help discoverability and feedback
 
-Make lookup help visible before results using a question-mark icon plus a short label. Reset help has its own explicit trigger. Fade help in at 140 ms and out at 90 ms, with 120 ms control-color feedback. Keep actions immediate, avoid moving the popup or its content, and shorten feedback to 40 ms with reduced motion while disabling switch travel and spinner rotation.
+Place only a question-mark icon inside the lookup button, with the explanation's title inside the popover. Hover and keyboard focus on the entire lookup button reveal help; clicking still runs lookup. Do not add a separate lookup-help text button. Use a quick 200 ms scale entrance with a small overshoot, retaining short opacity and control-color transitions. Skip spatial motion for reduced-motion preferences and cancel/restart safely when closing/reopening.

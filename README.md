@@ -4,7 +4,7 @@
 
 Customize conversation names and blur messages in WhatsApp Web without changing the original WhatsApp data.
 
-The project is at version 0.1.8. The owner reported submitting the first Chrome Web Store release on 2026-11-09. The user confirmed manual WhatsApp Web validation on 2026-11-08. Automated tests use simulated markup.
+The project is at version 0.1.9. The owner reported submitting the first Chrome Web Store release on 2026-11-09. The user confirmed manual WhatsApp Web validation on 2026-11-08. Automated tests use simulated markup.
 
 ## Features
 
@@ -48,7 +48,7 @@ Run `make` or `make help` for the full command list.
 | `make check` | Run Biome and strict TypeScript checks |
 | `make test` | Build and run Jest, including Chrome integration tests |
 | `make test-watch` | Run Jest in watch mode |
-| `make package` | Build `dist/extension/` and `dist/wpp-discreto-0.1.8.zip` |
+| `make package` | Build `dist/extension/` and `dist/wpp-discreto-0.1.9.zip` |
 | `make deploy` | Run checks, tests, and packaging for manual store submission |
 | `make clean` | Remove build and coverage output |
 

@@ -235,7 +235,7 @@
     "message": "How can I find more conversations?"
   },
   "chatLookupHelp": {
-    "message": "Lookup includes conversations WhatsApp has already loaded in this tab. To include more, close the extension, scroll the WhatsApp conversation list, then click “Find groups and contacts” again. The search field filters only the names found. The extension does not scroll the list for you."
+    "message": "Lookup includes conversations WhatsApp has already loaded in this tab. To include more, close the extension, scroll the WhatsApp conversation list, then click “Find groups and contacts” again. The search field filters only the names found."
   },
   "restoreHelpLabel": {
     "message": "What will be reset?"
