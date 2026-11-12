@@ -37,6 +37,7 @@
           <p class="hint" data-i18n="mediaOptionsHint">Os tipos marcados ficam embaçados por inteiro, inclusive ao abrir, mesmo com o desfoque da conversa desligado.</p>
           <p class="hint" data-i18n="mediaFallbackHint">Se algum tipo estiver marcado, mídias não identificadas também serão embaçadas.</p>
         </fieldset>
+        <label class="switch-row" for="confirm-alias-removal"><span data-i18n="confirmAliasRemoval">Confirmar exclusão de apelidos</span><input id="confirm-alias-removal" type="checkbox" role="switch"></label>
         <button id="restore-defaults" type="button" class="secondary" data-i18n="restoreDefaults" data-i18n-title="restoreDefaultsHint" title="Restaura as configurações sem apagar apelidos.">Restaurar padrão</button>
       </section>
       <fieldset id="feature-controls">
@@ -54,8 +55,15 @@
           <label class="switch-row" for="aliases-enabled"><span class="section-heading"><strong id="aliases-title" data-i18n="groupAliases">Apelidos</strong><span id="alias-count" class="count">0</span></span><input id="aliases-enabled" type="checkbox" role="switch"></label>
           <fieldset id="alias-controls">
             <legend class="sr-only" data-i18n="savedAliases">Apelidos salvos</legend>
-            <button id="fetch-chats" type="button" class="secondary" data-i18n="fetchChats" data-i18n-title="chatLookupHint" title="Lista até 10 conversas carregadas na aba atual.">Buscar grupos e contatos</button>
+            <button id="fetch-chats" type="button" class="secondary" data-i18n="fetchChats" data-i18n-title="chatLookupHint" title="Percorre a lista lateral para encontrar grupos e contatos.">Buscar grupos e contatos</button>
+            <button id="cancel-chat-scan" type="button" class="secondary" hidden data-i18n="cancelChatScan">Cancelar busca</button>
             <p id="chat-status" class="hint" role="status" aria-live="polite"></p>
+            <div id="chat-search-panel" hidden>
+              <label class="field-label" for="chat-search" data-i18n="chatSearchLabel">Buscar nas conversas encontradas</label>
+              <input id="chat-search" type="search" data-i18n-placeholder="chatSearchPlaceholder" placeholder="Nome do grupo, contato ou apelido" aria-controls="chat-suggestions" autocomplete="off">
+              <p id="chat-result-count" class="hint" role="status" aria-live="polite"></p>
+              <p id="chat-search-empty" class="hint" hidden data-i18n="chatSearchEmpty">Nenhuma conversa corresponde à busca.</p>
+            </div>
             <ul id="chat-suggestions" class="suggestions" hidden data-i18n-aria-label="chatSuggestions" aria-label="Conversas encontradas"></ul>
             <form id="alias-form">
               <label class="field-label" for="original-name" data-i18n="originalName">Nome original do grupo ou contato</label>
@@ -74,6 +82,13 @@
     <p id="status" role="status" aria-live="polite"></p>
   </main>
   <footer><p data-i18n="localOnlyNotice">Os apelidos e ajustes só aparecem para você, neste navegador. As mensagens e os nomes originais continuam iguais no WhatsApp.</p><p data-i18n="conversationDataNotice">O Wpp Discreto não envia nem salva o conteúdo das suas conversas.</p><div class="author-credit"><span data-i18n="developerCredit">Desenvolvido por</span><strong>Rodrigo Lima</strong></div></footer>
+  <dialog id="delete-dialog" aria-labelledby="delete-title" aria-describedby="delete-description">
+    <h2 id="delete-title" data-i18n="deleteConfirmTitle">Remover apelido?</h2>
+    <p id="delete-description"></p>
+    <label class="confirmation-option" for="delete-dont-ask"><input id="delete-dont-ask" type="checkbox"><span data-i18n="deleteDontAskAgain">Não perguntar novamente ao remover apelidos</span></label>
+    <p id="delete-error" role="alert"></p>
+    <div class="dialog-actions"><button id="delete-cancel" type="button" class="secondary" autofocus data-i18n="cancel">Cancelar</button><button id="delete-confirm" type="button" class="primary" data-i18n="confirmDelete">Remover</button></div>
+  </dialog>
   <dialog id="reset-dialog" aria-labelledby="reset-title" aria-describedby="reset-description">
     <h2 id="reset-title" data-i18n="resetConfirmTitle">Restaurar configurações padrão?</h2>
     <p id="reset-description" data-i18n="resetConfirmDescription">Os ajustes voltarão ao padrão. Seus apelidos salvos serão mantidos.</p>

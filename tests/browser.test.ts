@@ -167,7 +167,7 @@ test.each([
       query: async () => [{ id: 23 }],
       sendMessage: async (tabId, request) => {
         if (window.rejectChats) throw new Error('No WhatsApp receiver');
-        return { available: true, chats: window.availableChats.slice(0, 10), found: request.names.filter((name) => window.availableChats.includes(name)) };
+        return { available: true, chats: window.availableChats, found: request.names.filter((name) => window.availableChats.includes(name)) };
       }
     };
   `;
@@ -213,4 +213,15 @@ test('outgoing media previews stay usable and restore protection after closing',
       `<script src="${pathToFileURL(path.join(root, 'dist/test-runtime/browser-compose.js')).href}"></script></body>`,
     );
   runBrowser(fixture, 16);
+});
+
+test('sidebar discovery traverses recycled rows, restores scrolling, and supports cancellation', () => {
+  const base = pathToFileURL(path.join(root, 'fixtures/')).href;
+  const fixture = readFileSync(path.join(root, 'fixtures/whatsapp.html'), 'utf8')
+    .replace('<head>', `<head><base href="${base}">`)
+    .replace(
+      '</body>',
+      `<script src="${pathToFileURL(path.join(root, 'dist/test-runtime/browser-directory.js')).href}"></script></body>`,
+    );
+  runBrowser(fixture, 10);
 });

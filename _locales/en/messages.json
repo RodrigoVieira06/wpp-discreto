@@ -99,19 +99,19 @@
     "message": "Find groups and contacts"
   },
   "chatLookupHint": {
-    "message": "Show up to 10 conversations loaded in the current tab."
+    "message": "Scrolls through the sidebar to find groups and contacts."
   },
   "chatSuggestions": {
     "message": "Matching conversations"
   },
   "chatsLoading": {
-    "message": "Loading conversations…"
+    "message": "Scanning the conversation list…"
   },
   "chatsUnavailable": {
     "message": "Open or reload WhatsApp Web in this tab to check names."
   },
   "aliasNotFound": {
-    "message": "Not found in the loaded conversations. Check the name or open the chat and try again."
+    "message": "Not found in conversations discovered in this tab. Search again or check the name."
   },
   "editAlias": {
     "message": "Edit"
@@ -178,5 +178,51 @@
   },
   "developerCredit": {
     "message": "Developed by"
+  },
+  "chatSearchLabel": {
+    "message": "Search discovered conversations"
+  },
+  "chatSearchPlaceholder": {
+    "message": "Group, contact or alias name"
+  },
+  "chatSearchEmpty": {
+    "message": "No conversations match your search."
+  },
+  "chatResultCount": {
+    "message": "$SHOWN$ of $TOTAL$ conversations",
+    "placeholders": {
+      "shown": {
+        "content": "$1"
+      },
+      "total": {
+        "content": "$2"
+      }
+    }
+  },
+  "chatsPartial": {
+    "message": "Search interrupted or incomplete. Search the names found or scan again."
+  },
+  "cancelChatScan": {
+    "message": "Cancel search"
+  },
+  "confirmAliasRemoval": {
+    "message": "Confirm alias deletion"
+  },
+  "deleteConfirmTitle": {
+    "message": "Remove alias?"
+  },
+  "deleteConfirmDescription": {
+    "message": "The alias “$ALIAS$” will be removed from this browser. The original WhatsApp name will stay unchanged.",
+    "placeholders": {
+      "alias": {
+        "content": "$1"
+      }
+    }
+  },
+  "deleteDontAskAgain": {
+    "message": "Do not ask again when removing aliases"
+  },
+  "confirmDelete": {
+    "message": "Remove"
   }
 }

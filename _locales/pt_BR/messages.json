@@ -99,19 +99,19 @@
     "message": "Buscar grupos e contatos"
   },
   "chatLookupHint": {
-    "message": "Mostra até 10 conversas carregadas na aba atual."
+    "message": "Percorre a lista lateral para encontrar grupos e contatos."
   },
   "chatSuggestions": {
     "message": "Conversas encontradas"
   },
   "chatsLoading": {
-    "message": "Buscando conversas…"
+    "message": "Percorrendo a lista de conversas…"
   },
   "chatsUnavailable": {
     "message": "Abra ou recarregue o WhatsApp Web nesta aba para conferir os nomes."
   },
   "aliasNotFound": {
-    "message": "Não encontrado nas conversas carregadas. Confira o nome ou abra a conversa e tente novamente."
+    "message": "Não encontrado nas conversas identificadas nesta aba. Busque novamente ou confira o nome."
   },
   "editAlias": {
     "message": "Editar"
@@ -178,5 +178,51 @@
   },
   "developerCredit": {
     "message": "Desenvolvido por"
+  },
+  "chatSearchLabel": {
+    "message": "Buscar nas conversas encontradas"
+  },
+  "chatSearchPlaceholder": {
+    "message": "Nome do grupo, contato ou apelido"
+  },
+  "chatSearchEmpty": {
+    "message": "Nenhuma conversa corresponde à busca."
+  },
+  "chatResultCount": {
+    "message": "$SHOWN$ de $TOTAL$ conversas",
+    "placeholders": {
+      "shown": {
+        "content": "$1"
+      },
+      "total": {
+        "content": "$2"
+      }
+    }
+  },
+  "chatsPartial": {
+    "message": "Busca interrompida ou incompleta. Você pode pesquisar os nomes encontrados ou buscar novamente."
+  },
+  "cancelChatScan": {
+    "message": "Cancelar busca"
+  },
+  "confirmAliasRemoval": {
+    "message": "Confirmar exclusão de apelidos"
+  },
+  "deleteConfirmTitle": {
+    "message": "Remover apelido?"
+  },
+  "deleteConfirmDescription": {
+    "message": "O apelido “$ALIAS$” será removido deste navegador. O nome original no WhatsApp continuará igual.",
+    "placeholders": {
+      "alias": {
+        "content": "$1"
+      }
+    }
+  },
+  "deleteDontAskAgain": {
+    "message": "Não perguntar novamente ao remover apelidos"
+  },
+  "confirmDelete": {
+    "message": "Remover"
   }
 }

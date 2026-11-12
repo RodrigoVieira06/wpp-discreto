@@ -1,4 +1,5 @@
 import {
+  collectSidebarNames,
   headerTitles,
   infoTitles,
   readChatContext,
@@ -16,6 +17,22 @@ import * as model from './settings';
   let loaded = false;
   let storageFailed = false;
   let stopped = false;
+  let directoryPane: HTMLElement | null = null;
+  const discoveredChats = new Set<string>();
+  let scan: Promise<{ names: string[]; complete: boolean }> | undefined;
+  let scanController: AbortController | undefined;
+  let scanPane: HTMLElement | null = null;
+  function rememberChats() {
+    const pane = document.getElementById('pane-side');
+    if (directoryPane !== pane) {
+      discoveredChats.clear();
+      directoryPane = pane;
+    }
+    for (const title of sidebarTitles(document)) {
+      const name = model.normalizeName(title.getAttribute('title') || title.textContent);
+      if (name) discoveredChats.add(name);
+    }
+  }
   const screen = new ScreenProtection();
   const decorated = new Set<HTMLElement>();
   const root = () => document.documentElement;
@@ -135,6 +152,7 @@ import * as model from './settings';
       );
       annotateMessages(document);
       screen.update(config);
+      rememberChats();
       updateAliases();
       if (loaded) root().setAttribute('data-wppd-ready', '');
     } finally {
@@ -157,10 +175,51 @@ import * as model from './settings';
   chrome.runtime.onMessage.addListener((request: unknown, sender, respond) => {
     if (sender.id !== chrome.runtime.id || !request || typeof request !== 'object') return false;
     const input = request as Record<string, unknown>;
+    if (input.type === 'wpp-discreto:cancel-chat-scan') {
+      scanController?.abort();
+      respond({ canceled: true });
+      return false;
+    }
     if (input.type !== 'wpp-discreto:chat-context') return false;
-    respond(
-      loaded && config.enabled ? readChatContext(document, input.names) : unavailableContext(),
-    );
+    rememberChats();
+    if (!loaded || !config.enabled) {
+      respond(unavailableContext());
+      return false;
+    }
+    if (input.scan === true) {
+      if (!scan) {
+        discoveredChats.clear();
+        rememberChats();
+        scanPane = document.getElementById('pane-side');
+        scanController = new AbortController();
+        scan = collectSidebarNames(document, {
+          signal: scanController.signal,
+          shouldContinue: () => config.enabled && config.aliasesEnabled && !stopped,
+        }).finally(() => {
+          scan = undefined;
+          scanController = undefined;
+        });
+      }
+      const scannedPane = scanPane;
+      void scan
+        .then((result) => {
+          if (
+            !config.enabled ||
+            !config.aliasesEnabled ||
+            document.getElementById('pane-side') !== scannedPane
+          ) {
+            respond(unavailableContext());
+            return;
+          }
+          rememberChats();
+          for (const name of result.names) discoveredChats.add(name);
+          const context = readChatContext(document, input.names, discoveredChats);
+          respond({ ...context, scanComplete: result.complete });
+        })
+        .catch(() => respond(unavailableContext()));
+      return true;
+    }
+    respond(readChatContext(document, input.names, discoveredChats));
     return false;
   });
 
@@ -198,6 +257,7 @@ import * as model from './settings';
 
   window.addEventListener('pagehide', () => {
     stopped = true;
+    scanController?.abort();
     observer.disconnect();
     screen.update({ ...config, enabled: false });
   });

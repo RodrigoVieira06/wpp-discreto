@@ -11,13 +11,13 @@ The Manifest V3 extension runs on `https://web.whatsapp.com/*` with the `storage
 | `src/screen.ts` | Upper-viewport backdrop mask and audio exclusions |
 | `src/messages.ts` | Media classification and asset annotation |
 | `src/surfaces.ts` | Info-panel, viewer, and audio selectors |
-| `src/chats.ts` | Loaded conversation names and alias validation |
+| `src/chats.ts` | Sidebar traversal, discovered conversation names, and alias validation |
 | `src/i18n.ts` | Typed locale lookup and saved language selection |
 | `popup/popup.ts` | Controls, aliases, settings persistence, and write-error recovery |
 
 `src/content.ts` disconnects its observer while applying its own DOM changes to prevent update loops. Storage changes refresh both content-script preferences and popup controls.
 
-The popup requests loaded conversation names through active-tab messaging to the existing content script. This requires no additional permission. Master and alias switches pause effects without deleting saved data. See [popup controls](popup-controls.md).
+The popup requests conversation names through active-tab messaging to the existing content script. This requires no additional permission. An explicit scan traverses the current virtualized sidebar, restores its scroll position, and returns names collected in page memory. Passive lookups use loaded and previously discovered names without moving the sidebar. Master and alias switches pause effects without deleting saved data. See [popup controls](popup-controls.md).
 
 ## Rendering
 

@@ -200,8 +200,30 @@ export {};
     byId('fetch-chats').click();
     await wait();
     const suggestions = byId('chat-suggestions').querySelectorAll('button');
-    check('fetch shows only ten names', suggestions.length === 10);
-    suggestions[1]?.click();
+    check('fetch shows all discovered names', suggestions.length === window.availableChats.length);
+    const search = byId('chat-search');
+    search.value = 'CONTATO 12';
+    search.dispatchEvent(new Event('input', { bubbles: true }));
+    check(
+      'search finds names beyond the original ten',
+      byId('chat-suggestions').querySelectorAll('button').length === 1 &&
+        byId('chat-suggestions').textContent.includes('Contato 12'),
+    );
+    byId('chat-suggestions').querySelector<HTMLButtonElement>('button')?.click();
+    check('filtered names can be selected', byId('original-name').value === 'Contato 12');
+    search.value = 'familia';
+    search.dispatchEvent(new Event('input', { bubbles: true }));
+    check(
+      'search ignores accents and case',
+      byId('chat-suggestions').querySelectorAll('button').length === 1 &&
+        byId('chat-suggestions').textContent.includes('Família Silva'),
+    );
+    search.value = 'not a conversation';
+    search.dispatchEvent(new Event('input', { bubbles: true }));
+    check('empty search results are explained', !byId('chat-search-empty').hidden);
+    search.value = '';
+    search.dispatchEvent(new Event('input', { bubbles: true }));
+    byId('chat-suggestions').querySelectorAll('button')[1]?.click();
     check(
       'choosing a suggestion fills the original name',
       byId('original-name').value === 'Grupo Novo',
@@ -250,9 +272,55 @@ export {};
       !stored.aliases.some((entry) => entry.original === 'Missing name') &&
         stored.aliases.some((entry) => entry.original === 'Contato 1'),
     );
-    byId('alias-list').lastElementChild?.querySelector<HTMLButtonElement>('.remove')?.click();
+    const removeLast = () =>
+      byId('alias-list').lastElementChild?.querySelector<HTMLButtonElement>('.remove')?.click();
+    removeLast();
+    check(
+      'removal requires confirmation',
+      byId<HTMLDialogElement>('delete-dialog').open && stored.aliases.length === 3,
+    );
+    byId('delete-dont-ask').checked = true;
+    byId('delete-cancel').click();
+    check(
+      'cancel retains alias and confirmation preference',
+      stored.aliases.length === 3 && stored.settings.confirmAliasRemoval !== false,
+    );
+    removeLast();
+    check('new confirmation starts unchecked', !byId('delete-dont-ask').checked);
+    byId('delete-confirm').click();
     await wait();
-    check('remove persists', stored.aliases.length === 2);
+    check('confirmed removal persists', stored.aliases.length === 2);
+    submit('Contato 2', 'Temporary alias');
+    await wait();
+    removeLast();
+    byId('delete-dont-ask').checked = true;
+    window.failNextSave = true;
+    byId('delete-confirm').click();
+    await wait();
+    check(
+      'failed removal keeps the alias, preference, and dialog',
+      stored.aliases.length === 3 &&
+        stored.settings.confirmAliasRemoval !== false &&
+        byId<HTMLDialogElement>('delete-dialog').open,
+    );
+    byId('delete-confirm').click();
+    await wait();
+    check(
+      'confirmed opt-out persists with the deletion',
+      stored.aliases.length === 2 && stored.settings.confirmAliasRemoval === false,
+    );
+    removeLast();
+    await wait();
+    check(
+      'future removals skip the dialog after opt-out',
+      stored.aliases.length === 1 && !byId<HTMLDialogElement>('delete-dialog').open,
+    );
+    change('confirm-alias-removal', true);
+    await wait();
+    check(
+      'confirmation can be reenabled in settings',
+      stored.settings.confirmAliasRemoval === true,
+    );
 
     window.rejectChats = true;
     byId('fetch-chats').click();
@@ -287,6 +355,7 @@ export {};
       'restore defaults resets settings and preserves aliases',
       stored.settings.enabled &&
         stored.settings.aliasesEnabled &&
+        stored.settings.confirmAliasRemoval &&
         !stored.settings.blurChat &&
         !stored.settings.blurPreviews &&
         stored.settings.language === 'auto' &&

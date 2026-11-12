@@ -14,6 +14,9 @@ import * as model from '../src/settings';
   let loading = true;
   let saving = false;
   let fetching = false;
+  let scanning = false;
+  let scanTabId: number | undefined;
+  let pendingRemoval: model.Alias | null = null;
   let settingsOpen = false;
   let suggestionsOpen = false;
   let editingOriginal: string | null = null;
@@ -30,7 +33,7 @@ import * as model from '../src/settings';
   }
 
   function drawAliases() {
-    const found = new Set(context.found);
+    const found = new Set([...context.found, ...context.chats]);
     byId('alias-count').textContent = String(entries.length);
     byId('empty-state').hidden = entries.length > 0;
     byId('alias-list').replaceChildren(
@@ -77,13 +80,16 @@ import * as model from '../src/settings';
         remove.className = 'remove';
         remove.textContent = message('removeAlias');
         remove.setAttribute('aria-label', message('removeAliasLabel', entry.alias));
-        remove.addEventListener('click', async () => {
-          if (
-            await save({ aliases: entries.filter((value) => value.original !== entry.original) })
-          ) {
-            if (editingOriginal === entry.original) editingOriginal = null;
-            await refreshContext();
+        remove.addEventListener('click', () => {
+          if (!config.confirmAliasRemoval) {
+            void removeAlias(entry, false);
+            return;
           }
+          pendingRemoval = entry;
+          byId<HTMLInputElement>('delete-dont-ask').checked = false;
+          byId('delete-error').textContent = '';
+          draw();
+          byId<HTMLDialogElement>('delete-dialog').showModal();
         });
         item.append(editButton, remove);
         return item;
@@ -121,9 +127,37 @@ import * as model from '../src/settings';
     byId('status').textContent = statusKey ? message(statusKey) : '';
     byId('status').dataset.error = String(statusError);
     byId('chat-status').textContent = chatStatusKey ? message(chatStatusKey) : '';
-    byId('chat-suggestions').hidden = !suggestionsOpen || !config.enabled || !config.aliasesEnabled;
+    const suggestionsVisible = suggestionsOpen && config.enabled && config.aliasesEnabled;
+    byId('chat-search-panel').hidden = !suggestionsVisible;
+    byId('chat-suggestions').hidden = !suggestionsVisible;
+    byId('cancel-chat-scan').hidden = !scanning;
+    byId<HTMLInputElement>('confirm-alias-removal').checked = config.confirmAliasRemoval;
+    byId<HTMLButtonElement>('delete-confirm').disabled = saving;
+    byId<HTMLButtonElement>('delete-cancel').disabled = saving;
+    if (pendingRemoval)
+      byId('delete-description').textContent = message(
+        'deleteConfirmDescription',
+        pendingRemoval.alias,
+      );
+    drawSuggestions();
+    drawAliases();
+  }
+
+  const searchable = (value: string) =>
+    value.normalize('NFD').replace(/\p{M}/gu, '').toLocaleLowerCase().trim();
+  function drawSuggestions() {
+    const query = searchable(byId<HTMLInputElement>('chat-search').value);
+    const aliases = new Map(entries.map((entry) => [entry.original, entry.alias]));
+    const names = context.chats.filter(
+      (name) =>
+        searchable(name).includes(query) || searchable(aliases.get(name) ?? '').includes(query),
+    );
+    byId('chat-result-count').textContent = context.available
+      ? message('chatResultCount', [String(names.length), String(context.chats.length)])
+      : '';
+    byId('chat-search-empty').hidden = fetching || !context.available || names.length > 0;
     byId('chat-suggestions').replaceChildren(
-      ...context.chats.map((name) => {
+      ...names.map((name) => {
         const item = document.createElement('li');
         const button = document.createElement('button');
         button.type = 'button';
@@ -135,7 +169,32 @@ import * as model from '../src/settings';
         return item;
       }),
     );
-    drawAliases();
+  }
+  async function removeAlias(entry: model.Alias, skipConfirmation: boolean) {
+    if (!config.enabled || !config.aliasesEnabled) return;
+    const success = await save({
+      aliases: entries.filter((value) => value.original !== entry.original),
+      ...(skipConfirmation
+        ? { settings: model.settings({ ...config, confirmAliasRemoval: false }) }
+        : {}),
+    });
+    if (!success) {
+      if (pendingRemoval) byId('delete-error').textContent = message('statusSaveFailed');
+      return;
+    }
+    if (editingOriginal === entry.original) editingOriginal = null;
+    pendingRemoval = null;
+    byId<HTMLDialogElement>('delete-dialog').close();
+    byId('alias-list').querySelector<HTMLButtonElement>('button')?.focus({ preventScroll: true });
+    await refreshContext();
+  }
+  async function cancelScan() {
+    if (scanTabId === undefined) return;
+    try {
+      await chrome.tabs.sendMessage(scanTabId, { type: 'wpp-discreto:cancel-chat-scan' });
+    } catch {
+      /* A closed tab already stops its scan. */
+    }
   }
 
   async function save(data: {
@@ -164,15 +223,21 @@ import * as model from '../src/settings';
   }
 
   async function refreshContext(showSuggestions = false) {
+    if (scanning && !showSuggestions && config.enabled && config.aliasesEnabled) return;
     const generation = ++contextGeneration;
     if (!config.enabled || !config.aliasesEnabled) {
+      void cancelScan();
+      scanning = false;
       context = unavailableContext();
       fetching = false;
       chatStatusKey = null;
       draw();
       return;
     }
-    if (showSuggestions) suggestionsOpen = true;
+    if (showSuggestions) {
+      suggestionsOpen = true;
+      scanning = true;
+    }
     fetching = true;
     chatStatusKey = showSuggestions ? 'chatsLoading' : null;
     draw();
@@ -180,9 +245,11 @@ import * as model from '../src/settings';
     try {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
       if (tab?.id !== undefined) {
+        if (showSuggestions) scanTabId = tab.id;
         next = parseChatContext(
           await chrome.tabs.sendMessage(tab.id, {
             type: 'wpp-discreto:chat-context',
+            scan: showSuggestions,
             names: entries.map((entry) => entry.original),
           }),
         );
@@ -193,13 +260,20 @@ import * as model from '../src/settings';
     if (generation !== contextGeneration) return;
     context = next;
     fetching = false;
-    chatStatusKey = next.available ? null : 'chatsUnavailable';
+    scanning = false;
+    scanTabId = undefined;
+    chatStatusKey = !next.available
+      ? 'chatsUnavailable'
+      : next.scanComplete === false
+        ? 'chatsPartial'
+        : null;
     draw();
   }
 
   const settingFields = {
     'extension-enabled': 'enabled',
     'aliases-enabled': 'aliasesEnabled',
+    'confirm-alias-removal': 'confirmAliasRemoval',
     'blur-previews': 'blurPreviews',
     'blur-chat': 'blurChat',
     'full-blur': 'fullBlur',
@@ -270,7 +344,11 @@ import * as model from '../src/settings';
     if (settingsOpen) byId('settings-panel').scrollIntoView({ block: 'start' });
   });
   document.addEventListener('keydown', (event) => {
-    if (byId<HTMLDialogElement>('reset-dialog').open) return;
+    if (
+      byId<HTMLDialogElement>('reset-dialog').open ||
+      byId<HTMLDialogElement>('delete-dialog').open
+    )
+      return;
     if (event.key === 'Escape' && settingsOpen) {
       settingsOpen = false;
       draw();
@@ -286,6 +364,21 @@ import * as model from '../src/settings';
   byId('reset-confirm').addEventListener('click', async () => {
     byId<HTMLDialogElement>('reset-dialog').close();
     if (await save({ settings: { ...model.defaults } })) await refreshContext();
+  });
+  byId('chat-search').addEventListener('input', drawSuggestions);
+  byId('cancel-chat-scan').addEventListener('click', () => {
+    void cancelScan();
+  });
+  const deleteDialog = byId<HTMLDialogElement>('delete-dialog');
+  deleteDialog.addEventListener('close', () => {
+    if (!deleteDialog.open) pendingRemoval = null;
+  });
+  byId('delete-cancel').addEventListener('click', () => {
+    deleteDialog.close();
+  });
+  byId('delete-confirm').addEventListener('click', () => {
+    if (pendingRemoval && !saving)
+      void removeAlias(pendingRemoval, byId<HTMLInputElement>('delete-dont-ask').checked);
   });
   byId('fetch-chats').addEventListener('click', () => {
     void refreshContext(true);

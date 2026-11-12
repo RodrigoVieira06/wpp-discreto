@@ -5,6 +5,7 @@ export interface ChatContext {
   available: boolean;
   chats: string[];
   found: string[];
+  scanComplete?: boolean;
 }
 
 export const unavailableContext = (): ChatContext => ({ available: false, chats: [], found: [] });
@@ -83,18 +84,25 @@ const namesFrom = (value: unknown): string[] =>
       ]
     : [];
 
-/** Suggestions are capped at ten; validation only returns requested names already loaded in the DOM. */
-export function readChatContext(document: Document, requestedNames: unknown): ChatContext {
+/** Use original names only; discovered names remain in memory until an alias is saved. */
+export function readChatContext(
+  document: Document,
+  requestedNames: unknown,
+  discovered: Iterable<string> = [],
+): ChatContext {
   const sidebar = sidebarTitles(document).map(titleName);
-  if (sidebar.length === 0) return unavailableContext();
+  const cached = [...discovered];
+  if (!document.getElementById('pane-side') || (sidebar.length === 0 && cached.length === 0))
+    return unavailableContext();
   const known = new Set([
     ...sidebar,
+    ...cached,
     ...headerTitles(document).map(titleName),
     ...infoTitles(document).map(titleName),
   ]);
   return {
     available: true,
-    chats: [...new Set(sidebar)].slice(0, 10),
+    chats: [...new Set([...sidebar, ...cached])],
     found: namesFrom(requestedNames).filter((name) => known.has(name)),
   };
 }
@@ -106,7 +114,110 @@ export function parseChatContext(value: unknown): ChatContext {
     return unavailableContext();
   return {
     available: true,
-    chats: namesFrom(input.chats).slice(0, 10),
+    chats: namesFrom(input.chats),
     found: namesFrom(input.found),
+    ...(typeof input.scanComplete === 'boolean' ? { scanComplete: input.scanComplete } : {}),
   };
+}
+
+export interface SidebarScanOptions {
+  signal?: AbortSignal;
+  shouldContinue?: () => boolean;
+  timeoutMs?: number;
+}
+
+/** Traverse the rendered sidebar, including recycled rows, without opening conversations. */
+export async function collectSidebarNames(
+  document: Document,
+  options: SidebarScanOptions = {},
+): Promise<{ names: string[]; complete: boolean }> {
+  const pane = document.getElementById('pane-side');
+  const names = new Set<string>();
+  const collect = () => {
+    for (const title of sidebarTitles(document)) names.add(titleName(title));
+  };
+  collect();
+  if (!pane) return { names: [], complete: false };
+  let viewport: HTMLElement | undefined;
+  const rowParent = sidebarTitles(document)[0]?.closest<HTMLElement>(
+    '[role="row"], [role="listitem"]',
+  )?.parentElement;
+  for (const candidate of [
+    ...(rowParent ? [rowParent] : []),
+    pane,
+    ...pane.querySelectorAll<HTMLElement>(
+      '[role="grid"], [role="list"], [data-testid="chat-list"]',
+    ),
+  ]) {
+    for (
+      let node: HTMLElement | null = candidate;
+      node && !node.matches('body, html');
+      node = node.parentElement
+    ) {
+      if (node.clientHeight > 0 && /auto|scroll/.test(getComputedStyle(node).overflowY)) {
+        viewport = node;
+        break;
+      }
+    }
+    if (viewport) break;
+  }
+  if (!viewport) return { names: [...names], complete: true };
+  const originalTop = viewport.scrollTop;
+  let interrupted = false;
+  let complete = false;
+  const interrupt = () => {
+    interrupted = true;
+  };
+  const events = ['wheel', 'pointerdown', 'keydown'] as const;
+  for (const event of events) viewport.addEventListener(event, interrupt, { passive: true });
+  const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+  const active = () =>
+    !interrupted &&
+    !options.signal?.aborted &&
+    pane.isConnected &&
+    document.getElementById('pane-side') === pane &&
+    (options.shouldContinue?.() ?? true);
+  const move = (top: number) => {
+    viewport.scrollTop = top;
+    viewport.dispatchEvent(new Event('scroll'));
+  };
+  const deadline = Date.now() + (options.timeoutMs ?? 45000);
+  let stable = 0;
+  try {
+    move(0);
+    while (active() && Date.now() < deadline) {
+      await wait(120);
+      if (!active()) break;
+      collect();
+      const bottom = Math.max(0, viewport.scrollHeight - viewport.clientHeight);
+      if (viewport.scrollTop >= bottom - 1) {
+        const height = viewport.scrollHeight;
+        const count = names.size;
+        await wait(350);
+        if (!active()) break;
+        collect();
+        const busy =
+          viewport.matches('[aria-busy="true"]') || !!viewport.querySelector('[aria-busy="true"]');
+        stable = !busy && height === viewport.scrollHeight && count === names.size ? stable + 1 : 0;
+        if (stable >= 3) {
+          complete = true;
+          break;
+        }
+      } else {
+        stable = 0;
+        const next = Math.min(
+          bottom,
+          viewport.scrollTop + Math.max(1, viewport.clientHeight * 0.8),
+        );
+        const previous = viewport.scrollTop;
+        move(next);
+        if (viewport.scrollTop === previous) break;
+      }
+    }
+  } finally {
+    for (const event of events) viewport.removeEventListener(event, interrupt);
+    if (!interrupted && pane.isConnected && document.getElementById('pane-side') === pane)
+      move(originalTop);
+  }
+  return { names: [...names], complete };
 }

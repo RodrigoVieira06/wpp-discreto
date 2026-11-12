@@ -11,10 +11,10 @@ FOTOS, VÍDEOS E FIGURINHAS
 Escolha quais tipos de mídia devem permanecer embaçados, inclusive na área legível, nas galerias e no visualizador. O desfoque avançado seleciona os três tipos de uma vez, sem ativar o desfoque do texto. A prévia da mídia que você está preparando para enviar fica visível durante a edição. Os controles de áudio continuam visíveis.
 
 APELIDOS PARA GRUPOS E CONTATOS
-Defina nomes que aparecem para você neste navegador. Busque até dez conversas já carregadas na lista para preencher o nome original. Conversas com o mesmo nome compartilham o apelido.
+Defina nomes que aparecem para você neste navegador. Busque as conversas da lista lateral e filtre os nomes encontrados para preencher o nome original. Conversas com o mesmo nome compartilham o apelido.
 
 CONTROLE E IDIOMA
-Ative ou desative a extensão sem perder seus ajustes e apelidos. A interface oferece português e inglês, com seleção pelo idioma do navegador ou escolha nas configurações. Restaurar o padrão mantém seus apelidos salvos.
+Ative ou desative a extensão sem perder seus ajustes e apelidos. A interface oferece português e inglês, com seleção pelo idioma do navegador ou escolha nas configurações. A exclusão de apelidos pede confirmação, com a opção de não perguntar novamente. Restaurar o padrão mantém seus apelidos salvos.
 
 SEUS DADOS
 Os ajustes e apelidos ficam no armazenamento local do navegador. A extensão não envia nem salva o conteúdo das conversas e não altera os nomes ou as mensagens originais no WhatsApp.

@@ -3,6 +3,7 @@ export type LanguagePreference = 'auto' | 'pt_BR' | 'en';
 export interface Settings {
   enabled: boolean;
   aliasesEnabled: boolean;
+  confirmAliasRemoval: boolean;
   language: LanguagePreference;
   blurPreviews: boolean;
   blurChat: boolean;
@@ -22,6 +23,7 @@ export interface Alias {
 export const defaults: Readonly<Settings> = Object.freeze({
   enabled: true,
   aliasesEnabled: true,
+  confirmAliasRemoval: true,
   language: 'auto',
   blurPreviews: false,
   blurChat: false,
@@ -46,6 +48,7 @@ export function settings(value: unknown = {}): Settings {
   return {
     enabled: input.enabled !== false,
     aliasesEnabled: input.aliasesEnabled !== false,
+    confirmAliasRemoval: input.confirmAliasRemoval !== false,
     language: input.language === 'pt_BR' || input.language === 'en' ? input.language : 'auto',
     blurPreviews: input.blurPreviews === true,
     blurChat: input.blurChat === true,

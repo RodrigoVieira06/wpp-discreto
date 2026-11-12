@@ -24,7 +24,7 @@ Retain the footer's data-handling explanation: changes affect this browser, orig
 
 The popup gets the active tab ID through `chrome.tabs.query` and sends `wpp-discreto:chat-context` to the installed content script. It reads no sensitive tab properties, injects into no other site, and requests no extra permission.
 
-`src/chats.ts` reads original DOM names. Suggestions contain up to ten unique sidebar names in document order. Validation compares requested saved names against the loaded sidebar, open header, and supported active info-card title. It returns matches for those requests.
+`src/chats.ts` reads original DOM names. An explicit lookup traverses the sidebar and collects every unique name encountered, including recycled rows. It returns to the previous scroll position after completion or cancellation. Wheel, pointer, or keyboard interaction in the sidebar interrupts traversal without moving it back against the user's action. Validation compares requested saved names against current and cached sidebar names, the open header, and supported active info-card title. It returns matches for those requests.
 
 Prefer an inner title over an aggregate container. Exclude unread indicators and accessibility counters. Alias CSS clips nested original spans without deleting or replacing React text, preventing the original and alias from appearing together.
 
@@ -34,12 +34,18 @@ Selecting a suggestion fills the original-name field. Editing fills both fields;
 
 | State | Display |
 | --- | --- |
-| Found | No warning for an exact normalized name in loaded conversations |
-| Not found in loaded conversations | Amber border/text and a focusable warning icon with a tooltip |
+| Found | No warning for an exact normalized name in discovered conversations |
+| Not found in discovered conversations | Amber border/text and a focusable warning icon with a tooltip |
 | Unavailable | A helper asks you to open or reload WhatsApp; saved aliases receive no invalid-name warning |
 
-An absent loaded name does not establish that the group or contact was deleted. Unavailable includes a missing receiver, signed-out or empty list, and connection failures.
+An absent discovered name does not establish that the group or contact was deleted. Unavailable includes a missing receiver, signed-out or empty list, and connection failures.
 
-Lookup runs on popup opening, relevant edits, and explicit refresh. Discovered names stay in memory. The extension persists a mapping only when you save it; lookup reads no messages and uses no account-wide contact API.
+Passive lookup runs on popup opening and relevant edits. The explicit lookup button scans the current sidebar for up to 45 seconds, waiting for stable list boundaries. Concurrent requests share a scan. Canceling or reaching the time limit reports partial results. A new explicit scan refreshes the in-memory directory; replacing the sidebar clears it. The popup filters original names and saved aliases without case or accent distinctions and reports result counts and empty matches. Lists filtered in WhatsApp or archived conversations outside the current sidebar are outside the scan. Discovered names stay in page memory and may become stale until a new scan or page reload. The extension persists a mapping only when you save it; lookup reads no messages and uses no account-wide contact API.
 
 After updating the extension, reload it and refresh WhatsApp so the content script can receive lookup requests. Automated lookup tests use simulated markup; check changes against WhatsApp before distribution.
+
+## Alias deletion
+
+Removal opens a localized dialog naming the alias. Cancel and Escape leave storage unchanged. The optional “do not ask again” checkbox takes effect only after confirming a successful deletion; the aliases and `settings.confirmAliasRemoval: false` are saved together. A failed save keeps the dialog open with an error and retains both the alias and prior preference.
+
+`confirmAliasRemoval` defaults to `true` for missing or invalid saved values. The settings panel can reenable it. Default restoration also reenables confirmation without deleting saved aliases. Opting out applies only to alias deletion, not the independent default-restoration dialog.

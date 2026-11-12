@@ -4,17 +4,17 @@
 
 Customize conversation names and blur messages in WhatsApp Web without changing the original WhatsApp data.
 
-The project is at version 0.1.3. The owner reported submitting the first Chrome Web Store release on 2026-11-09. The user confirmed manual WhatsApp Web validation on 2026-11-08. Automated tests use simulated markup.
+The project is at version 0.1.4. The owner reported submitting the first Chrome Web Store release on 2026-11-09. The user confirmed manual WhatsApp Web validation on 2026-11-08. Automated tests use simulated markup.
 
 ## Features
 
-- **Local aliases:** give groups or contacts a display name for this browser. Choose from up to ten loaded conversation names or enter the original name. An amber warning identifies names absent from loaded conversations.
+- **Local aliases:** give groups or contacts a display name for this browser. Scan the sidebar, filter the discovered names, or enter the original name. An amber warning identifies names absent from discovered conversations.
 - **Conversation protection:** blur the upper chat area and keep the lower 20–100% readable (default: 40%). Scroll older messages into that area to read them, or enable full blur. Choose a blur strength from 4 to 16 px.
 - **Media protection:** select photos, videos, or stickers to keep them blurred in full, including albums, info-card carousels, galleries, opened media, and viewer history thumbnails. Media protection works with conversation blur off. The advanced-blur switch selects all three types without changing conversation blur. Outgoing media previews stay clear while you edit and send them; protection resumes after closing the preview. Audio controls stay visible.
 - **Sidebar protection:** blur message previews in the conversation list.
 - **Controls:** pause the extension or aliases without deleting saved choices. Choose automatic language, Portuguese, or English. Restoring defaults asks for confirmation and keeps aliases.
 
-Conversation and sidebar blur start disabled, as do media choices. In a protected conversation, allowed media stays blurred above the screen boundary and clears below it. Opening media suspends that overlay: the viewer shows allowed types clearly and keeps selected types blurred. Hovering does not reveal protected content.
+Conversation and sidebar blur start disabled, as do media choices. In a protected conversation, allowed media stays blurred above the screen boundary and clears below it. Opening media suspends that overlay: the viewer shows allowed types clearly and keeps selected types blurred. Hovering does not reveal protected content. Alias removal requires confirmation by default; its optional opt-out can be reversed in settings.
 
 ## Install from source
 
@@ -30,7 +30,7 @@ make build
 1. Open `chrome://extensions` and enable **Developer mode**.
 2. Select **Load unpacked** and choose **`dist/extension`**.
 3. Open or refresh WhatsApp Web, pin Wpp Discreto, and open its popup.
-4. Enable the effects you want. The gear button opens language, blur strength, readable area, media choices, and default restoration.
+4. Enable the effects you want. The gear button opens language, blur strength, readable area, media choices, alias-deletion confirmation, and default restoration.
 5. With WhatsApp Web in the active tab, use **Buscar grupos e contatos** or enter an exact original name. Save, edit, or remove aliases in the popup.
 
 After rebuilding, reload the extension and refresh WhatsApp Web. `make dev` watches source changes; it does not reload the browser. See [popup controls](docs/popup-controls.md) and [media protection](docs/message-protection.md).
@@ -48,7 +48,7 @@ Run `make` or `make help` for the full command list.
 | `make check` | Run Biome and strict TypeScript checks |
 | `make test` | Build and run Jest, including Chrome integration tests |
 | `make test-watch` | Run Jest in watch mode |
-| `make package` | Build `dist/extension/` and `dist/wpp-discreto-0.1.3.zip` |
+| `make package` | Build `dist/extension/` and `dist/wpp-discreto-0.1.4.zip` |
 | `make deploy` | Run checks, tests, and packaging for manual store submission |
 | `make clean` | Remove build and coverage output |
 
@@ -81,7 +81,7 @@ Product copy belongs in Chrome locale catalogs. Keep source identifiers and deve
 
 Aliases match exact names rather than group IDs. Same-name conversations share an alias, including contacts; update the mapping if an original name changes. The extension does not identify groups automatically. Supported info cards show the active conversation alias, while search, member lists, descriptions, and accessibility text retain original names.
 
-Suggestions cover up to ten loaded names. Validation can check other loaded names and the open header, but an absent name may exist elsewhere in your account. The popup distinguishes an unavailable WhatsApp tab from a missing loaded name.
+Lookup scans the current sidebar and collects the unique names it finds, including virtualized rows below the current view. Filter the discovered list by original name or saved alias. Validation uses names discovered in this page session and the open header, but an absent name may exist elsewhere in your account. The popup distinguishes an unavailable WhatsApp tab from a missing loaded name.
 
 Unidentified media follows the selected media rules. Protection excludes system notifications, search results, and conversation titles. Blur provides visual protection; it does not encrypt content or prevent technical access to it. WhatsApp updates can break selectors, and simulated tests cannot establish compatibility with the live application.
 

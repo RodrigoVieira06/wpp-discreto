@@ -10,6 +10,7 @@ test('invalid persisted settings cannot inject CSS or enable options accidentall
     blurVideos: false,
     blurStickers: false,
     enabled: true,
+    confirmAliasRemoval: true,
     aliasesEnabled: true,
     language: 'auto',
     blurPreviews: false,
@@ -31,6 +32,7 @@ test('invalid persisted settings cannot inject CSS or enable options accidentall
       blurVideos: false,
       blurStickers: false,
       enabled: true,
+      confirmAliasRemoval: true,
       aliasesEnabled: true,
       language: 'auto',
       blurPreviews: false,
@@ -50,6 +52,7 @@ test('new preferences migrate existing settings and reject unsupported language 
     blurVideos: false,
     blurStickers: false,
     enabled: false,
+    confirmAliasRemoval: true,
     aliasesEnabled: false,
     language: 'en',
     blurPreviews: false,
@@ -109,4 +112,10 @@ test('legacy always-blur values do not override selected media types', () => {
     assert.equal(parsed.blurVideos, false);
     assert.equal('alwaysBlurMedia' in parsed, false);
   }
+});
+
+test('alias removal confirmation defaults to on and preserves an explicit opt-out', () => {
+  assert.equal(model.settings({}).confirmAliasRemoval, true);
+  assert.equal(model.settings({ confirmAliasRemoval: false }).confirmAliasRemoval, false);
+  assert.equal(model.settings({ confirmAliasRemoval: 'false' }).confirmAliasRemoval, true);
 });

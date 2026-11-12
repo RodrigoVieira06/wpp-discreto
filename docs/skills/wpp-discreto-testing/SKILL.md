@@ -17,7 +17,7 @@ Read `AGENTS.md` and `docs/testing.md`. Identify the observable failure before c
 - **Protection:** arrivals, recycling, scrolling, 20%/100% readable area, full blur, tall messages/albums crossing the boundary, resizing, nested blocks, and disabled states.
 - **Media:** first background tiles, selected types below the boundary, allowed/blocked fullscreen assets, sibling history outside the main image marker, selected/lazy thumbnails, independent thumbnail types, media-only protection on initial load and live updates, master-switch recovery, and readable audio. Include info cards, carousels, galleries, and viewer open/close/hidden transitions. Cover outgoing-editor draft assets, new thumbnails, send/cancel recovery, and negative cases for normal composers and received viewers.
 - **Aliases:** normalization, duplicates, plain text, reused rows, updates, and removal.
-- **Popup:** saved choices, write errors, controls/footer in short viewports, advanced shortcut, tooltip navigation, and percentage retention during full blur.
+- **Popup:** saved choices, write errors, controls/footer in short viewports, advanced shortcut, tooltip navigation, complete sidebar discovery, filtering, deletion confirmation and opt-out, and percentage retention during full blur.
 
 Use screenshot pixel comparisons for backdrop-mask changes. A computed CSS property does not prove that pixels blurred.
 

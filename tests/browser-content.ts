@@ -68,8 +68,8 @@ export {};
         },
       );
     check(
-      'chat lookup exposes only ten original conversation names',
-      chatContext?.chats.length === 10 &&
+      'chat lookup exposes every loaded original conversation name',
+      chatContext?.chats.length === 13 &&
         chatContext.chats[0] === 'Família Silva' &&
         !chatContext.chats.includes('Preview'),
     );
