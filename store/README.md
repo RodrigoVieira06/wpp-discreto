@@ -1,41 +1,43 @@
-# Chrome Web Store listing assets
+# Chrome Web Store images
 
-The listing copy is product-facing Brazilian Portuguese, as requested. Development documentation and source identifiers remain English.
+Updated for Wpp Discreto 0.2.1. Product-facing image copy is Brazilian Portuguese; development documentation and source identifiers remain English.
 
-Recommended category: **Privacy & Security** (Portuguese: **Privacidade e segurança**), based on the primary visual-protection function. This category does not imply encryption or access control.
-
-| Field | File | Format |
+| Upload | File | Dimensions |
 | --- | --- | --- |
-| Store icon | `store-icon-128.png` | 128 × 128 PNG, transparent; artwork within 96 × 96 with 16 px padding |
-| Screenshot 1 | `screenshot-01-conversation.png` | 1280 × 800 RGB PNG |
-| Screenshot 2 | `screenshot-02-media.png` | 1280 × 800 RGB PNG |
-| Screenshot 3 | `screenshot-03-settings-aliases.png` | 1280 × 800 RGB PNG |
-| Small promo tile | `promo-small-440x280.png` | 440 × 280 RGB PNG |
-| Marquee promo tile | `promo-marquee-1400x560.png` | 1400 × 560 RGB PNG |
-| Listing copy | `listing.pt-BR.txt` | UTF-8 text: name, short summary, detailed description |
+| Conversation protection | `screenshot-01-conversation.png` | 1280 × 800 RGB PNG |
+| Media-only protection | `screenshot-02-media.png` | 1280 × 800 RGB PNG |
+| Local aliases | `screenshot-03-settings-aliases.png` | 1280 × 800 RGB PNG |
+| Dark/light comparison | `screenshot-04-themes.png` | 1280 × 800 RGB PNG |
+| Text-size comparison | `screenshot-05-text-size.png` | 1280 × 800 RGB PNG |
+| Small promotional tile | `promo-small-440x280.png` | 440 × 280 RGB PNG |
+| Marquee promotional tile | `promo-marquee-1400x560.png` | 1400 × 560 RGB PNG |
+| Approved store icon | `store-icon-128.png` | 128 × 128 transparent PNG |
 
-The store icon is exported independently of the larger toolbar artwork. No installed icon, product behavior, permissions, version, or manifest changes are part of this listing work.
+The icon preserves the approved artwork and its existing 96 × 96 drawing area with 16 px padding. The screenshot set uses all five available slots. No product behavior, installed icon, permission, version or manifest is changed by this asset task.
 
-## Reproduce screenshots and icon
+## Reproduce
 
 ```sh
 make store-assets
 ```
 
-Requires Chrome, pnpm, and the existing project dependencies. `CHROME_BIN` overrides the Chrome executable. The command builds the extension, loads a temporary copy into a temporary headless profile, and adds a demo-only HTML page to that copy. It uses actual compiled content-script/CSS effects with real local extension storage containing fictitious settings and aliases. Popup lookup responses are mocked with fictitious names. No personal profile, authenticated WhatsApp, chat export, or external photo service is used.
+The command builds the extension, prepares local demo pages, renders the seven compositions, validates their dimensions, removes alpha from screenshots/promotional exports and writes `dist/wpp-discreto-store-assets.zip`. `CHROME_BIN` selects Chrome. The portable renderer uses a temporary headless Chrome profile and a loopback-only server; it never opens a personal profile or authenticates with WhatsApp.
 
-The script verifies the viewport mask, visual alias, and selected-image blur before capture. Screenshots combine the actual popup captures with a WhatsApp-like synthetic conversation layout, labeled as a fictitious demonstration. They are not authenticated WhatsApp screenshots or proof of compatibility with the current WhatsApp DOM. The simple landscape references are synthetic placeholders.
+For a design-skill rendering session, set `STORE_SCREENSHOT_RENDERER` to the installed skill's `scripts/shoot.mjs` before running the command. The skill renders each fixed composition sequentially over local HTTP. `sources/*.html` contains the editable compositions; `.local/store-render/` contains generated demo dependencies and must be recreated before opening those sources.
 
-Promotional tiles are AI-generated illustrations based on the approved logo, normalized to the upload dimensions. They illustrate blurred and readable message bars and are not UI screenshots. Their full-resolution originals are preserved in `sources/`. The command keeps the committed promo exports unchanged and includes them in the bundle when present.
+## What the images show
 
-`dist/wpp-discreto-store-assets.zip` contains the individual upload files and listing copy. Upload the extension ZIP separately. This command does not contact or publish to the Chrome Web Store.
+Popup frames run the current compiled popup HTML, SCSS and JavaScript at native width, with synthetic preferences and local Chrome API mocks. Conversation frames run the actual compiled content script and protection CSS against a WhatsApp-like fictional DOM. Labels, people, messages and landscape illustrations are fictional. These are demonstrations, not authenticated WhatsApp captures or proof of compatibility with the live WhatsApp DOM.
 
-## Official references
+The conversation screenshot uses preview/chat protection with a 40% readable area and a readable unread badge. The media screenshot leaves text visible while selecting all three media flags. The alias screenshot uses the saved mapping in the list/header and shows its actual editor. Theme frames show the same empty-alias state in light/dark; typography frames show General settings at 15 px and 18 px. Promotional tiles reuse the approved logo and current UI rather than generated look-alike controls.
 
-Dimensions and category checked on 2026-11-09:
+The ZIP contains the eight individual PNG uploads and a README. Upload the extension package separately. The listing text is maintained separately and is not included in this image bundle. This command does not publish to the store.
 
-- [Image requirements](https://developer.chrome.com/docs/webstore/images)
+## Official formats
+
+Checked on 2026-11-13:
+
 - [Complete a listing](https://developer.chrome.com/docs/webstore/cws-dashboard-listing)
-- [Category guidance](https://developer.chrome.com/docs/webstore/best-practices)
+- [Supplying images](https://developer.chrome.com/docs/webstore/images)
 
-Only the icon and at least one screenshot are required in the current image guide. The small and marquee promotional images are optional. Check the live dashboard for remaining publisher, support, and data-policy fields before submitting.
+The current listing guide accepts up to five screenshots, 128 × 128 store icons, 440 × 280 small promos, and 1400 × 560 marquees. The icon and at least one screenshot are required; the promotional tiles are optional.
